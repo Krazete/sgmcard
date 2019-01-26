@@ -95,23 +95,23 @@ function init() {
     canvas.width = 500;
     canvas.height = 800;
     Promise.all([
-        getImageData("GreyBackground.png"),
-        getImageData("30-3889.png", true)
+        getImageData("fragment/GreyBackground.png"),
+        getImageData("gradient/30-3889.png", true)
     ]).then(function (responses) {
         compose(responses[0], responses[1], 25, 48, 1.16);
-        noCompose("zozo.png", -210, -70, 1).then(function () {
+        noCompose("art/zozo.png", -210, -70, 1).then(function () {
             Promise.all([
-                getImageData("DiamondTop.png"),
-                getImageData("DiamondElement.png"),
-                getImageData("DiamondLevel.png"),
-                getImageData("DiamondBottom.png"),
-                getImageData("DiamondGradientLight.png", true),
+                getImageData("fragment/DiamondTop.png"),
+                getImageData("fragment/DiamondElement.png"),
+                getImageData("fragment/DiamondLevel.png"),
+                getImageData("fragment/DiamondBottom.png"),
+                getImageData("gradient/DiamondGradientLight.png", true),
             ]).then(function (responses) {
                 compose(responses[0], responses[4], 0, 0);
                 compose(responses[1], responses[4], 0, -2.5);
                 compose(responses[2], responses[4], 273, 0, 0.56);
                 compose(responses[3], responses[4], 0, 282);
-                noCompose("ElementalIconLight.png", 13, 11, 0.43);
+                noCompose("fragment/ElementalIconLight.png", 13, 11, 0.43);
             })
         });
     });
