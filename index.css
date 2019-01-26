@@ -1,0 +1,123 @@
+:root {
+    --0: #ccb55a;
+    --1: #1b2a41;
+    --2: #263b5a;
+    --3: #314c73;
+    --4: #3e2c29;
+    --5: #8f6151;
+    --6: #ccb55a;
+}
+
+@font-face {
+    font-family: 'Washington';
+    src: url(font/WashingtonBoldDynamic.otf);
+}
+
+@font-face {
+    font-family: 'Cinema';
+    src: url(font/TBCinemaRGothic-M.ttf);
+}
+
+@font-face {
+    font-family: 'Dodam';
+    src: url(font/Typo_DodamM.ttf);
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url(font/RobotoCondensed-Regular.ttf);
+}
+
+body {
+    background: var(--0);
+    display: flex;
+}
+
+@media all and (orientation: landscape) {
+    body {
+        flex-direction: row;
+    }
+}
+
+@media all and (orientation: portrait) {
+    body {
+        flex-direction: column;
+    }
+}
+
+.scroller {
+    overflow: scroll;
+}
+
+#preview {
+    min-width: 400px;
+    min-height: 400px;
+}
+
+#preview canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#menu {
+    background: var(--3);
+    color: white;
+    font-family: 'Cinema';
+    font-size: 0;
+    text-transform: uppercase;
+    text-shadow: 1px 1px black;
+    padding: 8px;
+    border: 3px double var(--0);
+    border-radius: 16px;
+    z-index: 1;
+}
+
+#menu div div {
+    font-size: 24px;
+    margin: 4px;
+}
+
+#menu input[type='radio'] {
+    display: none;
+}
+
+#menu input[type='radio'] + label {
+    width: 32px;
+    height: 32px;
+    /* background: var(--0); */
+    text-align: center;
+    padding: 8px;
+    border: 3px double var(--0);
+    border-radius: 8px;
+    margin: 4px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#menu input[type='radio'] + label:hover {
+    border-color: white;
+}
+
+#menu input[type='radio']:checked + label {
+    background: var(--0);
+    border-color: var(--3);
+}
+
+#menu input[type='radio'] + label img {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+#menu input[type='text'] {
+    min-width: 50%;
+    background: var(--0);
+    color: var(--3);
+    font-family: 'Cinema';
+    font-size: 24px;
+    text-transform: uppercase;
+    padding: 8px;
+    border: 3px double var(--3);
+    border-radius: 8px;
+    margin: 4px;
+}
