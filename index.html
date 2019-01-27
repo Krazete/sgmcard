@@ -7,9 +7,10 @@
     <body>
         <div class="scroller" id="preview">
             <canvas id="canvas-0"></canvas>
-            <canvas id="canvas-1"></canvas>
-            <canvas id="canvas-2"></canvas>
-            <canvas id="canvas-3"></canvas>
+            <canvas id="bg-canvas"></canvas>
+            <canvas id="art-canvas"></canvas>
+            <canvas id="fg-canvas"></canvas>
+            <canvas id="stat-canvas"></canvas>
         </div>
         <div class="scroller" id="menu">
             <div>
@@ -49,6 +50,26 @@
             <div>
                 <div>Variant</div>
                 <input type="text" placeholder="Variant Name">
+            </div>
+            <div>
+                <div>Art</div>
+                <input type="file">
+            </div>
+            <div>
+                <div>Overlap</div>
+                <input type="radio" name="option-overlap" id="option-under">
+                <label for="option-under"><img src="menu/Lossmark.png"></label>
+                <input type="radio" name="option-overlap" id="option-over">
+                <label for="option-over"><img src="menu/Checkmark.png"></label>
+            </div>
+            <div>
+                <div>Energy</div>
+                <input type="radio" name="option-energy" id="option-none">
+                <label for="option-none"><img src="fragment/EnergyBlank.png"></label>
+                <input type="radio" name="option-energy" id="option-yellow">
+                <label for="option-yellow"><img src="fragment/EnergyIcon.png"></label>
+                <input type="radio" name="option-energy" id="option-blue">
+                <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
             </div>
         </div>
     </body>
