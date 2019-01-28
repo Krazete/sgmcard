@@ -93,10 +93,12 @@ function buildCardFromPreview() {
     var preview = document.getElementById("preview");
     var previewBox = preview.getBoundingClientRect();
     console.log(preview);
+
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.width = previewBox.width;
     canvas.height = previewBox.height;
+
     var images = preview.getElementsByTagName("img");
     for (var image of images) {
         var imageBox = image.getBoundingClientRect();
@@ -108,10 +110,34 @@ function buildCardFromPreview() {
             imageBox.height
         );
     }
-    var a = document.createElement("a");
-    a.href = canvas.toDataURL();
-    a.setAttribute("download", "card.png");
-    a.click();
+
+    var texts = preview.getElementsByTagName("input");
+    for (var text of texts) {
+        var textBox = text.getBoundingClientRect();
+        var font = window.getComputedStyle(text).getPropertyValue("font");
+        var fontSize = parseInt(window.getComputedStyle(text).getPropertyValue("font-size"));
+        context.font = font;
+        context.fillStyle = "white";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.shadowOffsetX = 0.07 * fontSize;
+        context.shadowOffsetY = 0.07 * fontSize;
+        context.shadowColor = "black";
+        context.fillText(
+            text.value.toUpperCase(),
+            (textBox.left + textBox.right) / 2 - previewBox.left,
+            (textBox.top + textBox.bottom) / 2 - previewBox.top
+        );
+    }
+
+    // var a = document.createElement("a");
+    // a.href = canvas.toDataURL();
+    // a.setAttribute("download", "card.png");
+    // a.click();
+
+    var img = new Image();
+    img.src = canvas.toDataURL();
+    document.body.appendChild(img);
 }
 
 function init() {

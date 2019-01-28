@@ -88,13 +88,11 @@ body {
 }
 
 #card-element-icon {top: 100px; left: 100px;}
-#card-element-text {top: 100px; left: 100px;}
 
 .bronze #card-level {top: 54px; left: 345px; width: 64px;}
 .silver #card-level,
 .gold #card-level {top: 55px; left: 346px; width: 62px;}
 .diamond #card-level {top: 53px; left: 345px; width: 64px;}
-#card-level-text {top: 100px; left: 200px;}
 
 #card-bottom {bottom: 44px;}
 .bronze #card-bottom {left: 67px;}
@@ -104,8 +102,25 @@ body {
 
 #card-energy {top: 100px; left: 100px;}
 
-#card-variant {top: 100px; left: 100px;}
-#card-fighter {top: 100px; left: 100px;}
+#preview > input[type='text'] {
+    background: none;
+    background: #fff4;
+    color: white;
+    font-family: 'Washington';
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0.07em 0.07em black;
+    line-height: 1.3em;
+    border: none;
+    outline: none;
+}
+#card-element-text {top: 100px; left: 100px;}
+#card-level-text {top: 100px; left: 200px;}
+
+#card-variant,
+#card-fighter {left: 67px; width: 360px;}
+#card-variant {bottom: 130px; font-size: 56px; line-height: 56px;}
+#card-fighter {bottom: 100px; font-size: 30px; line-height: 30px;}
 
 /* MENU */
 
@@ -141,7 +156,6 @@ h1 {
 
 #preview,
 input[type='radio'] + label,
-input[type='text'],
 input[type='file'] {
     background: var(--bg);
     color: var(--fg);
@@ -152,13 +166,11 @@ input[type='file'] {
 }
 
 input[type='radio'] + label:hover,
-input[type='text']:hover,
 input[type='file']:hover {
     border-color: white;
 }
 
 input[type='radio']:checked + label,
-input[type='text']:focus,
 input[type='file']:focus {
     background: var(--fg);
     color: var(--bg);
@@ -188,7 +200,6 @@ input[type='radio'] + label img {
     max-width: 32px;
 }
 
-input[type='text'],
 input[type='file'] {
     font-family: 'Cinema';
     font-size: 24px;
