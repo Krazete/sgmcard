@@ -25,7 +25,6 @@
 
 body {
     background: var(--bg);
-    display: flex;
 }
 
 @media all and (orientation: landscape) {
@@ -40,85 +39,168 @@ body {
     }
 }
 
-#preview {
-    min-width: 400px;
-    min-height: 400px;
+/* CARD PREVIEW */
+
+#preview > * {
+    position: absolute;
 }
 
-#preview canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+#card-back {top: 100px; left: 100px; width: 295px;}
+
+#card-art {top: 100px; left: 100px;}
+
+#card-top,
+#card-element-left,
+#card-element-center,
+#card-element-right {top: 53px;}
+
+.bronze #card-top {left: 75px;}
+.silver #card-top {left: 74px;}
+.gold #card-top {left: 69px;}
+.diamond #card-top {left: 73px;}
+
+#card-element-left,
+#card-element-center,
+#card-element-right {left: 75px;}
+#card-element-left {clip-path: polygon(0 0, 85px 0, 85px 100%, 0 100%);}
+#card-element-center {
+    transform: scaleX(25);
+    transform-origin: 85px;
+    clip-path: polygon(85px 0, 86px 0, 86px 100%, 85px 100%);
 }
+#card-element-right {
+    left: 100px;
+    clip-path: polygon(85px 0, 100% 0, 100% 100%, 85px 100%);
+}
+
+.gold #card-element-left,
+.gold #card-element-center,
+.gold #card-element-right {left: 68px;}
+.gold #card-element-left {clip-path: polygon(0 0, 90px 0, 90px 100%, 0 100%);}
+.gold #card-element-center {
+    transform: scaleX(25);
+    transform-origin: 90px;
+    clip-path: polygon(90px 0, 91px 0, 91px 100%, 90px 100%);
+}
+.gold #card-element-right {
+    left: 93px;
+    clip-path: polygon(90px 0, 100% 0, 100% 100%, 90px 100%);
+}
+
+#card-element-icon {top: 100px; left: 100px;}
+#card-element-text {top: 100px; left: 100px;}
+
+.bronze #card-level {top: 54px; left: 345px; width: 64px;}
+.silver #card-level,
+.gold #card-level {top: 55px; left: 346px; width: 62px;}
+.diamond #card-level {top: 53px; left: 345px; width: 64px;}
+#card-level-text {top: 100px; left: 200px;}
+
+#card-bottom {bottom: 44px;}
+.bronze #card-bottom {left: 67px;}
+.silver #card-bottom {left: 67px;}
+.gold #card-bottom {left: 68px;}
+.diamond #card-bottom {left: 73px;}
+
+#card-energy {top: 100px; left: 100px;}
+
+#card-variant {top: 100px; left: 100px;}
+#card-fighter {top: 100px; left: 100px;}
+
+/* MENU */
 
 #menu {
+    min-height: 609px;
+    width: max-content;
     background: var(--fg);
     color: white;
-    font-family: 'Cinema';
-    font-size: 0;
-    text-transform: uppercase;
-    text-shadow: 1px 1px black;
     padding: 8px;
     border: 3px double var(--bg);
     border-radius: 16px;
-    z-index: 1;
+    margin: auto;
 }
 
-#menu > div > * {
-    font-size: 24px;
-    margin: 4px;
-}
-
-#menu input[type='radio'] {
-    display: none;
-}
-
-#menu input + label {
-    min-width: 32px;
-    height: 32px;
-    background: var(--fg);
-    text-align: center;
-    padding: 8px;
-    border: 3px double var(--bg);
-    border-radius: 8px;
-    margin: 4px;
+#menu > div {
+    vertical-align: top;
     display: inline-block;
-    cursor: pointer;
 }
 
-#menu input:checked + label {
-    background: var(--bg);
-    border-color: var(--fg);
+h1, h2, h3 {
+    font-family: 'Cinema';
+    text-transform: uppercase;
+    text-shadow: 0.1em 0.1em black;
+    letter-spacing: 0.1em;
+    margin: 4px;
 }
 
-#menu input + label img {
-    max-width: 32px;
-    max-height: 32px;
+h1 {
+    text-align: center;
 }
 
-#menu input[type='text'],
-#menu input[type='file'] {
-    min-width: 50%;
+/* MENU HOLES */
+
+#preview,
+input[type='radio'] + label,
+input[type='text'],
+input[type='file'] {
     background: var(--bg);
     color: var(--fg);
-    font-family: 'Cinema';
-    font-size: 24px;
-    text-transform: uppercase;
     padding: 8px;
     border: 3px double var(--fg);
     border-radius: 8px;
-    outline: none;
     margin: 4px;
 }
 
-#menu input[type='text']:focus,
-#menu input[type='file']:focus {
+input[type='radio'] + label:hover,
+input[type='text']:hover,
+input[type='file']:hover {
+    border-color: white;
+}
+
+input[type='radio']:checked + label,
+input[type='text']:focus,
+input[type='file']:focus {
     background: var(--fg);
     color: var(--bg);
     border-color: var(--bg);
 }
 
-#menu input + label:hover,
-#menu input:hover {
-    border-color: white;
+input[type='radio'] {
+    display: none;
+}
+
+input[type='radio'] + label {
+    height: 32px;
+    min-width: 32px;
+    background: var(--fg);
+    border-color: var(--bg);
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+}
+input[type='radio']:checked + label {
+    background: var(--bg);
+    border-color: var(--fg);
+}
+
+input[type='radio'] + label img {
+    max-height: 32px;
+    max-width: 32px;
+}
+
+input[type='text'],
+input[type='file'] {
+    font-family: 'Cinema';
+    font-size: 24px;
+    text-transform: uppercase;
+    outline: none;
+}
+
+/* PREVIEW */
+
+#preview {
+    position: relative;
+    width: 495px;
+    height: 595px;
+    padding: 0;
 }

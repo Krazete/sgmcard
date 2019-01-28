@@ -1,93 +1,6 @@
-var canvas, context;
-
-function getImageData(src, isGradient) {
-    var tempCanvas = document.createElement("canvas");
-    var tempContext = tempCanvas.getContext("2d");
-    function request(resolve, reject) {
-        var image = new Image();
-        image.addEventListener("load", function () {
-            var w = isGradient ? 256 : this.width;
-            var h = isGradient ? 1 : this.height;
-            tempCanvas.width = w;
-            tempCanvas.height = h;
-            tempContext.drawImage(this, 0, 0, w, h);
-            resolve(tempContext.getImageData(0, 0, w, h));
-        });
-        image.addEventListener("error", function () {
-            reject(new Error("Could not retrieve image data for \"" + this.src + "\"."));
-        });
-        image.src = src;
-    }
-    return new Promise(request);
-}
-
-function applyGradient(grayData, gradientData) {
-    var imageData = new ImageData(grayData.width, grayData.height);
-    var grayPixels = grayData.data.length / 4;
-    for (var i = 0; i < grayPixels; i++) {
-        var r = grayData.data[4 * i];
-        var g = grayData.data[4 * i + 1];
-        var b = grayData.data[4 * i + 2];
-        var a = grayData.data[4 * i + 3];
-        var rgb = Math.floor((r + g + b) / 3);
-        imageData.data[4 * i] = gradientData.data[4 * rgb];
-        imageData.data[4 * i + 1] = gradientData.data[4 * rgb + 1];
-        imageData.data[4 * i + 2] = gradientData.data[4 * rgb + 2];
-        imageData.data[4 * i + 3] = a;
-    }
-    return imageData;
-}
-
-function imageFromImageData(imageData) {
-    var tempCanvas = document.createElement("canvas");
-    var tempContext = tempCanvas.getContext("2d");
-    tempCanvas.width = imageData.width;
-    tempCanvas.height = imageData.height;
-    tempContext.putImageData(imageData, 0, 0);
-    function request(resolve, reject) {
-        var image = new Image();
-        image.addEventListener("load", function () {
-            resolve(image);
-        });
-        image.addEventListener("error", function () {
-            reject(new Error("Could not retrieve image data for \"" + this.src + "\"."));
-        });
-        image.src = tempCanvas.toDataURL();
-    }
-    return new Promise(request);
-}
-
-function compose(grayData, gradientData, x, y, scale) {
-    var imageData = applyGradient(grayData, gradientData);
-    return imageFromImageData(imageData).then(function (response) {
-        if (scale) {
-            context.drawImage(response, x, y, response.width * scale, response.height * scale);
-        }
-        else {
-            context.drawImage(response, x, y);
-        }
-    });
-}
-
-function noCompose(src, x, y, scale) {
-    function request(resolve, reject) {
-        var image = new Image();
-        image.addEventListener("load", function () {
-            if (scale) {
-                context.drawImage(this, x, y, this.width * scale, this.height * scale);
-            }
-            else {
-                context.drawImage(this, x, y);
-            }
-            resolve(true);
-        });
-        image.addEventListener("error", function () {
-            reject(new Error("Could not retrieve image data for \"" + this.src + "\"."));
-        });
-        image.src = src;
-    }
-    return new Promise(request);
-}
+var cardBack, cardArt, cardTop, cardBottom;
+var cardElementLeft, cardElementCenter, cardElementRight, cardLevel;
+var cardElementText, cardLevelText, cardVariantText, cardFighterText;
 
 function loadImage(src) {
     function request(resolve, reject) {
@@ -104,19 +17,19 @@ function loadImage(src) {
 }
 
 function getImageDataFromImage(image, w, h) {
-    var tempCanvas = document.createElement("canvas");
-    var tempContext = tempCanvas.getContext("2d");
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
     if (w && h) {
-        tempCanvas.width = w;
-        tempCanvas.height = h;
-        tempContext.drawImage(image, 0, 0, w, h);
+        canvas.width = w;
+        canvas.height = h;
+        context.drawImage(image, 0, 0, w, h);
     }
     else {
-        tempCanvas.width = image.width;
-        tempCanvas.height = image.height;
-        tempContext.drawImage(image, 0, 0);
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
     }
-    return tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 function colorizeImageDataWithGradientData(imageData, gradientData) {
@@ -137,12 +50,12 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
 }
 
 function getImageFromImageData(imageData) {
-    var tempCanvas = document.createElement("canvas");
-    var tempContext = tempCanvas.getContext("2d");
-    tempCanvas.width = imageData.width;
-    tempCanvas.height = imageData.height;
-    tempContext.putImageData(imageData, 0, 0);
-    return loadImage(tempCanvas.toDataURL());
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    context.putImageData(imageData, 0, 0);
+    return loadImage(canvas.toDataURL());
 }
 
 function loadColorizedImage(imageSrc, gradientSrc) {
@@ -176,44 +89,209 @@ function drawImageToCanvas(image, canvas, x, y, w, h) {
     }
 }
 
+function buildCardFromPreview() {
+    var preview = document.getElementById("preview");
+    var previewBox = preview.getBoundingClientRect();
+    console.log(preview);
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.width = previewBox.width;
+    canvas.height = previewBox.height;
+    var images = preview.getElementsByTagName("img");
+    for (var image of images) {
+        var imageBox = image.getBoundingClientRect();
+        context.drawImage(
+            image,
+            imageBox.left - previewBox.left,
+            imageBox.top - previewBox.top,
+            imageBox.width,
+            imageBox.height
+        );
+    }
+    var a = document.createElement("a");
+    a.href = canvas.toDataURL();
+    a.setAttribute("download", "card.png");
+    a.click();
+}
+
 function init() {
-    Promise.all([
-        getImageData("fragment/GreyBackground.png"),
+    var background = "fragment/GreyBackground.png";
 
-        getImageData("fragment/BronzeTop.png"),
-        getImageData("fragment/BronzeElement.png"),
-        getImageData("fragment/BronzeLevel.png"),
-        getImageData("fragment/BronzeBottom.png"),
+    var bronzeTop = "fragment/BronzeTop.png";
+    var bronzeElement = "fragment/BronzeElement.png";
+    var bronzeLevel = "fragment/BronzeLevel.png";
+    var bronzeBottom = "fragment/BronzeBottom.png";
 
-        getImageData("fragment/SilverTop.png"),
-        getImageData("fragment/SilverElement.png"),
-        getImageData("fragment/SilverLevel.png"),
-        getImageData("fragment/SilverBottom.png"),
+    var silverTop = "fragment/SilverTop.png";
+    var silverElement = "fragment/SilverElement.png";
+    var silverLevel = "fragment/SilverLevel.png";
+    var silverBottom = "fragment/SilverBottom.png";
 
-        getImageData("fragment/GoldTop.png"),
-        getImageData("fragment/GoldElement.png"),
-        getImageData("fragment/GoldLevel.png"),
-        getImageData("fragment/GoldBottom.png"),
+    var goldTop = "fragment/GoldTop.png";
+    var goldElement = "fragment/GoldElement.png";
+    var goldLevel = "fragment/GoldLevel.png";
+    var goldBottom = "fragment/GoldBottom.png";
 
-        getImageData("fragment/DiamondTop.png"),
-        getImageData("fragment/DiamondElement.png"),
-        getImageData("fragment/DiamondLevel.png"),
-        getImageData("fragment/DiamondBottom.png"),
+    var diamondTop = "fragment/DiamondTop.png";
+    var diamondElement = "fragment/DiamondElement.png";
+    var diamondLevel = "fragment/DiamondLevel.png";
+    var diamondBottom = "fragment/DiamondBottom.png";
 
-        getImageData("gradient/DiamondGradientMapFireBackplate.png", true),
-        getImageData("gradient/DiamondGradientWaterBackplate.png", true),
-        getImageData("gradient/DiamondGradientMapWindBackplate.png", true),
-        getImageData("gradient/DiamondGradientLightBackplate.png", true),
-        getImageData("gradient/DiamondGradientDarkBackplate.png", true),
-        getImageData("gradient/DarkGradient.png", true),
+    var backFireGradient = "gradient/DiamondGradientMapFireBackplate.png";
+    var backWaterGradient = "gradient/DiamondGradientWaterBackplate.png";
+    var backWindGradient = "gradient/DiamondGradientMapWindBackplate.png";
+    var backLightGradient = "gradient/DiamondGradientLightBackplate.png";
+    var backDarkGradient = "gradient/DiamondGradientDarkBackplate.png";
+    var backNeutralGradient = "gradient/DarkGradient.png";
 
-        getImageData("gradient/DiamondGradientMapFire.png", true),
-        getImageData("gradient/DiamondGradientWater.png", true),
-        getImageData("gradient/DiamondGradientMapWind.png", true),
-        getImageData("gradient/DiamondGradientLight.png", true),
-        getImageData("gradient/DiamondGradientDark.png", true),
-        getImageData("gradient/DiamondGradientMapNeutralB.png", true)
-    ]);
+    var diamondFireGradient = "gradient/DiamondGradientMapFire.png";
+    var diamondWaterGradient = "gradient/DiamondGradientWater.png";
+    var diamondWindGradient = "gradient/DiamondGradientMapWind.png";
+    var diamondLightGradient = "gradient/DiamondGradientLight.png";
+    var diamondDarkGradient = "gradient/DiamondGradientDark.png";
+    var diamondNeutralGradient = "gradient/DiamondGradientMapNeutralB.png";
+
+    cardBack = document.getElementById("card-back");
+    cardArt = document.getElementById("card-art");
+    cardTop = document.getElementById("card-top");
+    cardBottom = document.getElementById("card-bottom");
+    cardElementLeft = document.getElementById("card-element-left");
+    cardElementCenter = document.getElementById("card-element-center");
+    cardElementRight = document.getElementById("card-element-right");
+    cardLevel = document.getElementById("card-level");
+    cardElementText = document.getElementById("card-element-text");
+    cardLevelText = document.getElementById("card-level-text");
+    cardVariant = document.getElementById("card-variant");
+    cardFighter = document.getElementById("card-fighter");
+
+    //
+
+    var tierIDs = [
+        "option-no-tier",
+        "option-bronze",
+        "option-silver",
+        "option-gold",
+        "option-diamond"
+    ];
+
+    var elementIDs = [
+        "option-no-element",
+        "option-fire",
+        "option-water",
+        "option-wind",
+        "option-light",
+        "option-dark",
+        "option-neutral"
+    ];
+
+    var fighterIDs = [
+        "option-fighter",
+        "option-variant"
+    ];
+
+    var artIDs = [
+        "option-art",
+        "option-under",
+        "option-over"
+    ];
+
+    var energyIDs = [
+        "option-blank",
+        "option-yellow",
+        "option-blue"
+    ];
+
+    var elementValue = "option-no-element";
+
+    function selectTier() {
+        var map = {
+            "option-bronze": "fragment/BronzeTop.png",
+            "option-silver": "fragment/SilverTop.png",
+            "option-gold": "fragment/GoldTop.png",
+            "option-diamond": "fragment/DiamondTop.png"
+        };
+        if (this.id == "option-no-tier") {
+            cardTop.src = "";
+            cardBottom.src = "";
+            cardElementLeft.src = "";
+            cardElementCenter.src = "";
+            cardElementRight.src = "";
+            cardLevel.src = "";
+        }
+        else if (this.id == "option-bronze") {
+            preview.className = "bronze";
+            cardTop.src = bronzeTop;
+            cardBottom.src = bronzeBottom;
+            cardElementLeft.src = bronzeElement;
+            cardElementCenter.src = bronzeElement;
+            cardElementRight.src = bronzeElement;
+            cardLevel.src = bronzeLevel;
+        }
+        else if (this.id == "option-silver") {
+            preview.className = "silver";
+            cardTop.src = silverTop;
+            cardBottom.src = silverBottom;
+            cardElementLeft.src = silverElement;
+            cardElementCenter.src = silverElement;
+            cardElementRight.src = silverElement;
+            cardLevel.src = silverLevel;
+        }
+        else if (this.id == "option-gold") {
+            preview.className = "gold";
+            cardTop.src = goldTop;
+            cardBottom.src = goldBottom;
+            cardElementLeft.src = goldElement;
+            cardElementCenter.src = goldElement;
+            cardElementRight.src = goldElement;
+            cardLevel.src = goldLevel;
+        }
+        else if (this.id == "option-diamond") {
+            preview.className = "diamond";
+            if (1 || optionNoElement.checked) {
+                cardTop.src = diamondTop;
+                cardBottom.src = diamondBottom;
+                cardElementLeft.src = diamondElement;
+                cardElementCenter.src = diamondElement;
+                cardElementRight.src = diamondElement;
+                cardLevel.src = diamondLevel;
+            }
+            loadColorizedImage(diamondTop, diamondFireGradient).then(function (image) {
+                cardTop.src = image.src;
+            });
+        }
+    }
+
+    function selectElement() {
+        if (this.id == "option-no-element") {
+            cardBack.src = background;
+        }
+        else {
+            var map = {
+                "option-fire": backFireGradient,
+                "option-water": backWaterGradient,
+                "option-wind": backWindGradient,
+                "option-light": backLightGradient,
+                "option-dark": backDarkGradient,
+                "option-neutral": backNeutralGradient,
+            }
+            loadColorizedImage(background, map[this.id]).then(function (image) {
+                cardBack.src = image.src;
+            });
+        }
+    }
+
+    for (var id of tierIDs) {
+        var tier = document.getElementById(id);
+        tier.addEventListener("click", selectTier);
+    }
+    for (var id of elementIDs) {
+        var element = document.getElementById(id);
+        element.addEventListener("click", selectElement);
+    }
+    for (var id of energyIDs) {
+        var energy = document.getElementById(id);
+        energy.addEventListener("click", selectEnergy);
+    }
 }
 
 window.addEventListener("DOMContentLoaded", init);

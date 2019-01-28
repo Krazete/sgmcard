@@ -1,75 +1,97 @@
 <!doctype html>
 <html>
     <head>
+        <title>Skullgirls Mobile Card Creator</title>
         <link rel="stylesheet" href="index.css"></link>
         <script src="index.js"></script>
     </head>
     <body>
-        <div class="scroller" id="preview">
-            <canvas id="canvas-0"></canvas>
-            <canvas id="bg-canvas"></canvas>
-            <canvas id="art-canvas"></canvas>
-            <canvas id="fg-canvas"></canvas>
-            <canvas id="stat-canvas"></canvas>
-        </div>
-        <div class="scroller" id="menu">
+        <div id="menu">
+            <h1>Skullgirls Mobile Card Creator</h1>
             <div>
-                <div>Tier</div>
-                <input type="radio" name="option-tier" id="option-tier-none">
-                <label for="option-tier-none"><img src="menu/constraints_no.png"></label>
-                <input type="radio" name="option-tier" id="option-bronze">
-                <label for="option-bronze"><img src="menu/constraints_bronze.png"></label>
-                <input type="radio" name="option-tier" id="option-silver">
-                <label for="option-silver"><img src="menu/constraints_silver.png"></label>
-                <input type="radio" name="option-tier" id="option-gold">
-                <label for="option-gold"><img src="menu/constraints_gold.png"></label>
-                <input type="radio" name="option-tier" id="option-diamond">
-                <label for="option-diamond"><img src="menu/constraints_diamond.png"></label>
+                <div id="preview">
+                    <img id="card-back">
+                    <img id="card-art">
+                    <img id="card-top">
+                    <img id="card-bottom">
+                    <img id="card-element-left">
+                    <img id="card-element-center">
+                    <img id="card-element-right">
+                    <img id="card-element-icon">
+                    <img id="card-element-text">
+                    <img id="card-level">
+                    <img id="card-level-text">
+                    <div id="card-energy"></div>
+                    <img id="card-variant">
+                    <img id="card-fighter">
+                </div>
+                <div>
+                    <h2>Advanced</h2>
+                    <label>Background Gradient</label>
+                    <label>Foreground Gradient</label>
+                </div>
             </div>
             <div>
-                <div>Element</div>
-                <input type="radio" name="option-element" id="option-element-none">
-                <label for="option-element-none"><img src="menu/ElementalUnknownBackless.png"></label>
-                <input type="radio" name="option-element" id="option-fire">
-                <label for="option-fire"><img src="menu/ElementalFireBackless.png"></label>
-                <input type="radio" name="option-element" id="option-water">
-                <label for="option-water"><img src="menu/ElementalWaterBackless.png"></label>
-                <input type="radio" name="option-element" id="option-wind">
-                <label for="option-wind"><img src="menu/ElementalWindBackless.png"></label>
-                <input type="radio" name="option-element" id="option-light">
-                <label for="option-light"><img src="menu/ElementalLightBackless.png"></label>
-                <input type="radio" name="option-element" id="option-dark">
-                <label for="option-dark"><img src="menu/ElementalDarkBackless.png"></label>
-                <input type="radio" name="option-element" id="option-neutral">
-                <label for="option-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
-            </div>
-            <div>
-                <div>Fighter</div>
-                <input type="text" placeholder="Fighter Name">
-            </div>
-            <div>
-                <div>Variant</div>
-                <input type="text" placeholder="Variant Name">
-            </div>
-            <div>
-                <div>Art</div>
-                <input type="file">
-            </div>
-            <div>
-                <div>Overlap</div>
-                <input type="radio" name="option-overlap" id="option-under">
-                <label for="option-under"><img src="menu/Lossmark.png"></label>
-                <input type="radio" name="option-overlap" id="option-over">
-                <label for="option-over"><img src="menu/Checkmark.png"></label>
-            </div>
-            <div>
-                <div>Energy</div>
-                <input type="radio" name="option-energy" id="option-none">
-                <label for="option-none"><img src="fragment/EnergyBlank.png"></label>
-                <input type="radio" name="option-energy" id="option-yellow">
-                <label for="option-yellow"><img src="fragment/EnergyIcon.png"></label>
-                <input type="radio" name="option-energy" id="option-blue">
-                <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
+                <div>
+                    <h2>Tier</h2>
+                    <input type="radio" name="option-tier" id="option-no-tier">
+                    <label for="option-no-tier"><img src="menu/constraints_no.png"></label>
+                    <input type="radio" name="option-tier" id="option-bronze">
+                    <label for="option-bronze"><img src="menu/constraints_bronze.png"></label>
+                    <input type="radio" name="option-tier" id="option-silver">
+                    <label for="option-silver"><img src="menu/constraints_silver.png"></label>
+                    <input type="radio" name="option-tier" id="option-gold">
+                    <label for="option-gold"><img src="menu/constraints_gold.png"></label>
+                    <input type="radio" name="option-tier" id="option-diamond">
+                    <label for="option-diamond"><img src="menu/constraints_diamond.png"></label>
+                </div>
+                <div>
+                    <h2>Element</h2>
+                    <input type="radio" name="option-element" id="option-no-element">
+                    <label for="option-no-element"><img src="menu/ElementalUnknownBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-fire">
+                    <label for="option-fire"><img src="menu/ElementalFireBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-water">
+                    <label for="option-water"><img src="menu/ElementalWaterBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-wind">
+                    <label for="option-wind"><img src="menu/ElementalWindBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-light">
+                    <label for="option-light"><img src="menu/ElementalLightBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-dark">
+                    <label for="option-dark"><img src="menu/ElementalDarkBackless.png"></label>
+                    <input type="radio" name="option-element" id="option-neutral">
+                    <label for="option-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
+                </div>
+                <div>
+                    <h2>Fighter</h2>
+                    <input type="text" placeholder="Fighter Name">
+                    <label>Font Family</label>
+                    <label>Font Size</label>
+                </div>
+                <div>
+                    <h2>Variant</h2>
+                    <input type="text" placeholder="Variant Name">
+                </div>
+                <div>
+                    <h2>Art</h2>
+                    <input type="file">
+                </div>
+                <div>
+                    <h2>Overlap</h2>
+                    <input type="radio" name="option-overlap" id="option-under">
+                    <label for="option-under"><img src="menu/Lossmark.png"></label>
+                    <input type="radio" name="option-overlap" id="option-over">
+                    <label for="option-over"><img src="menu/Checkmark.png"></label>
+                </div>
+                <div>
+                    <h2>Energy</h2>
+                    <input type="radio" name="option-energy" id="option-blank">
+                    <label for="option-blank"><img src="fragment/EnergyBlank.png"></label>
+                    <input type="radio" name="option-energy" id="option-yellow">
+                    <label for="option-yellow"><img src="fragment/EnergyIcon.png"></label>
+                    <input type="radio" name="option-energy" id="option-blue">
+                    <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
+                </div>
             </div>
         </div>
     </body>
