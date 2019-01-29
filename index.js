@@ -220,6 +220,8 @@ function init() {
             card.elementRight.src = src.element;
             card.level.src = src.level;
         }
+
+        resizeElement();
     }
 
     function selectElement() {
@@ -379,17 +381,36 @@ function init() {
         return width;
     }
 
-    function resizeVariant() {
-        for (var i = 58; i > 0; i--) {
-            this.style.fontSize = i + "px";
-            var width = parseFloat(getWidth(this));
-            if (width < 295) {
+    function autoResize(input, maxSize, maxWidth) {
+        for (var i = maxSize; i > 0; i--) {
+            input.style.fontSize = i + "px";
+            var width = parseFloat(getWidth(input));
+            if (width < maxWidth) {
                 break;
             }
         }
     }
 
-    card.variant.addEventListener("input", resizeVariant);
+    function autoResizer(maxSize, maxWidth) {
+        return function () {
+            autoResize(this, maxSize, maxWidth);
+        };
+    }
+
+    function resizeElement() {
+        autoResize(card.elementText, 31, 150);
+        var width = parseInt(getWidth(card.elementText)) || 45;
+        card.elementCenter.style.transform = "scaleX(" + width + ")";
+        var offset = 29;
+        if (preview.className == "gold") {
+            offset = 22;
+        }
+        else if (preview.className == "diamond") {
+            offset = 28;
+        }
+        card.elementRight.style.left = offset + width + "px";
+    }
+
     for (var option in tier) {
         tier[option].addEventListener("click", selectTier);
     }
@@ -403,6 +424,11 @@ function init() {
     for (var option in overlap) {
         overlap[option].addEventListener("click", selectOverlap);
     }
+    card.elementText.addEventListener("input", resizeElement);
+    card.levelText.addEventListener("input", autoResizer(31, 50));
+    card.variant.addEventListener("input", autoResizer(58, 320));
+    card.fighter.addEventListener("input", autoResizer(38, 250));
+
     document.getElementById("option-export").addEventListener("click", buildCardFromPreview);
 
     tier.none.click();

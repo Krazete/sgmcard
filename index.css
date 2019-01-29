@@ -79,36 +79,35 @@ body {
 #card-element-left,
 #card-element-center,
 #card-element-right {left: 25px;}
-#card-element-left {clip-path: polygon(0 0, 85px 0, 85px 100%, 0 100%);}
+#card-element-left {clip-path: polygon(0 0, 84px 0, 84px 100%, 0 100%);}
 #card-element-center {
-    transform: scaleX(25);
-    transform-origin: 85px;
-    clip-path: polygon(85px 0, 86px 0, 86px 100%, 85px 100%);
+    transform: scaleX(45);
+    transform-origin: 84px;
+    clip-path: polygon(84px 0, 85px 0, 85px 100%, 84px 100%);
 }
 #card-element-right {
-    left: 50px;
-    clip-path: polygon(85px 0, 100% 0, 100% 100%, 85px 100%);
+    left: 74px;
+    clip-path: polygon(80px 0, 100% 0, 100% 100%, 80px 100%);
 }
 
 .gold #card-element-left,
 .gold #card-element-center,
 .gold #card-element-right {left: 18px;}
-.gold #card-element-left {clip-path: polygon(0 0, 90px 0, 90px 100%, 0 100%);}
+.gold #card-element-left {clip-path: polygon(0 0, 91px 0, 91px 100%, 0 100%);}
 .gold #card-element-center {
-    transform: scaleX(25);
-    transform-origin: 90px;
-    clip-path: polygon(90px 0, 91px 0, 91px 100%, 90px 100%);
+    transform-origin: 91px;
+    clip-path: polygon(91px 0, 92px 0, 92px 100%, 91px 100%);
 }
 .gold #card-element-right {
-    left: 43px;
-    clip-path: polygon(90px 0, 100% 0, 100% 100%, 90px 100%);
+    left: 67px;
+    clip-path: polygon(87px 0, 100% 0, 100% 100%, 87px 100%);
 }
 
 .diamond #card-element-left,
 .diamond #card-element-center,
 .diamond #card-element-right {top: 2px; left: 24px;}
 .diamond #card-element-right {
-    left: 49px;
+    left: 69px;
 }
 
 .bronze #card-level {top: 4px; left: 295px; width: 64px;}
@@ -148,9 +147,9 @@ body {
     margin: 0;
 }
 #card-element-text,
-#card-level-text {font-size: 31px;}
-#preview #card-element-text {top: 26px; left: 108px; width: 150px; text-align: left;}
-#card-level-text {top: 22px; left: 297px; width: 60px;}
+#card-level-text {font-size: 31px; line-height: 60px;}
+#preview #card-element-text {top: 10px; left: 109px; width: 150px; text-align: left;}
+#card-level-text {top: 6px; left: 297px; width: 60px;}
 
 #card-variant,
 #card-fighter {width: 100%;}
