@@ -81,12 +81,12 @@ body {
 #card-element-right {left: 25px;}
 #card-element-left {clip-path: polygon(0 0, 84px 0, 84px 100%, 0 100%);}
 #card-element-center {
-    transform: scaleX(45);
+    transform: scaleX(65);
     transform-origin: 84px;
     clip-path: polygon(84px 0, 85px 0, 85px 100%, 84px 100%);
 }
 #card-element-right {
-    left: 74px;
+    left: 94px;
     clip-path: polygon(80px 0, 100% 0, 100% 100%, 80px 100%);
 }
 
@@ -99,7 +99,7 @@ body {
     clip-path: polygon(91px 0, 92px 0, 92px 100%, 91px 100%);
 }
 .gold #card-element-right {
-    left: 67px;
+    left: 87px;
     clip-path: polygon(87px 0, 100% 0, 100% 100%, 87px 100%);
 }
 
@@ -107,7 +107,7 @@ body {
 .diamond #card-element-center,
 .diamond #card-element-right {top: 2px; left: 24px;}
 .diamond #card-element-right {
-    left: 69px;
+    left: 93px;
 }
 
 .bronze #card-level {top: 4px; left: 295px; width: 64px;}

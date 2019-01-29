@@ -399,7 +399,7 @@ function init() {
 
     function resizeElement() {
         autoResize(card.elementText, 31, 150);
-        var width = parseInt(getWidth(card.elementText)) || 45;
+        var width = parseInt(getWidth(card.elementText)) || 65;
         card.elementCenter.style.transform = "scaleX(" + width + ")";
         var offset = 29;
         if (preview.className == "gold") {
