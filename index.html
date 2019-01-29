@@ -8,30 +8,25 @@
     <body>
         <div id="menu">
             <h1>Skullgirls Mobile Card Creator</h1>
-            <div>
+            <div class="column">
                 <div id="preview">
                     <img id="card-back">
                     <img id="card-art">
                     <img id="card-top">
                     <img id="card-bottom">
+                    <img id="card-element-icon">
                     <img id="card-element-left">
                     <img id="card-element-center">
                     <img id="card-element-right">
-                    <img id="card-element-icon">
-                    <input type="text" placeholder="1,000" id="card-element-text">
                     <img id="card-level">
-                    <input type="text" placeholder="100" id="card-level-text">
                     <div id="card-energy"></div>
+                    <input type="text" placeholder="1,000" id="card-element-text">
+                    <input type="text" placeholder="100" id="card-level-text">
                     <input type="text" placeholder="Variant Name" id="card-variant">
                     <input type="text" placeholder="Fighter Name" id="card-fighter">
                 </div>
-                <div>
-                    <h2>Advanced</h2>
-                    <label>Background Gradient</label>
-                    <label>Foreground Gradient</label>
-                </div>
             </div>
-            <div>
+            <div class="column">
                 <div>
                     <h2>Tier</h2>
                     <input type="radio" name="option-tier" id="option-no-tier">
@@ -69,7 +64,7 @@
                 <div>
                     <h2>Overlap</h2>
                     <input type="radio" name="option-overlap" id="option-under">
-                    <label for="option-under"><img src="menu/Lossmark.png"></label>
+                    <label for="option-under"><img src="menu/LossMark.png"></label>
                     <input type="radio" name="option-overlap" id="option-over">
                     <label for="option-over"><img src="menu/Checkmark.png"></label>
                 </div>
@@ -83,9 +78,31 @@
                     <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
                 </div>
             </div>
-            <h1>
-                <input type="button" value="Create">
-            </h1>
+            <div>
+                <h2>Advanced</h2>
+                <h3>Background Gradient</h3>
+                <input type="radio" name="option-background" id="option-default-background">
+                <label for="option-default-background"><img src="menu/LossMark.png"></label>
+                <input type="radio" name="option-background" id="option-custom-background">
+                <label for="option-custom-background"><img src="menu/Checkmark.png"></label>
+                <div class="gradient-strip"></div>
+                <h3>Foreground Gradient</h3>
+                <input type="radio" name="option-foreground" id="option-default-foreground">
+                <label for="option-default-foreground"><img src="menu/LossMark.png"></label>
+                <input type="radio" name="option-foreground" id="option-custom-foreground">
+                <label for="option-custom-foreground"><img src="menu/Checkmark.png"></label>
+                <div class="gradient-strip"></div>
+                <h3>Font Family</h3>
+                <input type="text">
+                <h3>Fighter Name Font Size</h3>
+                <input type="text">
+                <h3>Variant Name Font Size</h3>
+                <input type="text">
+            </div>
+            <div>
+                <input type="button" value="Create" id="option-export">
+                <img id="exported">
+            </div>
         </div>
     </body>
 </html>

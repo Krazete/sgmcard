@@ -1,6 +1,4 @@
-var cardBack, cardArt, cardTop, cardBottom;
-var cardElementLeft, cardElementCenter, cardElementRight, cardLevel;
-var cardElementText, cardLevelText, cardVariantText, cardFighterText;
+/* Image Processing */
 
 function loadImage(src) {
     function request(resolve, reject) {
@@ -70,254 +68,304 @@ function loadColorizedImage(imageSrc, gradientSrc) {
     });
 }
 
-function loadBackground() {
-    if (checked) {
-        loadImage("fragment/GoldTop.png").then(console.log);
-    }
-    else {
-        loadColorizedImage("fragment/GoldTop.png", "gradient/DiamondGradientDark.png").then(console.log);
-    }
-}
-
-function drawImageToCanvas(image, canvas, x, y, w, h) {
-    var context = canvas.getContext("2d");
-    if (w && h) {
-        context.drawImage(image, x, y);
-    }
-    else {
-        context.drawImage(image, x, y, w, h);
-    }
-}
-
-function buildCardFromPreview() {
-    var preview = document.getElementById("preview");
-    var previewBox = preview.getBoundingClientRect();
-    console.log(preview);
-
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = previewBox.width;
-    canvas.height = previewBox.height;
-
-    var images = preview.getElementsByTagName("img");
-    for (var image of images) {
-        var imageBox = image.getBoundingClientRect();
-        context.drawImage(
-            image,
-            imageBox.left - previewBox.left,
-            imageBox.top - previewBox.top,
-            imageBox.width,
-            imageBox.height
-        );
-    }
-
-    var texts = preview.getElementsByTagName("input");
-    for (var text of texts) {
-        var textBox = text.getBoundingClientRect();
-        var font = window.getComputedStyle(text).getPropertyValue("font");
-        var fontSize = parseInt(window.getComputedStyle(text).getPropertyValue("font-size"));
-        context.font = font;
-        context.fillStyle = "white";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.shadowOffsetX = 0.07 * fontSize;
-        context.shadowOffsetY = 0.07 * fontSize;
-        context.shadowColor = "black";
-        context.fillText(
-            text.value.toUpperCase(),
-            (textBox.left + textBox.right) / 2 - previewBox.left,
-            (textBox.top + textBox.bottom) / 2 - previewBox.top
-        );
-    }
-
-    // var a = document.createElement("a");
-    // a.href = canvas.toDataURL();
-    // a.setAttribute("download", "card.png");
-    // a.click();
-
-    var img = new Image();
-    img.src = canvas.toDataURL();
-    document.body.appendChild(img);
-}
+/* Main */
 
 function init() {
-    var background = "fragment/GreyBackground.png";
+    var src = {
+        "back": "fragment/GreyBackground.png",
+        "top": "",
+        "bottom": "",
+        "element": "",
+        "level": "",
+        "energy": ""
+    };
 
-    var bronzeTop = "fragment/BronzeTop.png";
-    var bronzeElement = "fragment/BronzeElement.png";
-    var bronzeLevel = "fragment/BronzeLevel.png";
-    var bronzeBottom = "fragment/BronzeBottom.png";
+    /* Card Preview */
 
-    var silverTop = "fragment/SilverTop.png";
-    var silverElement = "fragment/SilverElement.png";
-    var silverLevel = "fragment/SilverLevel.png";
-    var silverBottom = "fragment/SilverBottom.png";
+    var card = {
+        "back": document.getElementById("card-back"),
+        "art": document.getElementById("card-art"),
+        "top": document.getElementById("card-top"),
+        "bottom": document.getElementById("card-bottom"),
+        "elementLeft": document.getElementById("card-element-left"),
+        "elementCenter": document.getElementById("card-element-center"),
+        "elementRight": document.getElementById("card-element-right"),
+        "level": document.getElementById("card-level"),
+        "energy": document.getElementById("card-energy"),
+        "elementIcon": document.getElementById("card-element-icon"),
+        "elementText": document.getElementById("card-element-text"),
+        "levelText": document.getElementById("card-level-text"),
+        "variant": document.getElementById("card-variant"),
+        "fighter": document.getElementById("card-fighter")
+    };
 
-    var goldTop = "fragment/GoldTop.png";
-    var goldElement = "fragment/GoldElement.png";
-    var goldLevel = "fragment/GoldLevel.png";
-    var goldBottom = "fragment/GoldBottom.png";
+    /* Card Options */
 
-    var diamondTop = "fragment/DiamondTop.png";
-    var diamondElement = "fragment/DiamondElement.png";
-    var diamondLevel = "fragment/DiamondLevel.png";
-    var diamondBottom = "fragment/DiamondBottom.png";
+    var tier = {
+        "none": document.getElementById("option-no-tier"),
+        "bronze": document.getElementById("option-bronze"),
+        "silver": document.getElementById("option-silver"),
+        "gold": document.getElementById("option-gold"),
+        "diamond": document.getElementById("option-diamond")
+    }
+    var element = {
+        "none": document.getElementById("option-no-element"),
+        "fire": document.getElementById("option-fire"),
+        "water": document.getElementById("option-water"),
+        "wind": document.getElementById("option-wind"),
+        "light": document.getElementById("option-light"),
+        "dark": document.getElementById("option-dark"),
+        "neutral": document.getElementById("option-neutral")
+    };
+    var overlap = {
+        "under": document.getElementById("option-under"),
+        "over": document.getElementById("option-over")
+    };
+    var energy = {
+        "blank": document.getElementById("option-blank"),
+        "yellow": document.getElementById("option-yellow"),
+        "blue": document.getElementById("option-blue")
+    };
+    var advanced = {
+        "defaultBackground": document.getElementById("option-default-background"),
+        "customBackground": document.getElementById("option-custom-background"),
+        "defaultForeground": document.getElementById("option-default-foreground"),
+        "customForeground": document.getElementById("option-custom-foreground")
+    };
 
-    var backFireGradient = "gradient/DiamondGradientMapFireBackplate.png";
-    var backWaterGradient = "gradient/DiamondGradientWaterBackplate.png";
-    var backWindGradient = "gradient/DiamondGradientMapWindBackplate.png";
-    var backLightGradient = "gradient/DiamondGradientLightBackplate.png";
-    var backDarkGradient = "gradient/DiamondGradientDarkBackplate.png";
-    var backNeutralGradient = "gradient/DarkGradient.png";
+    /* Callback */
 
-    var diamondFireGradient = "gradient/DiamondGradientMapFire.png";
-    var diamondWaterGradient = "gradient/DiamondGradientWater.png";
-    var diamondWindGradient = "gradient/DiamondGradientMapWind.png";
-    var diamondLightGradient = "gradient/DiamondGradientLight.png";
-    var diamondDarkGradient = "gradient/DiamondGradientDark.png";
-    var diamondNeutralGradient = "gradient/DiamondGradientMapNeutralB.png";
-
-    cardBack = document.getElementById("card-back");
-    cardArt = document.getElementById("card-art");
-    cardTop = document.getElementById("card-top");
-    cardBottom = document.getElementById("card-bottom");
-    cardElementLeft = document.getElementById("card-element-left");
-    cardElementCenter = document.getElementById("card-element-center");
-    cardElementRight = document.getElementById("card-element-right");
-    cardLevel = document.getElementById("card-level");
-    cardElementText = document.getElementById("card-element-text");
-    cardLevelText = document.getElementById("card-level-text");
-    cardVariant = document.getElementById("card-variant");
-    cardFighter = document.getElementById("card-fighter");
-
-    //
-
-    var tierIDs = [
-        "option-no-tier",
-        "option-bronze",
-        "option-silver",
-        "option-gold",
-        "option-diamond"
-    ];
-
-    var elementIDs = [
-        "option-no-element",
-        "option-fire",
-        "option-water",
-        "option-wind",
-        "option-light",
-        "option-dark",
-        "option-neutral"
-    ];
-
-    var fighterIDs = [
-        "option-fighter",
-        "option-variant"
-    ];
-
-    var artIDs = [
-        "option-art",
-        "option-under",
-        "option-over"
-    ];
-
-    var energyIDs = [
-        "option-blank",
-        "option-yellow",
-        "option-blue"
-    ];
-
-    var elementValue = "option-no-element";
+    function loadColorizedBackground() {
+        if (element.none.checked) {
+            return loadImage(src.back);
+        }
+        else if (element.fire.checked) {
+            return loadColorizedImage(src.back, );
+        }
+        else if (element.water.checked) {
+            return loadColorizedImage(src.back, );
+        }
+        else if (element.wind.checked) {
+            return loadColorizedImage(src.back, );
+        }
+        else if (element.light.checked) {
+            return loadColorizedImage(src.back, );
+        }
+        else if (element.dark.checked) {
+            return loadColorizedImage(src.back, );
+        }
+        else if (element.neutral.checked) {
+            return loadColorizedImage(src.back, );
+        }
+    }
 
     function selectTier() {
-        var map = {
-            "option-bronze": "fragment/BronzeTop.png",
-            "option-silver": "fragment/SilverTop.png",
-            "option-gold": "fragment/GoldTop.png",
-            "option-diamond": "fragment/DiamondTop.png"
-        };
-        if (this.id == "option-no-tier") {
-            cardTop.src = "";
-            cardBottom.src = "";
-            cardElementLeft.src = "";
-            cardElementCenter.src = "";
-            cardElementRight.src = "";
-            cardLevel.src = "";
+        if (tier.none.checked) {
+            preview.className = "";
+            src.top = "";
+            src.bottom = "";
+            src.element = "";
+            src.level = "";
         }
-        else if (this.id == "option-bronze") {
+        if (tier.bronze.checked) {
             preview.className = "bronze";
-            cardTop.src = bronzeTop;
-            cardBottom.src = bronzeBottom;
-            cardElementLeft.src = bronzeElement;
-            cardElementCenter.src = bronzeElement;
-            cardElementRight.src = bronzeElement;
-            cardLevel.src = bronzeLevel;
+            src.top = "fragment/BronzeTop.png";
+            src.bottom = "fragment/BronzeBottom.png";
+            src.element = "fragment/BronzeElement.png";
+            src.level = "fragment/BronzeLevel.png";
         }
-        else if (this.id == "option-silver") {
+        else if (tier.silver.checked) {
             preview.className = "silver";
-            cardTop.src = silverTop;
-            cardBottom.src = silverBottom;
-            cardElementLeft.src = silverElement;
-            cardElementCenter.src = silverElement;
-            cardElementRight.src = silverElement;
-            cardLevel.src = silverLevel;
+            src.top = "fragment/SilverTop.png";
+            src.bottom = "fragment/SilverBottom.png";
+            src.element = "fragment/SilverElement.png";
+            src.level = "fragment/SilverLevel.png";
         }
-        else if (this.id == "option-gold") {
+        else if (tier.gold.checked) {
             preview.className = "gold";
-            cardTop.src = goldTop;
-            cardBottom.src = goldBottom;
-            cardElementLeft.src = goldElement;
-            cardElementCenter.src = goldElement;
-            cardElementRight.src = goldElement;
-            cardLevel.src = goldLevel;
+            src.top = "fragment/GoldTop.png";
+            src.bottom = "fragment/GoldBottom.png";
+            src.element = "fragment/GoldElement.png";
+            src.level = "fragment/GoldLevel.png";
         }
-        else if (this.id == "option-diamond") {
+        else if (tier.diamond.checked) {
             preview.className = "diamond";
-            if (1 || optionNoElement.checked) {
-                cardTop.src = diamondTop;
-                cardBottom.src = diamondBottom;
-                cardElementLeft.src = diamondElement;
-                cardElementCenter.src = diamondElement;
-                cardElementRight.src = diamondElement;
-                cardLevel.src = diamondLevel;
+            src.top = "fragment/DiamondTop.png";
+            src.bottom = "fragment/DiamondBottom.png";
+            src.element = "fragment/DiamondElement.png";
+            src.level = "fragment/DiamondLevel.png";
+        }
+
+        if (advanced.customForeground.checked) {
+        }
+        else if (tier.diamond.checked && !element.none.checked) {
+            var gradient = "gradient/36.png";
+            if (element.fire.checked) {
+                gradient = "gradient/DiamondGradientMapFire.png";
             }
-            loadColorizedImage(diamondTop, diamondFireGradient).then(function (image) {
-                cardTop.src = image.src;
+            else if (element.water.checked) {
+                gradient = "gradient/DiamondGradientWater.png";
+            }
+            else if (element.wind.checked) {
+                gradient = "gradient/DiamondGradientMapWind.png";
+            }
+            else if (element.light.checked) {
+                gradient = "gradient/DiamondGradientLight.png";
+            }
+            else if (element.dark.checked) {
+                gradient = "gradient/DiamondGradientDark.png";
+            }
+            else if (element.neutral.checked) {
+                gradient = "gradient/DiamondGradientMapNeutralB.png";
+            }
+            Promise.all([
+                loadColorizedImage(src.top, gradient),
+                loadColorizedImage(src.bottom, gradient),
+                loadColorizedImage(src.element, gradient),
+                loadColorizedImage(src.level, gradient)
+            ]).then(function (response) {
+                card.top.src = response[0].src;
+                card.bottom.src = response[1].src;
+                card.elementLeft.src = response[2].src;
+                card.elementCenter.src = response[2].src;
+                card.elementRight.src = response[2].src;
+                card.level.src = response[3].src;
             });
+        }
+        else {
+            card.top.src = src.top;
+            card.bottom.src = src.bottom;
+            card.elementLeft.src = src.element;
+            card.elementCenter.src = src.element;
+            card.elementRight.src = src.element;
+            card.level.src = src.level;
         }
     }
 
     function selectElement() {
-        if (this.id == "option-no-element") {
-            cardBack.src = background;
+        var gradient = "gradient/36.png";
+        if (element.none.checked) {
+            card.elementIcon.src = "";
+        }
+        else if (element.fire.checked) {
+            card.elementIcon.src = "fragment/ElementalIconFire.png";
+            gradient = "gradient/DiamondGradientMapFireBackplate.png";
+        }
+        else if (element.water.checked) {
+            card.elementIcon.src = "fragment/ElementalIconWater.png";
+            gradient = "gradient/DiamondGradientWaterBackplate.png";
+        }
+        else if (element.wind.checked) {
+            card.elementIcon.src = "fragment/ElementalIconWind.png";
+            gradient = "gradient/DiamondGradientMapWindBackplate.png";
+        }
+        else if (element.light.checked) {
+            card.elementIcon.src = "fragment/ElementalIconLight.png";
+            gradient = "gradient/DiamondGradientLightBackplate.png";
+        }
+        else if (element.dark.checked) {
+            card.elementIcon.src = "fragment/ElementalIconDark.png";
+            gradient = "gradient/DiamondGradientDarkBackplate.png";
+        }
+        else if (element.neutral.checked) {
+            card.elementIcon.src = "fragment/ElementalIconNeutral.png";
+            gradient = "gradient/DarkGradient.png";
+        }
+
+        if (advanced.customBackground.checked) {
+        }
+        else if (!element.none.checked) {
+            loadColorizedImage(src.back, gradient).then(function (response) {
+                card.back.src = response.src;
+            });
         }
         else {
-            var map = {
-                "option-fire": backFireGradient,
-                "option-water": backWaterGradient,
-                "option-wind": backWindGradient,
-                "option-light": backLightGradient,
-                "option-dark": backDarkGradient,
-                "option-neutral": backNeutralGradient,
-            }
-            loadColorizedImage(background, map[this.id]).then(function (image) {
-                cardBack.src = image.src;
-            });
+            card.back.src = src.back;
+        }
+
+        if (tier.diamond.checked && !advanced.customForeground.checked) {
+            selectTier();
         }
     }
 
-    for (var id of tierIDs) {
-        var tier = document.getElementById(id);
-        tier.addEventListener("click", selectTier);
+    function buildCardFromPreview() {
+        var preview = document.getElementById("preview");
+        var previewBox = preview.getBoundingClientRect();
+        console.log(preview);
+
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = previewBox.width;
+        canvas.height = previewBox.height;
+
+        var images = preview.getElementsByTagName("img");
+        for (var image of images) {
+            var imageBox = image.getBoundingClientRect();
+            context.drawImage(
+                image,
+                imageBox.left - previewBox.left,
+                imageBox.top - previewBox.top,
+                imageBox.width,
+                imageBox.height
+            );
+        }
+
+        var texts = preview.getElementsByTagName("input");
+        for (var text of texts) {
+            var textBox = text.getBoundingClientRect();
+            var font = window.getComputedStyle(text).getPropertyValue("font");
+            var fontSize = parseInt(window.getComputedStyle(text).getPropertyValue("font-size"));
+            context.font = font;
+            context.fillStyle = "white";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.shadowOffsetX = 0.07 * fontSize;
+            context.shadowOffsetY = 0.07 * fontSize;
+            context.shadowColor = "black";
+            context.fillText(
+                text.value.toUpperCase(),
+                (textBox.left + textBox.right) / 2 - previewBox.left,
+                (textBox.top + textBox.bottom) / 2 - previewBox.top
+            );
+        }
+
+        // var a = document.createElement("a");
+        // a.href = canvas.toDataURL();
+        // a.setAttribute("download", "card.png");
+        // a.click();
+
+        document.getElementById("exported").src = canvas.toDataURL();
     }
-    for (var id of elementIDs) {
-        var element = document.getElementById(id);
-        element.addEventListener("click", selectElement);
+
+    function selectEnergy() {
+        if (energy.blank.checked) {
+            src.energy = "fragment/EnergyBlank.png";
+        }
+        else if (energy.yellow.checked) {
+            src.energy = "fragment/EnergyIcon.png";
+        }
+        else if (energy.blue.checked) {
+            src.energy = "fragment/EnergyIcon-Blue.png";
+        }
+
+        card.energy.innerHTML = "";
+        for (var i = 0; i < 10; i++) {
+            var bolt = new Image();
+            bolt.src = src.energy;
+            card.energy.appendChild(bolt);
+        }
     }
-    for (var id of energyIDs) {
-        var energy = document.getElementById(id);
-        energy.addEventListener("click", selectEnergy);
+
+    for (var option in tier) {
+        tier[option].addEventListener("click", selectTier);
     }
+    for (var option in element) {
+        element[option].addEventListener("click", selectElement);
+    }
+    for (var option in energy) {
+        energy[option].addEventListener("click", selectEnergy);
+    }
+    document.getElementById("option-export").addEventListener("click", buildCardFromPreview);
 }
 
 window.addEventListener("DOMContentLoaded", init);
