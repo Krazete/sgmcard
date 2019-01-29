@@ -9,10 +9,16 @@
         <div id="menu">
             <h1>Skullgirls Mobile Card Creator</h1>
             <div class="column">
+                <h2>Preview</h2>
                 <div id="preview">
                     <img id="card-back">
-                    <img id="card-art">
+                    <div class="card-art-mask">
+                        <img id="card-art-under">
+                    </div>
                     <img id="card-top">
+                    <div class="card-art-mask">
+                        <img id="card-art-over">
+                    </div>
                     <img id="card-bottom">
                     <img id="card-element-icon">
                     <img id="card-element-left">
@@ -20,10 +26,12 @@
                     <img id="card-element-right">
                     <img id="card-level">
                     <div id="card-energy"></div>
+                    <div id="card-art-position-tool"></div>
                     <input type="text" placeholder="1,000" id="card-element-text">
                     <input type="text" placeholder="100" id="card-level-text">
                     <input type="text" placeholder="Variant Name" id="card-variant">
                     <input type="text" placeholder="Fighter Name" id="card-fighter">
+                    <div id="card-art-mask-tool"></div>
                 </div>
             </div>
             <div class="column">
@@ -58,24 +66,32 @@
                     <label for="option-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
                 </div>
                 <div>
-                    <h2>Art</h2>
-                    <input type="file">
-                </div>
-                <div>
-                    <h2>Overlap</h2>
-                    <input type="radio" name="option-overlap" id="option-under">
-                    <label for="option-under"><img src="menu/LossMark.png"></label>
-                    <input type="radio" name="option-overlap" id="option-over">
-                    <label for="option-over"><img src="menu/Checkmark.png"></label>
-                </div>
-                <div>
                     <h2>Energy</h2>
-                    <input type="radio" name="option-energy" id="option-blank">
-                    <label for="option-blank"><img src="fragment/EnergyBlank.png"></label>
+                    <input type="radio" name="option-energy" id="option-no-energy">
+                    <label for="option-no-energy"></label>
                     <input type="radio" name="option-energy" id="option-yellow">
                     <label for="option-yellow"><img src="fragment/EnergyIcon.png"></label>
                     <input type="radio" name="option-energy" id="option-blue">
                     <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
+                    <input type="radio" name="option-energy" id="option-blank">
+                    <label for="option-blank"><img src="fragment/EnergyBlank.png"></label>
+                </div>
+                <div>
+                    <h2>Art</h2>
+                    <h3>Image</h3>
+                    <input type="file" accept="image/*" id="option-art">
+                    <h3>Overlap</h3>
+                    <input type="radio" name="option-overlap" id="option-under">
+                    <label for="option-under"><img src="menu/LossMark.png"></label>
+                    <input type="radio" name="option-overlap" id="option-over">
+                    <label for="option-over"><img src="menu/Checkmark.png"></label>
+                    <h3>Position</h3>
+                    <label>Width:</label>
+                    <input type="number" placeholder="295" value="295">
+                    <label>X:</label>
+                    <input type="number" placeholder="198" value="198">
+                    <label>Y:</label>
+                    <input type="number" placeholder="198" value="198">
                 </div>
             </div>
             <div>
@@ -101,7 +117,9 @@
             </div>
             <div>
                 <input type="button" value="Create" id="option-export">
-                <img id="exported">
+                <a download="card.png" id="exghost">
+                    <img id="exported">
+                </a>
             </div>
         </div>
     </body>

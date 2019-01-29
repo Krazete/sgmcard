@@ -45,25 +45,45 @@ body {
     position: absolute;
 }
 
-#card-back {top: 100px; left: 100px; width: 295px;}
+#card-back {top: 50px; left: 50px; width: 295px;}
 
-#card-art {top: 100px; left: 100px;}
+.card-art-mask {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 345px,
+        0 345px
+    );
+}
+
+#card-art-under,
+#card-art-over {
+    position: absolute;
+    top: 198px;
+    left: 198px;
+    width: 295px;
+    transform: translate(-50%, -50%);
+}
 
 #card-top,
 #card-element-left,
 #card-element-center,
-#card-element-right {top: 53px;}
+#card-element-right {top: 3px;}
 
-.bronze #card-top {left: 75px;}
-.silver #card-top {left: 74px;}
-.gold #card-top {left: 69px;}
-.diamond #card-top {left: 73px;}
+.bronze #card-top {left: 25px;}
+.silver #card-top {left: 24px;}
+.gold #card-top {left: 19px;}
+.diamond #card-top {left: 23px;}
 
-#card-element-icon {top: 65px; left: 87px; width: 56px;}
+#card-element-icon {top: 15px; left: 37px; width: 56px;}
 
 #card-element-left,
 #card-element-center,
-#card-element-right {left: 75px;}
+#card-element-right {left: 25px;}
 #card-element-left {clip-path: polygon(0 0, 85px 0, 85px 100%, 0 100%);}
 #card-element-center {
     transform: scaleX(25);
@@ -71,13 +91,13 @@ body {
     clip-path: polygon(85px 0, 86px 0, 86px 100%, 85px 100%);
 }
 #card-element-right {
-    left: 100px;
+    left: 50px;
     clip-path: polygon(85px 0, 100% 0, 100% 100%, 85px 100%);
 }
 
 .gold #card-element-left,
 .gold #card-element-center,
-.gold #card-element-right {left: 68px;}
+.gold #card-element-right {left: 18px;}
 .gold #card-element-left {clip-path: polygon(0 0, 90px 0, 90px 100%, 0 100%);}
 .gold #card-element-center {
     transform: scaleX(25);
@@ -85,27 +105,31 @@ body {
     clip-path: polygon(90px 0, 91px 0, 91px 100%, 90px 100%);
 }
 .gold #card-element-right {
-    left: 93px;
+    left: 43px;
     clip-path: polygon(90px 0, 100% 0, 100% 100%, 90px 100%);
 }
 
 .diamond #card-element-left,
-.diamond #card-element-center {top: 52px; left: 74px;}
+.diamond #card-element-center,
+.diamond #card-element-right {top: 2px; left: 24px;}
+.diamond #card-element-right {
+    left: 49px;
+}
 
-.bronze #card-level {top: 54px; left: 345px; width: 64px;}
+.bronze #card-level {top: 4px; left: 295px; width: 64px;}
 .silver #card-level,
-.gold #card-level {top: 55px; left: 346px; width: 62px;}
-.diamond #card-level {top: 53px; left: 345px; width: 64px;}
+.gold #card-level {top: 5px; left: 296px; width: 62px;}
+.diamond #card-level {top: 3px; left: 295px; width: 64px;}
 
-#card-bottom {bottom: 44px;}
-.bronze #card-bottom {left: 67px;}
-.silver #card-bottom {left: 67px;}
-.gold #card-bottom {left: 68px;}
-.diamond #card-bottom {left: 73px;}
+#card-bottom {bottom: 3px;}
+.bronze #card-bottom {left: 17px;}
+.silver #card-bottom {left: 17px;}
+.gold #card-bottom {left: 18px;}
+.diamond #card-bottom {left: 23px;}
 
 #card-energy {
-    bottom: 52px;
-    left: 100px;
+    bottom: 11px;
+    left: 50px;
     width: 295px;
     text-align: center;
 }
@@ -123,17 +147,20 @@ body {
     text-align: center;
     text-transform: uppercase;
     text-shadow: 0.07em 0.07em black;
-    line-height: 1.3em;
+    padding: 0;
     border: none;
-    outline: none;
+    border-radius: 0;
+    margin: 0;
 }
-#card-element-text {top: 100px; left: 100px;}
-#card-level-text {top: 100px; left: 200px;}
+#card-element-text,
+#card-level-text {font-size: 31px;}
+#card-element-text {top: 27px; left: 108px; width: 150px;}
+#card-level-text {top: 23px; left: 297px; width: 60px;}
 
 #card-variant,
-#card-fighter {left: 67px; width: 360px;}
-#card-variant {bottom: 120px; font-size: 57px;}
-#card-fighter {bottom: 85px; font-size: 38px;}
+#card-fighter {left: 17px; width: 360px;}
+#card-variant {bottom: 89px; line-height: 57px; font-size: 56px;}
+#card-fighter {bottom: 50px; line-height: 41px; font-size: 38px;}
 
 /* MENU */
 
@@ -153,7 +180,7 @@ body {
     display: inline-block;
 }
 
-h1, h2, h3 {
+h1, h2, h3, label {
     font-family: 'Cinema';
     text-transform: uppercase;
     text-shadow: 0.1em 0.1em black;
@@ -169,22 +196,29 @@ h1 {
 
 #preview,
 input[type='radio'] + label,
-input[type='file'] {
+input[type='file'],
+input[type='text'],
+input[type='number'] {
     background: var(--bg);
     color: var(--fg);
     padding: 8px;
     border: 3px double var(--fg);
     border-radius: 8px;
+    outline: none;
     margin: 4px;
 }
 
 input[type='radio'] + label:hover,
-input[type='file']:hover {
+input[type='file']:hover,
+input[type='text']:hover,
+input[type='number']:hover {
     border-color: white;
 }
 
 input[type='radio']:checked + label,
-input[type='file']:focus {
+input[type='file']:focus,
+input[type='text']:focus,
+input[type='number']:focus {
     background: var(--fg);
     color: var(--bg);
     border-color: var(--bg);
@@ -200,6 +234,7 @@ input[type='radio'] + label {
     background: var(--fg);
     border-color: var(--bg);
     text-align: center;
+    vertical-align: top;
     display: inline-block;
     cursor: pointer;
 }
@@ -213,20 +248,26 @@ input[type='radio'] + label img {
     max-width: 32px;
 }
 
-input[type='file'] {
+input[type='file'],
+input[type='text'],
+input[type='number'] {
     font-family: 'Cinema';
-    font-size: 24px;
+    font-size: 18px;
     text-transform: uppercase;
-    outline: none;
+}
+
+input[type='number'] {
+    width: 3em;
 }
 
 /* PREVIEW */
 
 #preview {
     position: relative;
-    width: 495px;
-    height: 595px;
+    width: 395px;
+    height: 504px;
     padding: 0;
+    overflow: hidden;
 }
 
 #exported {

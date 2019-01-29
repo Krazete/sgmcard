@@ -77,15 +77,17 @@ function init() {
         "bottom": "",
         "element": "",
         "level": "",
-        "energy": ""
+        "energy": "",
+        "art": ""
     };
 
     /* Card Preview */
 
     var card = {
         "back": document.getElementById("card-back"),
-        "art": document.getElementById("card-art"),
+        "artUnder": document.getElementById("card-art-under"),
         "top": document.getElementById("card-top"),
+        "artOver": document.getElementById("card-art-over"),
         "bottom": document.getElementById("card-bottom"),
         "elementLeft": document.getElementById("card-element-left"),
         "elementCenter": document.getElementById("card-element-center"),
@@ -117,14 +119,16 @@ function init() {
         "dark": document.getElementById("option-dark"),
         "neutral": document.getElementById("option-neutral")
     };
+    var energy = {
+        "none": document.getElementById("option-no-energy"),
+        "yellow": document.getElementById("option-yellow"),
+        "blue": document.getElementById("option-blue"),
+        "blank": document.getElementById("option-blank")
+    };
+    var art = document.getElementById("option-art");
     var overlap = {
         "under": document.getElementById("option-under"),
         "over": document.getElementById("option-over")
-    };
-    var energy = {
-        "blank": document.getElementById("option-blank"),
-        "yellow": document.getElementById("option-yellow"),
-        "blue": document.getElementById("option-blue")
     };
     var advanced = {
         "defaultBackground": document.getElementById("option-default-background"),
@@ -134,30 +138,6 @@ function init() {
     };
 
     /* Callback */
-
-    function loadColorizedBackground() {
-        if (element.none.checked) {
-            return loadImage(src.back);
-        }
-        else if (element.fire.checked) {
-            return loadColorizedImage(src.back, );
-        }
-        else if (element.water.checked) {
-            return loadColorizedImage(src.back, );
-        }
-        else if (element.wind.checked) {
-            return loadColorizedImage(src.back, );
-        }
-        else if (element.light.checked) {
-            return loadColorizedImage(src.back, );
-        }
-        else if (element.dark.checked) {
-            return loadColorizedImage(src.back, );
-        }
-        else if (element.neutral.checked) {
-            return loadColorizedImage(src.back, );
-        }
-    }
 
     function selectTier() {
         if (tier.none.checked) {
@@ -313,14 +293,13 @@ function init() {
         var texts = preview.getElementsByTagName("input");
         for (var text of texts) {
             var textBox = text.getBoundingClientRect();
-            var font = window.getComputedStyle(text).getPropertyValue("font");
-            var fontSize = parseInt(window.getComputedStyle(text).getPropertyValue("font-size"));
-            context.font = font;
-            context.fillStyle = "white";
+            var textStyle = window.getComputedStyle(text);
+            context.font = textStyle.font;
+            context.fillStyle = textStyle.color;
             context.textAlign = "center";
             context.textBaseline = "middle";
-            context.shadowOffsetX = 0.07 * fontSize;
-            context.shadowOffsetY = 0.07 * fontSize;
+            context.shadowOffsetX = 0.07 * parseInt(textStyle.fontSize);
+            context.shadowOffsetY = 0.07 * parseInt(textStyle.fontSize);
             context.shadowColor = "black";
             context.fillText(
                 text.value.toUpperCase(),
@@ -329,30 +308,51 @@ function init() {
             );
         }
 
-        // var a = document.createElement("a");
-        // a.href = canvas.toDataURL();
-        // a.setAttribute("download", "card.png");
-        // a.click();
-
+        document.getElementById("exghost").href = canvas.toDataURL();
         document.getElementById("exported").src = canvas.toDataURL();
     }
 
     function selectEnergy() {
-        if (energy.blank.checked) {
-            src.energy = "fragment/EnergyBlank.png";
-        }
-        else if (energy.yellow.checked) {
+        if (energy.yellow.checked) {
             src.energy = "fragment/EnergyIcon.png";
         }
         else if (energy.blue.checked) {
             src.energy = "fragment/EnergyIcon-Blue.png";
         }
+        else if (energy.blank.checked) {
+            src.energy = "fragment/EnergyBlank.png";
+        }
 
         card.energy.innerHTML = "";
-        for (var i = 0; i < 10; i++) {
-            var bolt = new Image();
-            bolt.src = src.energy;
-            card.energy.appendChild(bolt);
+        if (!energy.none.checked) {
+            for (var i = 0; i < 10; i++) {
+                var bolt = new Image();
+                bolt.src = src.energy;
+                card.energy.appendChild(bolt);
+            }
+        }
+    }
+
+    function selectArt() {
+        var file = this.files[0];
+        if (/image\//.test(file.type)) {
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                src.art = this.result;
+                selectOverlap();
+            });
+            reader.readAsDataURL(this.files[0]);
+        }
+    }
+
+    function selectOverlap() {
+        if (overlap.under.checked) {
+            card.artUnder.src = src.art;
+            card.artOver.src = "";
+        }
+        else if (overlap.over.checked) {
+            card.artUnder.src = "";
+            card.artOver.src = src.art;
         }
     }
 
@@ -365,7 +365,16 @@ function init() {
     for (var option in energy) {
         energy[option].addEventListener("click", selectEnergy);
     }
+    art.addEventListener("change", selectArt);
+    for (var option in overlap) {
+        overlap[option].addEventListener("click", selectOverlap);
+    }
     document.getElementById("option-export").addEventListener("click", buildCardFromPreview);
+
+    tier.none.click();
+    element.none.click();
+    energy.none.click();
+    overlap.under.click();
 }
 
 window.addEventListener("DOMContentLoaded", init);
