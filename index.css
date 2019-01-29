@@ -18,11 +18,6 @@
     src: url(font/Typo_DodamM.ttf);
 }
 
-@font-face {
-    font-family: 'Roboto';
-    src: url(font/RobotoCondensed-Regular.ttf);
-}
-
 body {
     background: var(--bg);
 }
@@ -143,7 +138,7 @@ body {
     background: none;
     /* background: #fff4; */
     color: white;
-    font-family: 'Washington';
+    font-family: 'Washington', 'Cinema', 'Dodam';
     text-align: center;
     text-transform: uppercase;
     text-shadow: 0.07em 0.07em black;
@@ -154,13 +149,13 @@ body {
 }
 #card-element-text,
 #card-level-text {font-size: 31px;}
-#card-element-text {top: 27px; left: 108px; width: 150px;}
-#card-level-text {top: 23px; left: 297px; width: 60px;}
+#preview #card-element-text {top: 26px; left: 108px; width: 150px; text-align: left;}
+#card-level-text {top: 22px; left: 297px; width: 60px;}
 
 #card-variant,
-#card-fighter {left: 17px; width: 360px;}
-#card-variant {bottom: 89px; line-height: 57px; font-size: 56px;}
-#card-fighter {bottom: 50px; line-height: 41px; font-size: 38px;}
+#card-fighter {width: 100%;}
+#card-variant {bottom: 89px; line-height: 60px; font-size: 58px;}
+#card-fighter {bottom: 51px; line-height: 40px; font-size: 38px;}
 
 /* MENU */
 

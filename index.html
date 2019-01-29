@@ -87,11 +87,11 @@
                     <label for="option-over"><img src="menu/Checkmark.png"></label>
                     <h3>Position</h3>
                     <label>Width:</label>
-                    <input type="number" placeholder="295" value="295">
+                    <input type="number" min="0" placeholder="295" value="295">
                     <label>X:</label>
-                    <input type="number" placeholder="198" value="198">
+                    <input type="number" min="0" max="504" placeholder="198" value="198">
                     <label>Y:</label>
-                    <input type="number" placeholder="198" value="198">
+                    <input type="number" min="0" max="395" placeholder="198" value="198">
                 </div>
             </div>
             <div>
@@ -108,12 +108,6 @@
                 <input type="radio" name="option-foreground" id="option-custom-foreground">
                 <label for="option-custom-foreground"><img src="menu/Checkmark.png"></label>
                 <div class="gradient-strip"></div>
-                <h3>Font Family</h3>
-                <input type="text">
-                <h3>Fighter Name Font Size</h3>
-                <input type="text">
-                <h3>Variant Name Font Size</h3>
-                <input type="text">
             </div>
             <div>
                 <input type="button" value="Create" id="option-export">

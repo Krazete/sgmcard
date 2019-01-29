@@ -296,16 +296,25 @@ function init() {
             var textStyle = window.getComputedStyle(text);
             context.font = textStyle.font;
             context.fillStyle = textStyle.color;
-            context.textAlign = "center";
+            context.textAlign = textStyle.textAlign;
             context.textBaseline = "middle";
             context.shadowOffsetX = 0.07 * parseInt(textStyle.fontSize);
             context.shadowOffsetY = 0.07 * parseInt(textStyle.fontSize);
             context.shadowColor = "black";
-            context.fillText(
-                text.value.toUpperCase(),
-                (textBox.left + textBox.right) / 2 - previewBox.left,
-                (textBox.top + textBox.bottom) / 2 - previewBox.top
-            );
+            if (context.textAlign == "left") {
+                context.fillText(
+                    text.value.toUpperCase(),
+                    textBox.left - previewBox.left,
+                    (textBox.top + textBox.bottom) / 2 - previewBox.top
+                );
+            }
+            else {
+                context.fillText(
+                    text.value.toUpperCase(),
+                    (textBox.left + textBox.right) / 2 - previewBox.left,
+                    (textBox.top + textBox.bottom) / 2 - previewBox.top
+                );
+            }
         }
 
         document.getElementById("exghost").href = canvas.toDataURL();
@@ -356,6 +365,31 @@ function init() {
         }
     }
 
+    function getWidth(input) {
+        var inputStyle = getComputedStyle(input);
+        var copy = document.createElement("div");
+        copy.innerHTML = input.value.toUpperCase();
+        copy.style.font = inputStyle.font;
+        copy.style.textTransform = inputStyle.textTransform;
+        copy.style.whiteSpace = "pre";
+        copy.style.display = "inline-block";
+        document.body.appendChild(copy);
+        var width = getComputedStyle(copy).width;
+        copy.remove();
+        return width;
+    }
+
+    function resizeVariant() {
+        for (var i = 58; i > 0; i--) {
+            this.style.fontSize = i + "px";
+            var width = parseFloat(getWidth(this));
+            if (width < 295) {
+                break;
+            }
+        }
+    }
+
+    card.variant.addEventListener("input", resizeVariant);
     for (var option in tier) {
         tier[option].addEventListener("click", selectTier);
     }
