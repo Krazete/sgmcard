@@ -42,28 +42,6 @@ body {
 
 #card-back {top: 50px; left: 50px; width: 295px;}
 
-.card-art-mask {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 345px,
-        0 345px
-    );
-}
-
-#card-art-under,
-#card-art-over {
-    position: absolute;
-    top: 198px;
-    left: 198px;
-    width: 295px;
-    transform: translate(-50%, -50%);
-}
-
 #card-top,
 #card-element-left,
 #card-element-center,
@@ -79,28 +57,28 @@ body {
 #card-element-left,
 #card-element-center,
 #card-element-right {left: 25px;}
-#card-element-left {clip-path: polygon(0 0, 84px 0, 84px 100%, 0 100%);}
+#card-element-left {clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);}
 #card-element-center {
-    transform: scaleX(65);
-    transform-origin: 84px;
-    clip-path: polygon(84px 0, 85px 0, 85px 100%, 84px 100%);
+    transform: scaleX(70);
+    transform-origin: 80px;
+    clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
 }
 #card-element-right {
     left: 94px;
-    clip-path: polygon(80px 0, 100% 0, 100% 100%, 80px 100%);
+    clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
 }
 
 .gold #card-element-left,
 .gold #card-element-center,
 .gold #card-element-right {left: 18px;}
-.gold #card-element-left {clip-path: polygon(0 0, 91px 0, 91px 100%, 0 100%);}
+.gold #card-element-left {clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);}
 .gold #card-element-center {
-    transform-origin: 91px;
-    clip-path: polygon(91px 0, 92px 0, 92px 100%, 91px 100%);
+    transform-origin: 87px;
+    clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
 }
 .gold #card-element-right {
     left: 87px;
-    clip-path: polygon(87px 0, 100% 0, 100% 100%, 87px 100%);
+    clip-path: polygon(88px 0, 100% 0, 100% 100%, 88px 100%);
 }
 
 .diamond #card-element-left,
@@ -129,7 +107,7 @@ body {
 }
 
 #card-energy > img {
-    width: 20px;
+    width: 20.5px;
     margin: 0 2px;
 }
 
@@ -155,6 +133,47 @@ body {
 #card-fighter {width: 100%;}
 #card-variant {bottom: 89px; line-height: 60px; font-size: 58px;}
 #card-fighter {bottom: 51px; line-height: 40px; font-size: 38px;}
+
+/* CARD ART */
+
+.card-art-mask,
+#card-art-mask-tool {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.card-art-mask {
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 345px,
+        0 345px
+    );
+}
+#card-art-mask-tool {
+    display: none;
+}
+
+#card-art-position-tool {
+    top: 50px;
+    left: 50px;
+    width: 295px;
+    height: 295px;
+    cursor: move;
+}
+#card-art-position-tool:hover {
+    outline: 1px dashed white;
+}
+
+#card-art-under,
+#card-art-over {
+    position: absolute;
+    top: 198px;
+    left: 198px;
+    width: 295px;
+    transform: translate(-50%, -50%);
+}
 
 /* MENU */
 

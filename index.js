@@ -85,9 +85,7 @@ function init() {
 
     var card = {
         "back": document.getElementById("card-back"),
-        "artUnder": document.getElementById("card-art-under"),
         "top": document.getElementById("card-top"),
-        "artOver": document.getElementById("card-art-over"),
         "bottom": document.getElementById("card-bottom"),
         "elementLeft": document.getElementById("card-element-left"),
         "elementCenter": document.getElementById("card-element-center"),
@@ -98,7 +96,10 @@ function init() {
         "elementText": document.getElementById("card-element-text"),
         "levelText": document.getElementById("card-level-text"),
         "variant": document.getElementById("card-variant"),
-        "fighter": document.getElementById("card-fighter")
+        "fighter": document.getElementById("card-fighter"),
+        "artUnder": document.getElementById("card-art-under"),
+        "artOver": document.getElementById("card-art-over"),
+        "artPositionTool": document.getElementById("card-art-position-tool")
     };
 
     /* Card Options */
@@ -129,6 +130,11 @@ function init() {
     var overlap = {
         "under": document.getElementById("option-under"),
         "over": document.getElementById("option-over")
+    };
+    var artish = {
+        "width": document.getElementById("option-width"),
+        "x": document.getElementById("option-x"),
+        "y": document.getElementById("option-y")
     };
     var advanced = {
         "defaultBackground": document.getElementById("option-default-background"),
@@ -283,6 +289,54 @@ function init() {
         var images = preview.getElementsByTagName("img");
         for (var image of images) {
             var imageBox = image.getBoundingClientRect();
+            var imageStyle = getComputedStyle(image);
+            context.restore();
+            if (imageStyle.clipPath != "none") {
+                var origin = imageStyle.transformOrigin.match(/\d+(\.\d+)?(px|%)/g);
+                var xi = parseFloat(origin[0]);
+                if (/%/.test(origin[0])) {
+                    xi *= imageBox.width / 100;
+                }
+                var yi = parseFloat(origin[1]);
+                if (/%/.test(origin[1])) {
+                    yi *= imageBox.height / 100;
+                }
+                console.log(xi, yi);
+
+                var matches = imageStyle.clipPath.match(/\d+(\.\d+)?(px|%)\s\d+(\.\d+)?(px|%)/g);
+                context.save();
+                context.beginPath();
+                for (var i = 0; i < matches.length; i++) {
+                    var match = matches[i].match(/\d+(\.\d+)?(px|%)/g);
+                    var matrix = imageStyle.transform.match(/\d+/g) || [1,1];
+                    var x = parseFloat(match[0]);
+                    if (/%/.test(match[0])) {
+                        x *= imageBox.width / matrix[0] / 100;
+                    }
+                    var y = parseFloat(match[1]);
+                    if (/%/.test(match[1])) {
+                        y *= imageBox.height / matrix[3] / 100;
+                    }
+
+                    if (image == card.elementCenter) {
+                        console.log(i, x, y);
+                        x = xi + (x - xi) * matrix[0];
+                        y = yi + (y - yi) * matrix[3];
+                        console.log(i, x, y, matrix);
+                    }
+
+                    x += imageBox.left - previewBox.left;
+                    y += imageBox.top - previewBox.top;
+
+                    if (i == 0) {
+                        context.moveTo(Math.floor(x), Math.floor(y));
+                    }
+                    else {
+                        context.lineTo(Math.floor(x), Math.floor(y));
+                    }
+                }
+                context.clip();
+            }
             context.drawImage(
                 image,
                 imageBox.left - previewBox.left,
@@ -397,10 +451,12 @@ function init() {
         };
     }
 
+
     function resizeElement() {
         autoResize(card.elementText, 31, 150);
         var width = parseInt(getWidth(card.elementText)) || 65;
-        card.elementCenter.style.transform = "scaleX(" + width + ")";
+        var pad = 5;
+        card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
         var offset = 29;
         if (preview.className == "gold") {
             offset = 22;
@@ -409,6 +465,52 @@ function init() {
             offset = 28;
         }
         card.elementRight.style.left = offset + width + "px";
+    }
+
+    var eInitial, artBox;
+
+    function setPosition(x, y) {
+        card.artUnder.style.left = x + "px";
+        card.artUnder.style.top = y + "px";
+        card.artOver.style.left = x + "px";
+        card.artOver.style.top = y + "px";
+    }
+
+    function setScale() {
+        card.artUnder.style.width = this.value + "px";
+        card.artOver.style.width = this.value + "px";
+    }
+    function setX() {
+        card.artUnder.style.left = this.value + "px";
+        card.artOver.style.left = this.value + "px";
+    }
+    function setY() {
+        card.artUnder.style.top = this.value + "px";
+        card.artOver.style.top = this.value + "px";
+    }
+
+    function startDragPosition(e) {
+        eInitial = e;
+        artBox = card.artUnder.getBoundingClientRect();
+        console.log(artBox);
+        card.artPositionTool.addEventListener("mousemove", dragPosition);
+        card.artPositionTool.addEventListener("mouseup", endPosition);
+        card.artPositionTool.addEventListener("mouseout", endPosition);
+    }
+
+    function dragPosition(e) {
+        var previewBox = preview.getBoundingClientRect();
+        var x = Math.floor((artBox.left + artBox.right) / 2 - previewBox.left) + e.x - eInitial.x - 2;
+        var y = Math.floor((artBox.top + artBox.bottom) / 2 - previewBox.top) + e.y - eInitial.y - 2;
+        setPosition(x, y);
+        artish.x.value = x;
+        artish.y.value = y;
+    }
+
+    function endPosition(e) {
+        card.artPositionTool.removeEventListener("mousemove", dragPosition);
+        card.artPositionTool.removeEventListener("mouseup", endPosition);
+        card.artPositionTool.removeEventListener("mouseout", endPosition);
     }
 
     for (var option in tier) {
@@ -425,9 +527,14 @@ function init() {
         overlap[option].addEventListener("click", selectOverlap);
     }
     card.elementText.addEventListener("input", resizeElement);
-    card.levelText.addEventListener("input", autoResizer(31, 50));
+    card.levelText.addEventListener("input", autoResizer(31, 40));
     card.variant.addEventListener("input", autoResizer(58, 320));
     card.fighter.addEventListener("input", autoResizer(38, 250));
+    card.artPositionTool.addEventListener("mousedown", startDragPosition);
+
+    artish.width.addEventListener("input", setScale);
+    artish.x.addEventListener("input", setX);
+    artish.y.addEventListener("input", setY);
 
     document.getElementById("option-export").addEventListener("click", buildCardFromPreview);
 
