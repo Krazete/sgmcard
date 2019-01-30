@@ -426,7 +426,7 @@ function init() {
             "x": (artBox.left + artBox.right) / 2,
             "y": (artBox.top + artBox.bottom) / 2,
             "width": artBox.width,
-            "angle": parseFloat(art.angle.dataset.value) || 0
+            "angle": -art.angle.value || 0
         };
         card.artUnder.style.transform = savedRotation;
     }
@@ -571,8 +571,7 @@ function init() {
         var previewBox = preview.getBoundingClientRect();
         var t0 = angleFromArt0(e0.x, e0.y);
         var t = angleFromArt0(e.x, e.y);
-        art.angle.dataset.value = art0.angle + t - t0;
-        art.angle.value = (720 - art.angle.dataset.value) % 360;
+        art.angle.value = (720 - (art0.angle + t - t0)) % 360;
         setAngle();
         var r = distanceFromArt0(e.x, e.y);
         setCircle(art0.x, art0.y, r, t);
