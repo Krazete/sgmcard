@@ -99,6 +99,11 @@
                     <label for="option-scale"><img src="menu/Drag1F.png"> <img src="menu/Drag1F.png"></label>
                     <label>Width:</label>
                     <input type="number" min="0" placeholder="295" value="295" id="option-width">
+                    <br>
+                    <input type="radio" name="option-art-tool" id="option-rotate">
+                    <label for="option-rotate"><img src="menu/Drag1F.png"></label>
+                    <label>Angle:</label>
+                    <input type="number" min="0" max="360" placeholder="0" value="0" id="option-angle">
                 </div>
             </div>
             <div>
@@ -118,7 +123,7 @@
             </div>
             <div>
                 <input type="button" value="Create" id="option-render">
-                <a download="card.png" id="render-link">
+                <a target="_blank" download="card.png" id="render-link">
                     <img id="render-image">
                 </a>
             </div>
