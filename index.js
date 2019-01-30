@@ -606,52 +606,61 @@ function init() {
         var images = preview.getElementsByTagName("img");
         for (var image of images) {
             context.save();
+
             var imageStyle = getComputedStyle(image);
-            var matrix = imageStyle.transform.match(pattern.singles) || [1, 0, 0, 1, 0, 0];
+            var matrix = imageStyle.transform.match(pattern.singles) || [
+                1, 0, 0,
+                1, 0, 0
+            ];
             var a = parseFloat(matrix[0]);
             var b = parseFloat(matrix[1]);
             var c = parseFloat(matrix[2]);
             var d = parseFloat(matrix[3]);
-            // var e = parseFloat(matrix[4]);
-            // var f = parseFloat(matrix[5]);
-            var savedTransform = image.style.transform;
-            image.style.transform = "";
-            var x0 = parseFloat(imageStyle.left);
-            var y0 = parseFloat(imageStyle.top);
+            var e = parseFloat(matrix[4]);
+            var f = parseFloat(matrix[5]);
+            var origin = imageStyle.transformOrigin.match(pattern.singles) || [
+                parseFloat(imageStyle.width) / 2,
+                parseFloat(imageStyle.height) / 2
+            ];
+            console.log(image, origin);
+            var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]) + 3;
+            var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]) + 3;
             context.translate(x0, y0);
-            context.transform(a, b, c, d, 0, 0);
+            context.transform(a, b, c, d, e, f);
             context.translate(-x0, -y0);
 
+            var savedTransform = image.style.transform;
+            image.style.transform = "none";
             var imageBox = image.getBoundingClientRect();
 
-            // var clipPath = imageStyle.clipPath;
-            // if (clipPath == "none") {
-            //     clipPath = imageStyle.webkitClipPath;
-            // }
-            // if (clipPath != "none") {
-            //     var clipPoints = clipPath.match(pattern.pairs);
-            //     context.beginPath();
-            //     for (var i = 0; i < clipPoints.length; i++) {
-            //         var clipPoint = clipPoints[i].match(pattern.singles);
-            //         var x = parseFloat(clipPoint[0]);
-            //         var y = parseFloat(clipPoint[1]);
-            //         if (/%/.test(clipPoint[0])) {
-            //             x *= imageBox.width / 100;
-            //         }
-            //         if (/%/.test(clipPoint[1])) {
-            //             y *= imageBox.height / 100;
-            //         }
-            //         x += imageBox.left - previewBox.left;
-            //         y += imageBox.top - previewBox.top;
-            //         if (i == 0) {
-            //             context.moveTo(x, y);
-            //         }
-            //         else {
-            //             context.lineTo(x, y);
-            //         }
-            //     }
-            //     context.clip();
-            // }
+            var clipPath = imageStyle.clipPath;
+            if (clipPath == "none") {
+                clipPath = imageStyle.webkitClipPath;
+            }
+            if (clipPath != "none") {
+                context.beginPath();
+                var clipPoints = clipPath.match(pattern.pairs);
+                for (var i = 0; i < clipPoints.length; i++) {
+                    var clipPoint = clipPoints[i].match(pattern.singles);
+                    var x = parseFloat(clipPoint[0]);
+                    var y = parseFloat(clipPoint[1]);
+                    if (/%/.test(clipPoint[0])) {
+                        x *= imageBox.width / 100;
+                    }
+                    if (/%/.test(clipPoint[1])) {
+                        y *= imageBox.height / 100;
+                    }
+                    x += imageBox.left - previewBox.left;
+                    y += imageBox.top - previewBox.top;
+                    if (i == 0) {
+                        context.moveTo(x, y);
+                    }
+                    else {
+                        context.lineTo(x, y);
+                    }
+                }
+                context.clip();
+            }
 
             context.drawImage(
                 image,
@@ -660,7 +669,9 @@ function init() {
                 imageBox.width,
                 imageBox.height
             );
+
             image.style.transform = savedTransform;
+
             context.restore();
         }
 
