@@ -163,7 +163,7 @@ body {
     cursor: move;
 }
 #card-art-position-tool:hover {
-    outline: 1px dashed white;
+    outline: 3px dashed white;
 }
 
 #card-art-under,
@@ -283,11 +283,35 @@ input[type='number'] {
     overflow: hidden;
 }
 
-#exported {
+#rendered {
     display: block;
 }
 
 .gradient-strip {
     background: linear-gradient(to right, black, white);
     height: 10px;
+}
+
+.editing-art * {
+    user-select: none;
+    pointer-events: none;
+}
+
+.editing-art #card-art-position-tool {
+    pointer-events: auto;
+}
+
+#circle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, -50%);
+    border: 3px dashed white;
+    border-radius: 50%;
+    display: none;
+    pointer-events: none;
+}
+
+.editing-art #circle {
+    display: block;
 }

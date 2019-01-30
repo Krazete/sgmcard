@@ -26,7 +26,9 @@
                     <img id="card-element-right">
                     <img id="card-level">
                     <div id="card-energy"></div>
-                    <div id="card-art-position-tool"></div>
+                    <div id="card-art-position-tool">
+                        <div id="circle"></div>
+                    </div>
                     <input type="text" placeholder="99.9k" id="card-element-text">
                     <input type="text" placeholder="99" id="card-level-text">
                     <input type="text" placeholder="Variant Name" id="card-variant">
@@ -86,12 +88,17 @@
                     <input type="radio" name="option-overlap" id="option-over">
                     <label for="option-over"><img src="menu/Checkmark.png"></label>
                     <h3>Position</h3>
-                    <label>Width:</label>
-                    <input type="number" min="0" placeholder="295" value="295" id="option-width">
+                    <input type="radio" name="option-art-tool" id="option-move">
+                    <label for="option-move"><img src="menu/Drag1F.png"></label>
                     <label>X:</label>
                     <input type="number" placeholder="198" value="198" id="option-x">
                     <label>Y:</label>
                     <input type="number" placeholder="198" value="198" id="option-y">
+                    <br>
+                    <input type="radio" name="option-art-tool" id="option-scale">
+                    <label for="option-scale"><img src="menu/Drag1F.png"><img src="menu/Drag1F.png"></label>
+                    <label>Width:</label>
+                    <input type="number" min="0" placeholder="295" value="295" id="option-width">
                 </div>
             </div>
             <div>
@@ -110,9 +117,9 @@
                 <div class="gradient-strip"></div>
             </div>
             <div>
-                <input type="button" value="Create" id="option-export">
-                <a download="card.png" id="exghost">
-                    <img id="exported">
+                <input type="button" value="Create" id="option-render">
+                <a download="card.png" id="render-link">
+                    <img id="render-image">
                 </a>
             </div>
         </div>
