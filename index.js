@@ -290,53 +290,40 @@ function init() {
         for (var image of images) {
             var imageBox = image.getBoundingClientRect();
             var imageStyle = getComputedStyle(image);
+
             context.restore();
             if (imageStyle.clipPath != "none") {
-                var origin = imageStyle.transformOrigin.match(/\d+(\.\d+)?(px|%)/g);
-                var xi = parseFloat(origin[0]);
-                if (/%/.test(origin[0])) {
-                    xi *= imageBox.width / 100;
-                }
-                var yi = parseFloat(origin[1]);
-                if (/%/.test(origin[1])) {
-                    yi *= imageBox.height / 100;
-                }
-                console.log(xi, yi);
-
-                var matches = imageStyle.clipPath.match(/\d+(\.\d+)?(px|%)\s\d+(\.\d+)?(px|%)/g);
+                var clipPath = imageStyle.clipPath.match(/\d+(\.\d+)?(px|%)\s\d+(\.\d+)?(px|%)/g);
                 context.save();
                 context.beginPath();
-                for (var i = 0; i < matches.length; i++) {
-                    var match = matches[i].match(/\d+(\.\d+)?(px|%)/g);
-                    var matrix = imageStyle.transform.match(/\d+/g) || [1,1];
-                    var x = parseFloat(match[0]);
-                    if (/%/.test(match[0])) {
+                for (var i = 0; i < clipPath.length; i++) {
+                    var clipPoint = clipPath[i].match(/\d+(\.\d+)?(px|%)/g);
+                    var x = parseFloat(clipPoint[0]);
+                    var y = parseFloat(clipPoint[1]);
+                    var matrix = imageStyle.transform.match(/\d+(\.\d+)?/g) || [1,0,0,1,0,0];
+                    if (/%/.test(clipPoint[0])) {
                         x *= imageBox.width / matrix[0] / 100;
                     }
-                    var y = parseFloat(match[1]);
-                    if (/%/.test(match[1])) {
+                    if (/%/.test(clipPoint[1])) {
                         y *= imageBox.height / matrix[3] / 100;
                     }
 
-                    if (image == card.elementCenter) {
-                        console.log(i, x, y);
-                        x = xi + (x - xi) * matrix[0];
-                        y = yi + (y - yi) * matrix[3];
-                        console.log(i, x, y, matrix);
-                    }
+                    x *= matrix[0];
+                    y *= matrix[3];
 
                     x += imageBox.left - previewBox.left;
                     y += imageBox.top - previewBox.top;
 
                     if (i == 0) {
-                        context.moveTo(Math.floor(x), Math.floor(y));
+                        context.moveTo(x, y);
                     }
                     else {
-                        context.lineTo(Math.floor(x), Math.floor(y));
+                        context.lineTo(x, y);
                     }
                 }
                 context.clip();
             }
+
             context.drawImage(
                 image,
                 imageBox.left - previewBox.left,
