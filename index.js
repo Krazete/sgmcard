@@ -374,17 +374,34 @@ function init() {
 
     function selectArtMoveTool() {
         card.artPositionTool.removeEventListener("mousedown", startScaleArt);
+        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
         card.artPositionTool.addEventListener("mousedown", startMoveArt);
+        card.artPositionTool.addEventListener("touchstart", startMoveArt);
     }
 
     function selectArtScaleTool() {
         card.artPositionTool.removeEventListener("mousedown", startMoveArt);
+        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
         card.artPositionTool.addEventListener("mousedown", startScaleArt);
+        card.artPositionTool.addEventListener("touchstart", startScaleArt);
     }
 
     /* Art Position Tools */
 
     var e0, art0, circle = document.getElementById("circle");
+
+    function getCursor(e) {
+        if (e.x || e.y) {
+            return e;
+        }
+        else {
+            e.preventDefault();
+            return {
+                "x": e.touches[0].clientX,
+                "y": e.touches[0].clientY
+            };
+        }
+    }
 
     function setArt0() {
         var artBox = card.artUnder.getBoundingClientRect();
@@ -422,17 +439,21 @@ function init() {
     }
 
     function startMoveArt(e) {
+        e = getCursor(e);
         e0 = e;
         setArt0();
         var r = distanceFromArt0(e.x, e.y);
         setCircle(art0.x, art0.y, r / 2);
         document.body.className = "editing-art";
         card.artPositionTool.addEventListener("mousemove", moveArt);
+        card.artPositionTool.addEventListener("touchmove", moveArt);
         card.artPositionTool.addEventListener("mouseup", stopMoveArt);
         card.artPositionTool.addEventListener("mouseout", stopMoveArt);
+        card.artPositionTool.addEventListener("touchend", stopMoveArt);
     }
 
     function moveArt(e) {
+        e = getCursor(e);
         var previewBox = preview.getBoundingClientRect();
         var x0 = Math.floor(art0.x - previewBox.left);
         var y0 = Math.floor(art0.y - previewBox.top);
@@ -448,8 +469,10 @@ function init() {
     function stopMoveArt(e) {
         document.body.className = "";
         card.artPositionTool.removeEventListener("mousemove", moveArt);
+        card.artPositionTool.removeEventListener("touchmove", moveArt);
         card.artPositionTool.removeEventListener("mouseup", stopMoveArt);
         card.artPositionTool.removeEventListener("mouseout", stopMoveArt);
+        card.artPositionTool.removeEventListener("touchend", stopMoveArt);
     }
 
     /* Art Scale Tool */
@@ -460,17 +483,21 @@ function init() {
     }
 
     function startScaleArt(e) {
+        e = getCursor(e);
         e0 = e;
         setArt0();
         var r = distanceFromArt0(e.x, e.y);
         setCircle(art0.x, art0.y, r);
         document.body.className = "editing-art";
         card.artPositionTool.addEventListener("mousemove", scaleArt);
+        card.artPositionTool.addEventListener("touchmove", scaleArt);
         card.artPositionTool.addEventListener("mouseup", stopScaleArt);
         card.artPositionTool.addEventListener("mouseout", stopScaleArt);
+        card.artPositionTool.addEventListener("touchend", stopScaleArt);
     }
 
     function scaleArt(e) {
+        e = getCursor(e);
         var previewBox = preview.getBoundingClientRect();
         var r0 = distanceFromArt0(e0.x, e0.y);
         var r = distanceFromArt0(e.x, e.y);
@@ -482,8 +509,10 @@ function init() {
     function stopScaleArt(e) {
         document.body.className = "";
         card.artPositionTool.removeEventListener("mousemove", scaleArt);
+        card.artPositionTool.removeEventListener("touchmove", scaleArt);
         card.artPositionTool.removeEventListener("mouseup", stopScaleArt);
         card.artPositionTool.removeEventListener("mouseout", stopScaleArt);
+        card.artPositionTool.removeEventListener("touchend", stopScaleArt);
     }
 
     /* Card Renderer */
