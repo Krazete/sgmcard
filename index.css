@@ -315,3 +315,53 @@ input[type='number'] {
 .editing-art #circle {
     display: block;
 }
+
+#option-move + label:hover > img {
+    animation: 1s scrub linear infinite;
+    transform-origin: 10px 10px;
+}
+
+#option-scale + label > img:first-child {
+    transform: rotateY(180deg);
+}
+#option-scale + label:hover > img:first-child {
+    animation: 0.5s wiggle-left linear alternate infinite;
+}
+#option-scale + label:hover > img:last-child {
+    animation: 0.5s wiggle-right linear alternate infinite;
+}
+
+@keyframes scrub {
+    0% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(5px, 0px);
+    }
+    50% {
+        transform: translate(5px, 5px);
+    }
+    75% {
+        transform: translate(0px, 5px);
+    }
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes wiggle-left {
+    0% {
+        transform: rotateY(180deg) rotateZ(0deg);
+    }
+    100% {
+        transform: rotateY(180deg) rotateZ(20deg);
+    }
+}
+@keyframes wiggle-right {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    100% {
+        transform: rotateZ(20deg);
+    }
+}

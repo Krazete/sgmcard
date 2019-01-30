@@ -486,7 +486,6 @@ function init() {
         card.artPositionTool.removeEventListener("mouseout", stopScaleArt);
     }
 
-
     /* Card Renderer */
 
     var pattern = {
@@ -585,6 +584,7 @@ function init() {
     for (var option in energy) {
         energy[option].addEventListener("click", selectEnergy);
     }
+
     art.file.addEventListener("change", selectArt);
     art.over.addEventListener("click", selectOverlap);
     art.under.addEventListener("click", selectOverlap);
