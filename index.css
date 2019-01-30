@@ -57,27 +57,37 @@ body {
 #card-element-left,
 #card-element-center,
 #card-element-right {left: 25px;}
-#card-element-left {clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);}
+#card-element-left {
+    -webkit-clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
+    clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
+}
 #card-element-center {
     transform: scaleX(70);
     transform-origin: 80px;
+    -webkit-clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
     clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
 }
 #card-element-right {
     left: 94px;
+    -webkit-clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
     clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
 }
 
 .gold #card-element-left,
 .gold #card-element-center,
 .gold #card-element-right {left: 18px;}
-.gold #card-element-left {clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);}
+.gold #card-element-left {
+    -webkit-clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
+    clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
+}
 .gold #card-element-center {
     transform-origin: 87px;
+    -webkit-clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
     clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
 }
 .gold #card-element-right {
     left: 87px;
+    -webkit-clip-path: polygon(88px 0, 100% 0, 100% 100%, 88px 100%);
     clip-path: polygon(88px 0, 100% 0, 100% 100%, 88px 100%);
 }
 
@@ -144,6 +154,7 @@ body {
     height: 100%;
 }
 .card-art-mask {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 345px, 0 345px);
     clip-path: polygon(
         0 0,
         100% 0,

@@ -474,7 +474,7 @@ function init() {
         var previewBox = preview.getBoundingClientRect();
         var r0 = distanceFromArt0(e0.x, e0.y);
         var r = distanceFromArt0(e.x, e.y);
-        art.width.value = art0.width * r / r0;
+        art.width.value = art0.width * r / r0 || 1;
         setWidth();
         setCircle(art0.x, art0.y, r);
     }
@@ -507,12 +507,16 @@ function init() {
             var imageBox = image.getBoundingClientRect();
             var imageStyle = getComputedStyle(image);
             context.restore();
-            if (imageStyle.clipPath != "none") {
-                var clipPath = imageStyle.clipPath.match(pattern.pairs);
+            var clipPath = imageStyle.clipPath;
+            if (clipPath == "none") {
+                clipPath = imageStyle.webkitClipPath;
+            }
+            if (clipPath != "none") {
+                var clipPoints = clipPath.match(pattern.pairs);
                 context.save();
                 context.beginPath();
-                for (var i = 0; i < clipPath.length; i++) {
-                    var clipPoint = clipPath[i].match(pattern.singles);
+                for (var i = 0; i < clipPoints.length; i++) {
+                    var clipPoint = clipPoints[i].match(pattern.singles);
                     var x = parseFloat(clipPoint[0]);
                     var y = parseFloat(clipPoint[1]);
                     var matrix = imageStyle.transform.match(/\d+(\.\d+)?/g) || [1, 0, 0, 1, 0, 0];
