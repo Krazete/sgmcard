@@ -57,7 +57,7 @@ function getImageFromImageData(imageData) {
 }
 
 function getGradientDataFromText(text) {
-    var colorStopPattern = /\S*?\s+-?\d+(\.\d+)?%?/g;
+    var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
 
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
@@ -66,12 +66,14 @@ function getGradientDataFromText(text) {
     var fillStyle = context.createLinearGradient(0, 0, 256, 0);
     var colorStops = text.match(colorStopPattern);
     try {
+        fillStyle.addColorStop(0, "black");
         for (var colorStop of colorStops) {
             var colorStopSplit = colorStop.split(/\s+/);
             var color = colorStopSplit[0];
             var cstop = parseFloat(colorStopSplit[1]) / 100;
             fillStyle.addColorStop(cstop, color);
         }
+        fillStyle.addColorStop(1, "white");
     }
     catch (e) {
         for (var i = 0; i < 16; i++) {
