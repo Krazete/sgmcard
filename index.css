@@ -291,6 +291,7 @@ input[type='number'] {
     width: 395px;
     height: 504px;
     padding: 0;
+    border: none;
     overflow: hidden;
 }
 

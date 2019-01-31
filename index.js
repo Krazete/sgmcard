@@ -622,8 +622,8 @@ function init() {
                 parseFloat(imageStyle.height) / 2
             ];
             console.log(image, origin);
-            var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]) + 3;
-            var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]) + 3;
+            var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]);
+            var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]);
             context.translate(x0, y0);
             context.transform(a, b, c, d, e, f);
             context.translate(-x0, -y0);
