@@ -75,6 +75,11 @@ function init() {
 
     var card = {
         "back": document.getElementById("card-back"),
+        "maskLeft": document.getElementById("mask-left"),
+        "maskRight": document.getElementById("mask-right"),
+        "maskTop": document.getElementById("mask-top"),
+        "maskBottom": document.getElementById("mask-bottom"),
+        "artMask": document.getElementsByClassName("card-art-mask"),
         "artUnder": document.getElementById("card-art-under"),
         "top": document.getElementById("card-top"),
         "artOver": document.getElementById("card-art-over"),
@@ -86,6 +91,7 @@ function init() {
         "level": document.getElementById("card-level"),
         "energy": document.getElementById("card-energy"),
         "artPositionTool": document.getElementById("card-art-position-tool"),
+        "circle": document.getElementById("circle"),
         "elementText": document.getElementById("card-element-text"),
         "levelText": document.getElementById("card-level-text"),
         "variant": document.getElementById("card-variant"),
@@ -588,12 +594,23 @@ function init() {
 
     /* Card Art Mask Tool */
 
-    var mask = {
-        "left": document.getElementById("mask-left"),
-        "right": document.getElementById("mask-right"),
-        "top": document.getElementById("mask-top"),
-        "bottom": document.getElementById("mask-bottom")
-    };
+    var artMaskPath;
+
+    function setArtMaskPath() {
+        artMaskPath = [0, 0, 395, 504];
+        if (card.maskLeft.className == "active") {
+            artMaskPath[0] = 50;
+        }
+        if (card.maskRight.className == "active") {
+            artMaskPath[2] = 345;
+        }
+        if (card.maskTop.className == "active") {
+            artMaskPath[1] = 50;
+        }
+        if (card.maskBottom.className == "active") {
+            artMaskPath[3] = 345;
+        }
+    }
 
     function selectMask() {
         if (this.className == "active") {
@@ -601,6 +618,17 @@ function init() {
         }
         else {
             this.className = "active";
+        }
+        setArtMaskPath();
+        for (var masker of card.artMask) {
+            var polygon = "polygon(" +
+                artMaskPath[0] + "px " + artMaskPath[1] + "px," +
+                artMaskPath[2] + "px " + artMaskPath[1] + "px," +
+                artMaskPath[2] + "px " + artMaskPath[3] + "px," +
+                artMaskPath[0] + "px " + artMaskPath[3] + "px" +
+            ")";
+            masker.style.clipPath = polygon;
+            masker.style.webkitClipPath = polygon;
         }
     }
 
@@ -625,27 +653,10 @@ function init() {
             context.save();
 
             if (image == card.artUnder || image == card.artOver) {
-                var mx0 = 0;
-                var my0 = 0;
-                var mx1 = 395;
-                var my1 = 504;
-                if (mask.left.className == "active") {
-                    mx0 = 50;
-                }
-                if (mask.right.className == "active") {
-                    mx1 = 345;
-                }
-                if (mask.top.className == "active") {
-                    my0 = 50;
-                }
-                if (mask.bottom.className == "active") {
-                    my1 = 345;
-                }
-                console.log(mx0, my0, mx1, my1);
-                context.moveTo(mx0, my0);
-                context.lineTo(mx1, my0);
-                context.lineTo(mx1, my1);
-                context.lineTo(mx0, my1);
+                context.moveTo(artMaskPath[0], artMaskPath[1]);
+                context.lineTo(artMaskPath[2], artMaskPath[1]);
+                context.lineTo(artMaskPath[2], artMaskPath[3]);
+                context.lineTo(artMaskPath[0], artMaskPath[3]);
                 context.clip();
             }
 
@@ -764,9 +775,10 @@ function init() {
     art.rotate.addEventListener("click", selectArtRotateTool);
     art.angle.addEventListener("input", setAngle);
 
-    for (var part in mask) {
-        mask[part].addEventListener("click", selectMask);
-    }
+    card.maskLeft.addEventListener("click", selectMask);
+    card.maskRight.addEventListener("click", selectMask);
+    card.maskTop.addEventListener("click", selectMask);
+    card.maskBottom.addEventListener("click", selectMask);
 
     rendered.button.addEventListener("click", renderCard);
 
