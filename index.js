@@ -92,7 +92,7 @@ function init() {
         "fighter": document.getElementById("card-fighter")
     };
 
-    /* Card Option Elements */
+    /* Card Option Menu Buttons */
 
     var tier = {
         "none": document.getElementById("option-no-tier"),
@@ -401,11 +401,11 @@ function init() {
         card.artPositionTool.addEventListener("touchstart", startRotateArt);
     }
 
-    /* Art Position Tools */
+    /* Card Art Position Tools */
 
     var e0, art0, circle = document.getElementById("circle");
 
-    function getCursor(e) {
+    function getPointer(e) {
         if (e.x || e.y) {
             return e;
         }
@@ -472,7 +472,7 @@ function init() {
     }
 
     function startMoveArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         e0 = e;
         setArt0();
         var r = distanceFromArt0(e.x, e.y);
@@ -485,7 +485,7 @@ function init() {
     }
 
     function moveArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         var previewBox = preview.getBoundingClientRect();
         var x0 = Math.floor(art0.x - previewBox.left);
         var y0 = Math.floor(art0.y - previewBox.top);
@@ -515,7 +515,7 @@ function init() {
     }
 
     function startScaleArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         e0 = e;
         setArt0();
         var r = distanceFromArt0(e.x, e.y);
@@ -528,7 +528,7 @@ function init() {
     }
 
     function scaleArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         var r0 = distanceFromArt0(e0.x, e0.y);
         var r = distanceFromArt0(e.x, e.y);
         art.width.value = art0.width * r / r0 || 1;
@@ -553,7 +553,7 @@ function init() {
     }
 
     function startRotateArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         e0 = e;
         setArt0();
         var t = angleFromArt0(e.x, e.y);
@@ -567,7 +567,7 @@ function init() {
     }
 
     function rotateArt(e) {
-        e = getCursor(e);
+        e = getPointer(e);
         var previewBox = preview.getBoundingClientRect();
         var t0 = angleFromArt0(e0.x, e0.y);
         var t = angleFromArt0(e.x, e.y);
@@ -584,6 +584,24 @@ function init() {
         card.artPositionTool.removeEventListener("mouseup", stopRotateArt);
         card.artPositionTool.removeEventListener("mouseout", stopRotateArt);
         card.artPositionTool.removeEventListener("touchend", stopRotateArt);
+    }
+
+    /* Card Art Mask Tool */
+
+    var mask = {
+        "left": document.getElementById("mask-left"),
+        "right": document.getElementById("mask-right"),
+        "top": document.getElementById("mask-top"),
+        "bottom": document.getElementById("mask-bottom")
+    };
+
+    function selectMask() {
+        if (this.className == "active") {
+            this.className = "";
+        }
+        else {
+            this.className = "active";
+        }
     }
 
     /* Card Renderer */
@@ -606,6 +624,31 @@ function init() {
         for (var image of images) {
             context.save();
 
+            if (image == card.artUnder || image == card.artOver) {
+                var mx0 = 0;
+                var my0 = 0;
+                var mx1 = 395;
+                var my1 = 504;
+                if (mask.left.className == "active") {
+                    mx0 = 50;
+                }
+                if (mask.right.className == "active") {
+                    mx1 = 345;
+                }
+                if (mask.top.className == "active") {
+                    my0 = 50;
+                }
+                if (mask.bottom.className == "active") {
+                    my1 = 345;
+                }
+                console.log(mx0, my0, mx1, my1);
+                context.moveTo(mx0, my0);
+                context.lineTo(mx1, my0);
+                context.lineTo(mx1, my1);
+                context.lineTo(mx0, my1);
+                context.clip();
+            }
+
             var imageStyle = getComputedStyle(image);
             var matrix = imageStyle.transform.match(pattern.singles) || [
                 1, 0, 0,
@@ -621,7 +664,6 @@ function init() {
                 parseFloat(imageStyle.width) / 2,
                 parseFloat(imageStyle.height) / 2
             ];
-            console.log(image, origin);
             var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]);
             var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]);
             context.translate(x0, y0);
@@ -721,6 +763,10 @@ function init() {
     art.width.addEventListener("input", setWidth);
     art.rotate.addEventListener("click", selectArtRotateTool);
     art.angle.addEventListener("input", setAngle);
+
+    for (var part in mask) {
+        mask[part].addEventListener("click", selectMask);
+    }
 
     rendered.button.addEventListener("click", renderCard);
 

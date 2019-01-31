@@ -48,6 +48,7 @@ body {
 
 #preview > * {
     position: absolute;
+    pointer-events: none;
 }
 
 #card-back {
@@ -198,6 +199,7 @@ body {
     border: none;
     border-radius: 0;
     margin: 0;
+    pointer-events: auto;
 }
 #card-element-text,
 #card-level-text {
@@ -221,12 +223,16 @@ body {
     width: 100%;
 }
 #card-variant {
+    left: 30px;
     bottom: 89px;
+    width: 335px;
     line-height: 60px;
     font-size: 58px;
 }
 #card-fighter {
+    left: 50px;
     bottom: 51px;
+    width: 295px;
     line-height: 40px;
     font-size: 38px;
 }
@@ -239,6 +245,18 @@ body {
 }
 .editing-art #card-art-position-tool {
     pointer-events: auto;
+}
+
+#card-art-position-tool {
+    top: 50px;
+    left: 50px;
+    width: 295px;
+    height: 295px;
+    cursor: move;
+    pointer-events: auto;
+}
+#card-art-position-tool:hover {
+    outline: 3px dashed white;
 }
 
 #circle {
@@ -255,24 +273,50 @@ body {
     display: block;
 }
 
-#card-art-position-tool {
-    top: 50px;
-    left: 50px;
-    width: 295px;
-    height: 295px;
-    cursor: move;
-}
-#card-art-position-tool:hover {
-    outline: 3px dashed white;
-}
-
 #card-art-mask-tool {
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    cursor: crosshair;
-    display: none;
+    cursor: not-allowed;
+    pointer-events: auto;
+}
+
+#mask-top,
+#mask-left,
+#mask-right,
+#mask-bottom {
+    position: absolute;
+}
+#mask-top:hover,
+#mask-left:hover,
+#mask-right:hover,
+#mask-bottom:hover {
+    outline: 3px dashed red;
+}
+#mask-top.active,
+#mask-left.active,
+#mask-right.active,
+#mask-bottom.active {
+    background: var(--fg);
+}
+#mask-top {
+    width: 100%;
+    height: 50px;
+}
+#mask-left {
+    width: 50px;
+    height: 100%;
+}
+#mask-right {
+    right: 0;
+    width: 50px;
+    height: 100%;
+}
+#mask-bottom {
+    bottom: 0;
+    width: 100%;
+    height: 159px;
 }
 
 /* MENU */
@@ -378,6 +422,7 @@ input[type='number'] {
 }
 
 input[type='button'] {
+    width: 33%;
     margin: 8px auto;
     display: block;
     cursor: pointer;
@@ -434,7 +479,7 @@ input[type='button'] {
 }
 
 #render-image {
-    width: 100px;
+    width: 200px;
     border: 1px dashed var(--bg);
     border-radius: 4px;
 }
