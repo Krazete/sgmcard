@@ -56,16 +56,54 @@ function getImageFromImageData(imageData) {
     return loadImage(canvas.toDataURL());
 }
 
+function getGradientDataFromText(text) {
+    var colorStopPattern = /\S*?\s+-?\d+(\.\d+)?%?/g;
+
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.height = 1;
+    canvas.width = 256;
+    var fillStyle = context.createLinearGradient(0, 0, 256, 0);
+    var colorStops = text.match(colorStopPattern);
+    try {
+        for (var colorStop of colorStops) {
+            var colorStopSplit = colorStop.split(/\s+/);
+            var color = colorStopSplit[0];
+            var cstop = parseFloat(colorStopSplit[1]) / 100;
+            fillStyle.addColorStop(cstop, color);
+        }
+    }
+    catch (e) {
+        for (var i = 0; i < 16; i++) {
+            fillStyle.addColorStop(i / 16, i % 2 ? "black" : "white");
+        }
+    }
+    context.fillStyle = fillStyle;
+    context.fillRect(0, 0, 256, 1);
+    return context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
 function loadColorizedImage(imageSrc, gradientSrc) {
-    return Promise.all([
-        loadImage(imageSrc),
-        loadImage(gradientSrc)
-    ]).then(function (response) {
-        var imageData = getImageDataFromImage(response[0]);
-        var gradientData = getImageDataFromImage(response[1], 256, 1);
-        var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
-        return getImageFromImageData(colorizedData);
-    });
+    if (typeof gradientSrc == "string") {
+        return Promise.all([
+            loadImage(imageSrc),
+            loadImage(gradientSrc)
+        ]).then(function (response) {
+            var imageData = getImageDataFromImage(response[0]);
+            var gradientData = getImageDataFromImage(response[1], 256, 1);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
+            return getImageFromImageData(colorizedData);
+        });
+    }
+    else {
+        return Promise.all([
+            loadImage(imageSrc)
+        ]).then(function (response) {
+            var imageData = getImageDataFromImage(response[0]);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientSrc);
+            return getImageFromImageData(colorizedData);
+        });
+    }
 }
 
 /* Main */
@@ -137,8 +175,10 @@ function init() {
     var advanced = {
         "defaultBackground": document.getElementById("option-default-background"),
         "customBackground": document.getElementById("option-custom-background"),
+        "background": document.getElementById("option-background"),
         "defaultForeground": document.getElementById("option-default-foreground"),
-        "customForeground": document.getElementById("option-custom-foreground")
+        "customForeground": document.getElementById("option-custom-foreground"),
+        "foreground": document.getElementById("option-foreground"),
     };
     var rendered = {
         "button": document.getElementById("option-render"),
@@ -242,11 +282,12 @@ function init() {
             src.level = "fragment/DiamondLevel.png";
         }
 
-        if (advanced.customForeground.checked) {
-        }
-        else if (tier.diamond.checked && !element.none.checked) {
+        if (tier.diamond.checked && !element.none.checked || advanced.customForeground.checked && !tier.none.checked) {
             var gradient = "gradient/36.png";
-            if (element.fire.checked) {
+            if (advanced.customForeground.checked) {
+                gradient = getGradientDataFromText(advanced.foreground.value);
+            }
+            else if (element.fire.checked) {
                 gradient = "gradient/DiamondGradientMapFire.png";
             }
             else if (element.water.checked) {
@@ -321,8 +362,10 @@ function init() {
         }
 
         if (advanced.customBackground.checked) {
+            gradient = getGradientDataFromText(advanced.background.value);
         }
-        else if (!element.none.checked) {
+
+        if (!element.none.checked || advanced.customBackground.checked) {
             loadColorizedImage(src.back, gradient).then(function (response) {
                 card.back.src = response.src;
             });
@@ -405,6 +448,26 @@ function init() {
         card.artPositionTool.removeEventListener("touchstart", startScaleArt);
         card.artPositionTool.addEventListener("mousedown", startRotateArt);
         card.artPositionTool.addEventListener("touchstart", startRotateArt);
+    }
+
+    function selectForeground() {
+        if (advanced.defaultForeground.checked) {
+            advanced.foreground.setAttribute("disabled", "true");
+        }
+        else {
+            advanced.foreground.removeAttribute("disabled");
+        }
+        selectTier();
+    }
+
+    function selectBackground() {
+        if (advanced.defaultBackground.checked) {
+            advanced.background.setAttribute("disabled", "true");
+        }
+        else {
+            advanced.background.removeAttribute("disabled");
+        }
+        selectElement();
     }
 
     /* Card Art Position Tools */
@@ -594,7 +657,7 @@ function init() {
 
     /* Card Art Mask Tool */
 
-    var artMaskPath;
+    var artMaskPath = [0, 0, 395, 504];
 
     function setArtMaskPath() {
         artMaskPath = [0, 0, 395, 504];
@@ -634,12 +697,10 @@ function init() {
 
     /* Card Renderer */
 
-    var pattern = {
-        "singles": /-?\d+(\.\d+)?(px|%)?/g,
-        "pairs": /-?\d+(\.\d+)?(px|%)\s-?\d+(\.\d+)?(px|%)/g
-    };
-
     function renderCard() {
+        var singlePattern = /-?\d+(\.\d+)?(px|%)?/g;
+        var pairPattern = /-?\d+(\.\d+)?(px|%)\s+-?\d+(\.\d+)?(px|%)/g;
+
         var preview = document.getElementById("preview");
         var previewBox = preview.getBoundingClientRect();
 
@@ -661,7 +722,7 @@ function init() {
             }
 
             var imageStyle = getComputedStyle(image);
-            var matrix = imageStyle.transform.match(pattern.singles) || [
+            var matrix = imageStyle.transform.match(singlePattern) || [
                 1, 0, 0,
                 1, 0, 0
             ];
@@ -671,7 +732,7 @@ function init() {
             var d = parseFloat(matrix[3]);
             var e = parseFloat(matrix[4]);
             var f = parseFloat(matrix[5]);
-            var origin = imageStyle.transformOrigin.match(pattern.singles) || [
+            var origin = imageStyle.transformOrigin.match(singlePattern) || [
                 parseFloat(imageStyle.width) / 2,
                 parseFloat(imageStyle.height) / 2
             ];
@@ -691,9 +752,9 @@ function init() {
             }
             if (clipPath != "none") {
                 context.beginPath();
-                var clipPoints = clipPath.match(pattern.pairs);
+                var clipPoints = clipPath.match(pairPattern);
                 for (var i = 0; i < clipPoints.length; i++) {
-                    var clipPoint = clipPoints[i].match(pattern.singles);
+                    var clipPoint = clipPoints[i].match(singlePattern);
                     var x = parseFloat(clipPoint[0]);
                     var y = parseFloat(clipPoint[1]);
                     if (/%/.test(clipPoint[0])) {
@@ -763,6 +824,12 @@ function init() {
     for (var option in energy) {
         energy[option].addEventListener("click", selectEnergy);
     }
+    advanced.defaultForeground.addEventListener("click", selectForeground);
+    advanced.customForeground.addEventListener("click", selectForeground);
+    advanced.foreground.addEventListener("change", selectTier);
+    advanced.defaultBackground.addEventListener("click", selectBackground);
+    advanced.customBackground.addEventListener("click", selectBackground);
+    advanced.background.addEventListener("change", selectElement);
 
     art.file.addEventListener("change", selectArt);
     art.over.addEventListener("click", selectOverlap);
@@ -785,6 +852,8 @@ function init() {
     tier.none.click();
     element.none.click();
     energy.none.click();
+    advanced.defaultBackground.click();
+    advanced.defaultForeground.click();
     art.under.click();
     art.move.click();
 }

@@ -112,19 +112,21 @@
                 </div>
             </div>
             <div>
-                <h2>Advanced</h2>
-                <h3>Background Gradient</h3>
-                <input type="radio" name="option-background" id="option-default-background">
-                <label for="option-default-background"><img src="menu/LossMark.png"></label>
-                <input type="radio" name="option-background" id="option-custom-background">
-                <label for="option-custom-background"><img src="menu/Checkmark.png"></label>
-                <input type="text" placeholder="black 0%, white 100%" id="option-gradient-background">
-                <h3>Foreground Gradient</h3>
+                <h2>Custom Gradient Map</h2>
+                <h3>Foreground</h3>
                 <input type="radio" name="option-foreground" id="option-default-foreground">
                 <label for="option-default-foreground"><img src="menu/LossMark.png"></label>
                 <input type="radio" name="option-foreground" id="option-custom-foreground">
                 <label for="option-custom-foreground"><img src="menu/Checkmark.png"></label>
-                <input type="text" placeholder="black 0%, white 100%" id="option-gradient-foreground">
+                <input type="text" placeholder="black 0%, brown 33%, chocolate 67%, white 100%" id="option-foreground">
+                <div class="gradient-foreground"></div>
+                <h3>Background</h3>
+                <input type="radio" name="option-background" id="option-default-background">
+                <label for="option-default-background"><img src="menu/LossMark.png"></label>
+                <input type="radio" name="option-background" id="option-custom-background">
+                <label for="option-custom-background"><img src="menu/Checkmark.png"></label>
+                <input type="text" placeholder="black 0%, brown 33%, chocolate 67%, white 100%" id="option-background">
+                <div class="gradient-background"></div>
             </div>
             <input type="button" value="Create Card" id="option-render">
             <div id="render">

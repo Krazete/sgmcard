@@ -43,7 +43,10 @@ body {
     background: var(--bg);
     padding: 0;
     border-radius: 8px;
+    margin: 8px 4px;
     overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 #preview > * {
@@ -240,8 +243,9 @@ body {
 /* CARD ART TOOLS */
 
 .editing-art * {
-    user-select: none;
     pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 .editing-art #card-art-position-tool {
     pointer-events: auto;
@@ -286,13 +290,14 @@ body {
 #mask-left,
 #mask-right,
 #mask-bottom {
+    box-sizing: border-box;
     position: absolute;
 }
 #mask-top:hover,
 #mask-left:hover,
 #mask-right:hover,
 #mask-bottom:hover {
-    outline: 3px dashed red;
+    border: 3px dashed red;
 }
 #mask-top.active,
 #mask-left.active,
@@ -347,6 +352,9 @@ h1, h2, h3, label {
 
 h1 {
     text-align: center;
+}
+h3 {
+    color: var(--bg);
 }
 
 /* MENU INPUTS */
@@ -415,6 +423,14 @@ input[type='button'] {
     font-family: 'Cinema';
     font-size: 18px;
     text-transform: uppercase;
+}
+
+input[type='text'] {
+    width: 75%
+}
+input[type='text']:disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 input[type='number'] {
