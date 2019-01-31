@@ -12,13 +12,9 @@
                 <h2>Preview</h2>
                 <div id="preview">
                     <img id="card-back">
-                    <div class="card-art-mask">
-                        <img id="card-art-under">
-                    </div>
+                    <img id="card-art-under">
                     <img id="card-top">
-                    <div class="card-art-mask">
-                        <img id="card-art-over">
-                    </div>
+                    <img id="card-art-over">
                     <img id="card-bottom">
                     <img id="card-element-icon">
                     <img id="card-element-left">
@@ -113,16 +109,14 @@
                 <label for="option-default-background"><img src="menu/LossMark.png"></label>
                 <input type="radio" name="option-background" id="option-custom-background">
                 <label for="option-custom-background"><img src="menu/Checkmark.png"></label>
-                <div class="gradient-strip"></div>
                 <h3>Foreground Gradient</h3>
                 <input type="radio" name="option-foreground" id="option-default-foreground">
                 <label for="option-default-foreground"><img src="menu/LossMark.png"></label>
                 <input type="radio" name="option-foreground" id="option-custom-foreground">
                 <label for="option-custom-foreground"><img src="menu/Checkmark.png"></label>
-                <div class="gradient-strip"></div>
             </div>
-            <div>
-                <input type="button" value="Create" id="option-render">
+            <input type="button" value="Create Card" id="option-render">
+            <div id="render">
                 <a target="_blank" download="card.png" id="render-link">
                     <img id="render-image">
                 </a>

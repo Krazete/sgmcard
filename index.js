@@ -682,8 +682,8 @@ function init() {
             context.fillStyle = textStyle.color;
             context.textAlign = textStyle.textAlign;
             context.textBaseline = "middle";
-            context.shadowOffsetX = 0.07 * parseInt(textStyle.fontSize);
-            context.shadowOffsetY = 0.07 * parseInt(textStyle.fontSize);
+            context.shadowOffsetX = 0.07 * parseFloat(textStyle.fontSize);
+            context.shadowOffsetY = 0.07 * parseFloat(textStyle.fontSize);
             context.shadowColor = "black";
             var x = (context.textAlign == "center" ? (textBox.left + textBox.right) / 2 : textBox.left) - previewBox.left;
             var y = (textBox.top + textBox.bottom) / 2 - previewBox.top;
