@@ -514,13 +514,13 @@ function init() {
             "dark": "gradient/DiamondGradientDark.png",
             "neutral": "gradient/DiamondGradientMapNeutralB.png"
         },
-        "bg": {
-            "fire": getGradientDataFromText("#500 0%, #f43 50%, #fa7 100%"),
-            "water": getGradientDataFromText("#026 0%, #4be 50%, #7ff 100%"),
-            "wind": getGradientDataFromText("#033 0%, #5c4 50%, #bf7 100%"),
-            "light": getGradientDataFromText("#a72 0%, #fea 50%, #fff 100%"),
-            "dark": getGradientDataFromText("#113 0%, #a6a 50%, #ead 100%"),
-            "neutral": getGradientDataFromText("#333 0%, #aaa 50%, #eee 100%")
+        "bg": { /* contains imageData, not dataURL as the name "gradientMapURL" implies */
+            "fire": getGradientDataFromText("#200 0%, #c01 20%, #f43 50%, #fb7 100%"),
+            "water": getGradientDataFromText("#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%"),
+            "wind": getGradientDataFromText("#010 0%, #208038 20%, #48c048 50%, #bf7 100%"),
+            "light": getGradientDataFromText("#950 0%, #db5 20%, #fea 50%, #fff 100%"),
+            "dark": getGradientDataFromText("#113 0%, #536 20%, #a464a4 50%, #ead 100%"),
+            "neutral": getGradientDataFromText("#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"")
         }
     };
 
