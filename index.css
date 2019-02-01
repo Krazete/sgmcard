@@ -22,16 +22,11 @@ body {
     background: var(--bg);
 }
 
-@media all and (orientation: landscape) {
-    body {
-        flex-direction: row;
-    }
+.flexbox {
+    display: flex;
 }
-
-@media all and (orientation: portrait) {
-    body {
-        flex-direction: column;
-    }
+.flexbox > :last-child {
+    flex: 1;
 }
 
 /* CARD PREVIEW */
@@ -337,11 +332,6 @@ body {
     margin: auto;
 }
 
-#menu > .column {
-    vertical-align: top;
-    display: inline-block;
-}
-
 h1, h2, h3, label {
     font-family: 'Cinema';
     text-transform: uppercase;
@@ -425,10 +415,13 @@ input[type='button'] {
     text-transform: uppercase;
 }
 
+input[type='file'],
 input[type='text'] {
-    width: 75%
+    width: 85%;
+    display: block;
 }
-input[type='text']:disabled {
+
+.disabled {
     opacity: 0.5;
     pointer-events: none;
 }

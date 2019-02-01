@@ -175,12 +175,35 @@ function init() {
         "angle": document.getElementById("option-angle")
     };
     var advanced = {
-        "defaultBackground": document.getElementById("option-default-background"),
-        "customBackground": document.getElementById("option-custom-background"),
-        "background": document.getElementById("option-background"),
         "defaultForeground": document.getElementById("option-default-foreground"),
         "customForeground": document.getElementById("option-custom-foreground"),
         "foreground": document.getElementById("option-foreground"),
+        "defaultBackground": document.getElementById("option-default-background"),
+        "customBackground": document.getElementById("option-custom-background"),
+        "background": document.getElementById("option-background"),
+        "override": {
+            "foreground": {
+                "custom": document.getElementById("override-foreground-custom"),
+                "bronze": document.getElementById("override-foreground-bronze"),
+                "silver": document.getElementById("override-foreground-silver"),
+                "gold": document.getElementById("override-foreground-gold"),
+                "fire": document.getElementById("override-foreground-fire"),
+                "water": document.getElementById("override-foreground-water"),
+                "wind": document.getElementById("override-foreground-wind"),
+                "light": document.getElementById("override-foreground-light"),
+                "dark": document.getElementById("override-foreground-dark"),
+                "neutral": document.getElementById("override-foreground-neutral")
+            },
+            "background": {
+                "custom": document.getElementById("override-background-custom"),
+                "fire": document.getElementById("override-background-fire"),
+                "water": document.getElementById("override-background-water"),
+                "wind": document.getElementById("override-background-wind"),
+                "light": document.getElementById("override-background-light"),
+                "dark": document.getElementById("override-background-dark"),
+                "neutral": document.getElementById("override-background-neutral")
+            }
+        }
     };
     var rendered = {
         "button": document.getElementById("option-render"),
@@ -286,10 +309,7 @@ function init() {
 
         if (tier.diamond.checked && !element.none.checked || advanced.customForeground.checked && !tier.none.checked) {
             var gradient = "gradient/36.png";
-            if (advanced.customForeground.checked) {
-                gradient = getGradientDataFromText(advanced.foreground.value);
-            }
-            else if (element.fire.checked) {
+            if (element.fire.checked) {
                 gradient = "gradient/DiamondGradientMapFire.png";
             }
             else if (element.water.checked) {
@@ -306,6 +326,38 @@ function init() {
             }
             else if (element.neutral.checked) {
                 gradient = "gradient/DiamondGradientMapNeutralB.png";
+            }
+            if (advanced.customForeground.checked) {
+                if (advanced.override.foreground.custom.checked) {
+                    gradient = getGradientDataFromText(advanced.foreground.value);
+                }
+                else if (advanced.override.foreground.bronze.checked) {
+                    gradient = "gradient/BronzeGradient.png";
+                }
+                else if (advanced.override.foreground.silver.checked) {
+                    gradient = "gradient/SilverGradient.png";
+                }
+                else if (advanced.override.foreground.gold.checked) {
+                    gradient = "gradient/GoldGradient.png";
+                }
+                else if (advanced.override.foreground.fire.checked) {
+                    gradient = "gradient/DiamondGradientMapFire.png";
+                }
+                else if (advanced.override.foreground.water.checked) {
+                    gradient = "gradient/DiamondGradientWater.png";
+                }
+                else if (advanced.override.foreground.wind.checked) {
+                    gradient = "gradient/DiamondGradientMapWind.png";
+                }
+                else if (advanced.override.foreground.light.checked) {
+                    gradient = "gradient/DiamondGradientLight.png";
+                }
+                else if (advanced.override.foreground.dark.checked) {
+                    gradient = "gradient/DiamondGradientDark.png";
+                }
+                else if (advanced.override.foreground.neutral.checked) {
+                    gradient = "gradient/DiamondGradientMapNeutralB.png";
+                }
             }
             Promise.all([
                 loadColorizedImage(src.top, gradient),
@@ -356,15 +408,35 @@ function init() {
         }
         else if (element.dark.checked) {
             card.elementIcon.src = "fragment/ElementalIconDark.png";
-            gradient = "gradient/DiamondGradientDarkBackplate.png";
+            gradient = "gradient/GoldGradient.png";
         }
         else if (element.neutral.checked) {
             card.elementIcon.src = "fragment/ElementalIconNeutral.png";
-            gradient = "gradient/DarkGradient.png";
+            gradient = "gradient/13.png";
         }
 
         if (advanced.customBackground.checked) {
-            gradient = getGradientDataFromText(advanced.background.value);
+            if (advanced.override.background.custom.checked) {
+                gradient = getGradientDataFromText(advanced.background.value);
+            }
+            else if (advanced.override.background.fire.checked) {
+                gradient = "gradient/DiamondGradientMapFire.png";
+            }
+            else if (advanced.override.background.water.checked) {
+                gradient = "gradient/DiamondGradientWater.png";
+            }
+            else if (advanced.override.background.wind.checked) {
+                gradient = "gradient/DiamondGradientMapWind.png";
+            }
+            else if (advanced.override.background.light.checked) {
+                gradient = "gradient/DiamondGradientLight.png";
+            }
+            else if (advanced.override.background.dark.checked) {
+                gradient = "gradient/DiamondGradientDark.png";
+            }
+            else if (advanced.override.background.neutral.checked) {
+                gradient = "gradient/DiamondGradientMapNeutralB.png";
+            }
         }
 
         if (!element.none.checked || advanced.customBackground.checked) {
@@ -454,20 +526,20 @@ function init() {
 
     function selectForeground() {
         if (advanced.defaultForeground.checked) {
-            advanced.foreground.setAttribute("disabled", "true");
+            document.getElementById("advanced-fg").classList.add("disabled");
         }
         else {
-            advanced.foreground.removeAttribute("disabled");
+            document.getElementById("advanced-fg").classList.remove("disabled");
         }
         selectTier();
     }
 
     function selectBackground() {
         if (advanced.defaultBackground.checked) {
-            advanced.background.setAttribute("disabled", "true");
+            document.getElementById("advanced-bg").classList.add("disabled");
         }
         else {
-            advanced.background.removeAttribute("disabled");
+            document.getElementById("advanced-bg").classList.remove("disabled");
         }
         selectElement();
     }
@@ -829,9 +901,15 @@ function init() {
     advanced.defaultForeground.addEventListener("click", selectForeground);
     advanced.customForeground.addEventListener("click", selectForeground);
     advanced.foreground.addEventListener("change", selectTier);
+    for (var what in advanced.override.foreground) {
+        advanced.override.foreground[what].addEventListener("click", selectTier);
+    }
     advanced.defaultBackground.addEventListener("click", selectBackground);
     advanced.customBackground.addEventListener("click", selectBackground);
     advanced.background.addEventListener("change", selectElement);
+    for (var what in advanced.override.background) {
+        advanced.override.background[what].addEventListener("click", selectElement);
+    }
 
     art.file.addEventListener("change", selectArt);
     art.over.addEventListener("click", selectOverlap);
@@ -852,10 +930,12 @@ function init() {
     rendered.button.addEventListener("click", renderCard);
 
     tier.none.click();
-    element.none.click();
+    element.dark.click();
     energy.none.click();
     advanced.defaultBackground.click();
+    advanced.override.background.custom.click();
     advanced.defaultForeground.click();
+    advanced.override.foreground.custom.click();
     art.under.click();
     art.move.click();
 }
