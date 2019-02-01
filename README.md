@@ -41,6 +41,9 @@ Gradient maps are applied to images after running them through a series of canva
 3. Map the image brightness values `i` to the `i`th gradient value to get the mapped color.
 4. Draw the new data to a canvas and take the `dataURL` from that canvas to use as an image `src`.
 
+Background gradients are not loaded from images because I could not find these gradient maps in the APK.
+Instead, I repeatedly adjusted colors and percentages and compared with cropped in-game screenshots in real time to achieve an acceptable approximation.
+
 ### Image Transformations
 
 The interactive image editing tools use basic distance and angle formulas to adjust the CSS properties of the uploaded image.
