@@ -2,7 +2,7 @@
 
 A tool for creating custom Skullgirls Mobile fighter cards.
 
-<img src="">
+<img src="sample.png">
 
 ## Features
 
