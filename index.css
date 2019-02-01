@@ -55,8 +55,8 @@ body {
     width: 295px;
 }
 
-#card-art-under,
-#card-art-over {
+#art-under,
+#art-over {
     position: absolute;
     top: 198px;
     left: 198px;

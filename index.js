@@ -111,7 +111,7 @@ function loadColorizedImage(imageSrc, gradientSrc) {
 /* Main */
 
 function init() {
-    /* Card Preview Elements */
+    /* Preview Elements */
 
     var card = {
         "back": document.getElementById("card-back"),
@@ -119,10 +119,10 @@ function init() {
         "maskRight": document.getElementById("mask-right"),
         "maskTop": document.getElementById("mask-top"),
         "maskBottom": document.getElementById("mask-bottom"),
-        "artMask": document.getElementsByClassName("card-art-mask"),
-        "artUnder": document.getElementById("card-art-under"),
+        "artMasks": document.getElementsByClassName("card-art-mask"),
+        "artUnder": document.getElementById("art-under"),
         "top": document.getElementById("card-top"),
-        "artOver": document.getElementById("card-art-over"),
+        "artOver": document.getElementById("art-over"),
         "bottom": document.getElementById("card-bottom"),
         "elementIcon": document.getElementById("card-element-icon"),
         "elementLeft": document.getElementById("card-element-left"),
@@ -138,7 +138,7 @@ function init() {
         "fighter": document.getElementById("card-fighter")
     };
 
-    /* Card Option Menu Buttons */
+    /* Menu Option Elements */
 
     var tier = {
         "none": document.getElementById("option-no-tier"),
@@ -164,54 +164,52 @@ function init() {
     };
     var art = {
         "file": document.getElementById("option-art"),
-        "under": document.getElementById("option-under"),
-        "over": document.getElementById("option-over"),
         "move": document.getElementById("option-move"),
         "x": document.getElementById("option-x"),
         "y": document.getElementById("option-y"),
         "scale": document.getElementById("option-scale"),
         "width": document.getElementById("option-width"),
         "rotate": document.getElementById("option-rotate"),
-        "angle": document.getElementById("option-angle")
+        "angle": document.getElementById("option-angle"),
+        "under": document.getElementById("option-under"),
+        "over": document.getElementById("option-over")
     };
-    var advanced = {
-        "defaultForeground": document.getElementById("option-default-foreground"),
-        "customForeground": document.getElementById("option-custom-foreground"),
-        "foreground": document.getElementById("option-foreground"),
-        "defaultBackground": document.getElementById("option-default-background"),
-        "customBackground": document.getElementById("option-custom-background"),
-        "background": document.getElementById("option-background"),
-        "override": {
-            "foreground": {
-                "custom": document.getElementById("override-foreground-custom"),
-                "bronze": document.getElementById("override-foreground-bronze"),
-                "silver": document.getElementById("override-foreground-silver"),
-                "gold": document.getElementById("override-foreground-gold"),
-                "fire": document.getElementById("override-foreground-fire"),
-                "water": document.getElementById("override-foreground-water"),
-                "wind": document.getElementById("override-foreground-wind"),
-                "light": document.getElementById("override-foreground-light"),
-                "dark": document.getElementById("override-foreground-dark"),
-                "neutral": document.getElementById("override-foreground-neutral")
-            },
-            "background": {
-                "custom": document.getElementById("override-background-custom"),
-                "fire": document.getElementById("override-background-fire"),
-                "water": document.getElementById("override-background-water"),
-                "wind": document.getElementById("override-background-wind"),
-                "light": document.getElementById("override-background-light"),
-                "dark": document.getElementById("override-background-dark"),
-                "neutral": document.getElementById("override-background-neutral")
-            }
-        }
+    var foreground = {
+        "default": document.getElementById("option-fg-default"),
+        "override": document.getElementById("option-fg-override"),
+        "submenu": document.getElementById("fg-submenu"),
+        "input": document.getElementById("option-fg"),
+        "custom": document.getElementById("option-fg-custom"),
+        "bronze": document.getElementById("option-fg-bronze"),
+        "silver": document.getElementById("option-fg-silver"),
+        "gold": document.getElementById("option-fg-gold"),
+        "fire": document.getElementById("option-fg-fire"),
+        "water": document.getElementById("option-fg-water"),
+        "wind": document.getElementById("option-fg-wind"),
+        "light": document.getElementById("option-fg-light"),
+        "dark": document.getElementById("option-fg-dark"),
+        "neutral": document.getElementById("option-fg-neutral")
     };
-    var rendered = {
+    var background = {
+        "default": document.getElementById("option-bg-default"),
+        "override": document.getElementById("option-bg-override"),
+        "submenu": document.getElementById("bg-submenu"),
+        "input": document.getElementById("option-bg"),
+        "custom": document.getElementById("option-bg-custom"),
+        "fire": document.getElementById("option-bg-fire"),
+        "water": document.getElementById("option-bg-water"),
+        "wind": document.getElementById("option-bg-wind"),
+        "light": document.getElementById("option-bg-light"),
+        "dark": document.getElementById("option-bg-dark"),
+        "neutral": document.getElementById("option-bg-neutral")
+    };
+    var render = {
         "button": document.getElementById("option-render"),
         "link": document.getElementById("render-link"),
         "image": document.getElementById("render-image")
     };
 
-    /* Preview Input Callbacks */
+    /* Preview Inputs */
 
     function getWidth(input) {
         var inputStyle = getComputedStyle(input);
@@ -258,293 +256,7 @@ function init() {
         card.elementRight.style.left = offset + width + "px";
     }
 
-    /* Card Option Callbacks */
-
-    var src = {
-        "back": "fragment/GreyBackground.png",
-        "art": "",
-        "top": "",
-        "bottom": "",
-        "element": "",
-        "level": "",
-        "energy": ""
-    };
-
-    function selectTier() {
-        if (tier.none.checked) {
-            preview.className = "";
-            src.top = "";
-            src.bottom = "";
-            src.element = "";
-            src.level = "";
-        }
-        if (tier.bronze.checked) {
-            preview.className = "bronze";
-            src.top = "fragment/BronzeTop.png";
-            src.bottom = "fragment/BronzeBottom.png";
-            src.element = "fragment/BronzeElement.png";
-            src.level = "fragment/BronzeLevel.png";
-        }
-        else if (tier.silver.checked) {
-            preview.className = "silver";
-            src.top = "fragment/SilverTop.png";
-            src.bottom = "fragment/SilverBottom.png";
-            src.element = "fragment/SilverElement.png";
-            src.level = "fragment/SilverLevel.png";
-        }
-        else if (tier.gold.checked) {
-            preview.className = "gold";
-            src.top = "fragment/GoldTop.png";
-            src.bottom = "fragment/GoldBottom.png";
-            src.element = "fragment/GoldElement.png";
-            src.level = "fragment/GoldLevel.png";
-        }
-        else if (tier.diamond.checked) {
-            preview.className = "diamond";
-            src.top = "fragment/DiamondTop.png";
-            src.bottom = "fragment/DiamondBottom.png";
-            src.element = "fragment/DiamondElement.png";
-            src.level = "fragment/DiamondLevel.png";
-        }
-
-        if (tier.diamond.checked && !element.none.checked || advanced.customForeground.checked && !tier.none.checked) {
-            var gradient = "gradient/36.png";
-            if (element.fire.checked) {
-                gradient = "gradient/DiamondGradientMapFire.png";
-            }
-            else if (element.water.checked) {
-                gradient = "gradient/DiamondGradientWater.png";
-            }
-            else if (element.wind.checked) {
-                gradient = "gradient/DiamondGradientMapWind.png";
-            }
-            else if (element.light.checked) {
-                gradient = "gradient/DiamondGradientLight.png";
-            }
-            else if (element.dark.checked) {
-                gradient = "gradient/DiamondGradientDark.png";
-            }
-            else if (element.neutral.checked) {
-                gradient = "gradient/DiamondGradientMapNeutralB.png";
-            }
-            if (advanced.customForeground.checked) {
-                if (advanced.override.foreground.custom.checked) {
-                    gradient = getGradientDataFromText(advanced.foreground.value);
-                }
-                else if (advanced.override.foreground.bronze.checked) {
-                    gradient = "gradient/BronzeGradient.png";
-                }
-                else if (advanced.override.foreground.silver.checked) {
-                    gradient = "gradient/SilverGradient.png";
-                }
-                else if (advanced.override.foreground.gold.checked) {
-                    gradient = "gradient/GoldGradient.png";
-                }
-                else if (advanced.override.foreground.fire.checked) {
-                    gradient = "gradient/DiamondGradientMapFire.png";
-                }
-                else if (advanced.override.foreground.water.checked) {
-                    gradient = "gradient/DiamondGradientWater.png";
-                }
-                else if (advanced.override.foreground.wind.checked) {
-                    gradient = "gradient/DiamondGradientMapWind.png";
-                }
-                else if (advanced.override.foreground.light.checked) {
-                    gradient = "gradient/DiamondGradientLight.png";
-                }
-                else if (advanced.override.foreground.dark.checked) {
-                    gradient = "gradient/DiamondGradientDark.png";
-                }
-                else if (advanced.override.foreground.neutral.checked) {
-                    gradient = "gradient/DiamondGradientMapNeutralB.png";
-                }
-            }
-            Promise.all([
-                loadColorizedImage(src.top, gradient),
-                loadColorizedImage(src.bottom, gradient),
-                loadColorizedImage(src.element, gradient),
-                loadColorizedImage(src.level, gradient)
-            ]).then(function (response) {
-                card.top.src = response[0].src;
-                card.bottom.src = response[1].src;
-                card.elementLeft.src = response[2].src;
-                card.elementCenter.src = response[2].src;
-                card.elementRight.src = response[2].src;
-                card.level.src = response[3].src;
-            });
-        }
-        else {
-            card.top.src = src.top;
-            card.bottom.src = src.bottom;
-            card.elementLeft.src = src.element;
-            card.elementCenter.src = src.element;
-            card.elementRight.src = src.element;
-            card.level.src = src.level;
-        }
-
-        resizeCardElement();
-    }
-
-    function selectElement() {
-        var gradient = "gradient/36.png";
-        if (element.none.checked) {
-            card.elementIcon.src = "";
-        }
-        else if (element.fire.checked) {
-            card.elementIcon.src = "fragment/ElementalIconFire.png";
-            gradient = "gradient/DiamondGradientMapFireBackplate.png";
-        }
-        else if (element.water.checked) {
-            card.elementIcon.src = "fragment/ElementalIconWater.png";
-            gradient = "gradient/DiamondGradientWaterBackplate.png";
-        }
-        else if (element.wind.checked) {
-            card.elementIcon.src = "fragment/ElementalIconWind.png";
-            gradient = "gradient/DiamondGradientMapWindBackplate.png";
-        }
-        else if (element.light.checked) {
-            card.elementIcon.src = "fragment/ElementalIconLight.png";
-            gradient = "gradient/DiamondGradientLightBackplate.png";
-        }
-        else if (element.dark.checked) {
-            card.elementIcon.src = "fragment/ElementalIconDark.png";
-            gradient = "gradient/GoldGradient.png";
-        }
-        else if (element.neutral.checked) {
-            card.elementIcon.src = "fragment/ElementalIconNeutral.png";
-            gradient = "gradient/13.png";
-        }
-
-        if (advanced.customBackground.checked) {
-            if (advanced.override.background.custom.checked) {
-                gradient = getGradientDataFromText(advanced.background.value);
-            }
-            else if (advanced.override.background.fire.checked) {
-                gradient = "gradient/DiamondGradientMapFire.png";
-            }
-            else if (advanced.override.background.water.checked) {
-                gradient = "gradient/DiamondGradientWater.png";
-            }
-            else if (advanced.override.background.wind.checked) {
-                gradient = "gradient/DiamondGradientMapWind.png";
-            }
-            else if (advanced.override.background.light.checked) {
-                gradient = "gradient/DiamondGradientLight.png";
-            }
-            else if (advanced.override.background.dark.checked) {
-                gradient = "gradient/DiamondGradientDark.png";
-            }
-            else if (advanced.override.background.neutral.checked) {
-                gradient = "gradient/DiamondGradientMapNeutralB.png";
-            }
-        }
-
-        if (!element.none.checked || advanced.customBackground.checked) {
-            loadColorizedImage(src.back, gradient).then(function (response) {
-                card.back.src = response.src;
-            });
-        }
-        else {
-            card.back.src = src.back;
-        }
-
-        if (tier.diamond.checked && !advanced.customForeground.checked) {
-            selectTier();
-        }
-    }
-
-    function selectEnergy() {
-        if (energy.yellow.checked) {
-            src.energy = "fragment/EnergyIcon.png";
-        }
-        else if (energy.blue.checked) {
-            src.energy = "fragment/EnergyIcon-Blue.png";
-        }
-        else if (energy.blank.checked) {
-            src.energy = "fragment/EnergyBlank.png";
-        }
-
-        card.energy.innerHTML = "";
-        if (!energy.none.checked) {
-            for (var i = 0; i < 10; i++) {
-                var bolt = new Image();
-                bolt.src = src.energy;
-                card.energy.appendChild(bolt);
-            }
-        }
-    }
-
-    function selectArt() {
-        var file = this.files[0];
-        if (/image\//.test(file.type)) {
-            var reader = new FileReader();
-            reader.addEventListener("load", function () {
-                src.art = this.result;
-                selectOverlap();
-            });
-            reader.readAsDataURL(this.files[0]);
-        }
-    }
-
-    function selectOverlap() {
-        if (art.under.checked) {
-            card.artUnder.src = src.art;
-            card.artOver.src = "";
-        }
-        else if (art.over.checked) {
-            card.artUnder.src = "";
-            card.artOver.src = src.art;
-        }
-    }
-
-    function selectArtMoveTool() {
-        card.artPositionTool.addEventListener("mousedown", startMoveArt);
-        card.artPositionTool.addEventListener("touchstart", startMoveArt);
-        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
-        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
-        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
-        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
-    }
-
-    function selectArtScaleTool() {
-        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
-        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
-        card.artPositionTool.addEventListener("mousedown", startScaleArt);
-        card.artPositionTool.addEventListener("touchstart", startScaleArt);
-        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
-        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
-    }
-
-    function selectArtRotateTool() {
-        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
-        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
-        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
-        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
-        card.artPositionTool.addEventListener("mousedown", startRotateArt);
-        card.artPositionTool.addEventListener("touchstart", startRotateArt);
-    }
-
-    function selectForeground() {
-        if (advanced.defaultForeground.checked) {
-            document.getElementById("advanced-fg").classList.add("disabled");
-        }
-        else {
-            document.getElementById("advanced-fg").classList.remove("disabled");
-        }
-        selectTier();
-    }
-
-    function selectBackground() {
-        if (advanced.defaultBackground.checked) {
-            document.getElementById("advanced-bg").classList.add("disabled");
-        }
-        else {
-            document.getElementById("advanced-bg").classList.remove("disabled");
-        }
-        selectElement();
-    }
-
-    /* Card Art Position Tools */
+    /* Art Position Tools */
 
     var e0, art0, circle = document.getElementById("circle");
 
@@ -729,7 +441,7 @@ function init() {
         card.artPositionTool.removeEventListener("touchend", stopRotateArt);
     }
 
-    /* Card Art Mask Tool */
+    /* Art Mask Tool */
 
     var artMaskPath = [0, 0, 395, 504];
 
@@ -749,7 +461,7 @@ function init() {
         }
     }
 
-    function selectMask() {
+    function toggleMaskSegment() {
         if (this.className == "active") {
             this.className = "";
         }
@@ -757,16 +469,337 @@ function init() {
             this.className = "active";
         }
         setArtMaskPath();
-        for (var masker of card.artMask) {
+        for (var artMask of card.artMasks) {
             var polygon = "polygon(" +
                 artMaskPath[0] + "px " + artMaskPath[1] + "px," +
                 artMaskPath[2] + "px " + artMaskPath[1] + "px," +
                 artMaskPath[2] + "px " + artMaskPath[3] + "px," +
                 artMaskPath[0] + "px " + artMaskPath[3] + "px" +
             ")";
-            masker.style.clipPath = polygon;
-            masker.style.webkitClipPath = polygon;
+            artMask.style.clipPath = polygon;
+            artMask.style.webkitClipPath = polygon;
         }
+    }
+
+    /* Menu Options */
+
+    var gradientMapSrc = {
+        "error": "gradient/36.png",
+        "bronze": "gradient/BronzeGradient.png",
+        "silver": "gradient/SilverGradient.png",
+        "gold": "gradient/GoldGradient.png",
+        "fg": {
+            "fire": "gradient/DiamondGradientMapFire.png",
+            "water": "gradient/DiamondGradientWater.png",
+            "wind": "gradient/DiamondGradientMapWind.png",
+            "light": "gradient/DiamondGradientLight.png",
+            "dark": "gradient/DiamondGradientDark.png",
+            "neutral": "gradient/DiamondGradientMapNeutralB.png"
+        },
+        "bg": {
+            "fire": "gradient/DiamondGradientMapFireBackplate.png",
+            "water": "gradient/DiamondGradientWaterBackplate.png",
+            "wind": "gradient/DiamondGradientMapWindBackplate.png",
+            "light": "gradient/DiamondGradientLightBackplate.png",
+            "dark": "gradient/DiamondGradientDark.png",
+            "neutral": "gradient/DiamondGradientMapNeutralB.png"
+        }
+    };
+
+    function selectTier() {
+        var cardTopSrc = "";
+        var cardBottomSrc = "";
+        var cardElementSrc = "";
+        var cardLevelSrc = "";
+        if (tier.none.checked) {
+            preview.className = "";
+        }
+        if (tier.bronze.checked) {
+            preview.className = "bronze";
+            cardTopSrc = "fragment/BronzeTop.png";
+            cardBottomSrc = "fragment/BronzeBottom.png";
+            cardElementSrc = "fragment/BronzeElement.png";
+            cardLevelSrc = "fragment/BronzeLevel.png";
+        }
+        else if (tier.silver.checked) {
+            preview.className = "silver";
+            cardTopSrc = "fragment/SilverTop.png";
+            cardBottomSrc = "fragment/SilverBottom.png";
+            cardElementSrc = "fragment/SilverElement.png";
+            cardLevelSrc = "fragment/SilverLevel.png";
+        }
+        else if (tier.gold.checked) {
+            preview.className = "gold";
+            cardTopSrc = "fragment/GoldTop.png";
+            cardBottomSrc = "fragment/GoldBottom.png";
+            cardElementSrc = "fragment/GoldElement.png";
+            cardLevelSrc = "fragment/GoldLevel.png";
+        }
+        else if (tier.diamond.checked) {
+            preview.className = "diamond";
+            cardTopSrc = "fragment/DiamondTop.png";
+            cardBottomSrc = "fragment/DiamondBottom.png";
+            cardElementSrc = "fragment/DiamondElement.png";
+            cardLevelSrc = "fragment/DiamondLevel.png";
+        }
+
+        if (tier.diamond.checked && !element.none.checked || foreground.override.checked && !tier.none.checked) {
+            var gradientSrc = gradientMapSrc.error;
+            if (element.fire.checked) {
+                gradientSrc = gradientMapSrc.fg.fire;
+            }
+            else if (element.water.checked) {
+                gradientSrc = gradientMapSrc.fg.water;
+            }
+            else if (element.wind.checked) {
+                gradientSrc = gradientMapSrc.fg.wind;
+            }
+            else if (element.light.checked) {
+                gradientSrc = gradientMapSrc.fg.light;
+            }
+            else if (element.dark.checked) {
+                gradientSrc = gradientMapSrc.fg.dark;
+            }
+            else if (element.neutral.checked) {
+                gradientSrc = gradientMapSrc.fg.neutral;
+            }
+            if (foreground.override.checked) {
+                if (foreground.custom.checked) {
+                    gradientSrc = getGradientDataFromText(foreground.input.value);
+                }
+                else if (foreground.bronze.checked) {
+                    gradientSrc = gradientMapSrc.bronze;
+                }
+                else if (foreground.silver.checked) {
+                    gradientSrc = gradientMapSrc.silver;
+                }
+                else if (foreground.gold.checked) {
+                    gradientSrc = gradientMapSrc.gold;
+                }
+                else if (foreground.fire.checked) {
+                    gradientSrc = gradientMapSrc.fg.fire;
+                }
+                else if (foreground.water.checked) {
+                    gradientSrc = gradientMapSrc.fg.water;
+                }
+                else if (foreground.wind.checked) {
+                    gradientSrc = gradientMapSrc.fg.wind;
+                }
+                else if (foreground.light.checked) {
+                    gradientSrc = gradientMapSrc.fg.light;
+                }
+                else if (foreground.dark.checked) {
+                    gradientSrc = gradientMapSrc.fg.dark;
+                }
+                else if (foreground.neutral.checked) {
+                    gradientSrc = gradientMapSrc.fg.neutral;
+                }
+            }
+            Promise.all([
+                loadColorizedImage(cardTopSrc, gradientSrc),
+                loadColorizedImage(cardBottomSrc, gradientSrc),
+                loadColorizedImage(cardElementSrc, gradientSrc),
+                loadColorizedImage(cardLevelSrc, gradientSrc)
+            ]).then(function (response) {
+                card.top.src = response[0].src;
+                card.bottom.src = response[1].src;
+                card.elementLeft.src = response[2].src;
+                card.elementCenter.src = response[2].src;
+                card.elementRight.src = response[2].src;
+                card.level.src = response[3].src;
+            });
+        }
+        else {
+            card.top.src = cardTopSrc;
+            card.bottom.src = cardBottomSrc;
+            card.elementLeft.src = cardElementSrc;
+            card.elementCenter.src = cardElementSrc;
+            card.elementRight.src = cardElementSrc;
+            card.level.src = cardLevelSrc;
+        }
+
+        resizeCardElement();
+    }
+
+    function selectElement() {
+        var cardBackSrc = "fragment/GreyBackground.png";
+        var gradientSrc = gradientMapSrc.error;
+        if (element.none.checked) {
+            card.elementIcon.src = "";
+        }
+        else if (element.fire.checked) {
+            card.elementIcon.src = "fragment/ElementalIconFire.png";
+            gradientSrc = gradientMapSrc.bg.fire;
+        }
+        else if (element.water.checked) {
+            card.elementIcon.src = "fragment/ElementalIconWater.png";
+            gradientSrc = gradientMapSrc.bg.water;
+        }
+        else if (element.wind.checked) {
+            card.elementIcon.src = "fragment/ElementalIconWind.png";
+            gradientSrc = gradientMapSrc.bg.wind;
+        }
+        else if (element.light.checked) {
+            card.elementIcon.src = "fragment/ElementalIconLight.png";
+            gradientSrc = gradientMapSrc.bg.light;
+        }
+        else if (element.dark.checked) {
+            card.elementIcon.src = "fragment/ElementalIconDark.png";
+            gradientSrc = gradientMapSrc.bg.dark;
+        }
+        else if (element.neutral.checked) {
+            card.elementIcon.src = "fragment/ElementalIconNeutral.png";
+            gradientSrc = gradientMapSrc.bg.neutral;
+        }
+        if (background.override.checked) {
+            if (background.custom.checked) {
+                gradientSrc = getGradientDataFromText(background.input.value);
+            }
+            else if (background.fire.checked) {
+                gradientSrc = gradientMapSrc.bg.fire;
+            }
+            else if (background.water.checked) {
+                gradientSrc = gradientMapSrc.bg.water;
+            }
+            else if (background.wind.checked) {
+                gradientSrc = gradientMapSrc.bg.wind;
+            }
+            else if (background.light.checked) {
+                gradientSrc = gradientMapSrc.bg.light;
+            }
+            else if (background.dark.checked) {
+                gradientSrc = gradientMapSrc.bg.dark;
+            }
+            else if (background.neutral.checked) {
+                gradientSrc = gradientMapSrc.bg.neutral;
+            }
+        }
+
+        if (!element.none.checked || background.override.checked) {
+            loadColorizedImage(cardBackSrc, gradientSrc).then(function (response) {
+                card.back.src = response.src;
+            });
+        }
+        else {
+            card.back.src = cardBackSrc;
+        }
+
+        if (tier.diamond.checked && !foreground.override.checked) {
+            selectTier();
+        }
+    }
+
+    function selectEnergy() {
+        var boltSrc = "";
+        if (energy.yellow.checked) {
+            boltSrc = "fragment/EnergyIcon.png";
+        }
+        else if (energy.blue.checked) {
+            boltSrc = "fragment/EnergyIcon-Blue.png";
+        }
+        else if (energy.blank.checked) {
+            boltSrc = "fragment/EnergyBlank.png";
+        }
+        card.energy.innerHTML = "";
+        if (!energy.none.checked) {
+            for (var i = 0; i < 10; i++) {
+                var bolt = new Image();
+                bolt.src = boltSrc;
+                card.energy.appendChild(bolt);
+            }
+        }
+    }
+
+    var artSrc = "";
+
+    function selectArt() {
+        var file = this.files[0];
+        if (/image\//.test(file.type)) {
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                artSrc = this.result;
+                selectOverlap();
+            });
+            reader.readAsDataURL(this.files[0]);
+        }
+    }
+
+    function selectOverlap() {
+        if (art.under.checked) {
+            card.artUnder.src = artSrc;
+            card.artOver.src = "";
+        }
+        else if (art.over.checked) {
+            card.artUnder.src = "";
+            card.artOver.src = artSrc;
+        }
+    }
+
+    function selectArtMoveTool() {
+        card.artPositionTool.addEventListener("mousedown", startMoveArt);
+        card.artPositionTool.addEventListener("touchstart", startMoveArt);
+        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
+        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
+        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
+        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
+    }
+
+    function selectArtScaleTool() {
+        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
+        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
+        card.artPositionTool.addEventListener("mousedown", startScaleArt);
+        card.artPositionTool.addEventListener("touchstart", startScaleArt);
+        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
+        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
+    }
+
+    function selectArtRotateTool() {
+        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
+        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
+        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
+        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
+        card.artPositionTool.addEventListener("mousedown", startRotateArt);
+        card.artPositionTool.addEventListener("touchstart", startRotateArt);
+    }
+
+    function selectForeground() {
+        if (foreground.default.checked) {
+            foreground.submenu.classList.add("disabled");
+        }
+        else {
+            foreground.submenu.classList.remove("disabled");
+        }
+        selectTier();
+    }
+
+    function selectBackground() {
+        if (background.default.checked) {
+            background.submenu.classList.add("disabled");
+        }
+        else {
+            background.submenu.classList.remove("disabled");
+        }
+        selectElement();
+    }
+
+    function selectForegroundMap() {
+        if (foreground.custom.checked) {
+            foreground.input.classList.remove("disabled");
+        }
+        else {
+            foreground.input.classList.add("disabled");
+        }
+        selectTier();
+    }
+
+    function selectBackgroundMap() {
+        if (background.custom.checked) {
+            background.input.classList.remove("disabled");
+        }
+        else {
+            background.input.classList.add("disabled");
+        }
+        selectElement();
     }
 
     /* Card Renderer */
@@ -878,16 +911,21 @@ function init() {
             context.fillText(text.value.toUpperCase(), x, y);
         }
 
-        rendered.link.href = canvas.toDataURL();
-        rendered.image.src = canvas.toDataURL();
+        render.link.href = canvas.toDataURL();
+        render.image.src = canvas.toDataURL();
     }
 
-    /* Attach Callbacks to Listeners */
+    /* Event Listeners */
 
     card.elementText.addEventListener("input", resizeCardElement);
     card.levelText.addEventListener("input", newAutoResizer(31, 40));
     card.variant.addEventListener("input", newAutoResizer(58, 320));
     card.fighter.addEventListener("input", newAutoResizer(38, 250));
+
+    card.maskLeft.addEventListener("click", toggleMaskSegment);
+    card.maskRight.addEventListener("click", toggleMaskSegment);
+    card.maskTop.addEventListener("click", toggleMaskSegment);
+    card.maskBottom.addEventListener("click", toggleMaskSegment);
 
     for (var option in tier) {
         tier[option].addEventListener("click", selectTier);
@@ -897,18 +935,6 @@ function init() {
     }
     for (var option in energy) {
         energy[option].addEventListener("click", selectEnergy);
-    }
-    advanced.defaultForeground.addEventListener("click", selectForeground);
-    advanced.customForeground.addEventListener("click", selectForeground);
-    advanced.foreground.addEventListener("change", selectTier);
-    for (var what in advanced.override.foreground) {
-        advanced.override.foreground[what].addEventListener("click", selectTier);
-    }
-    advanced.defaultBackground.addEventListener("click", selectBackground);
-    advanced.customBackground.addEventListener("click", selectBackground);
-    advanced.background.addEventListener("change", selectElement);
-    for (var what in advanced.override.background) {
-        advanced.override.background[what].addEventListener("click", selectElement);
     }
 
     art.file.addEventListener("change", selectArt);
@@ -922,22 +948,32 @@ function init() {
     art.rotate.addEventListener("click", selectArtRotateTool);
     art.angle.addEventListener("input", setAngle);
 
-    card.maskLeft.addEventListener("click", selectMask);
-    card.maskRight.addEventListener("click", selectMask);
-    card.maskTop.addEventListener("click", selectMask);
-    card.maskBottom.addEventListener("click", selectMask);
+    foreground.default.addEventListener("click", selectForeground);
+    foreground.override.addEventListener("click", selectForeground);
+    foreground.input.addEventListener("change", selectTier);
+    for (var option in foreground) {
+        foreground[option].addEventListener("click", selectForegroundMap);
+    }
+    background.default.addEventListener("click", selectBackground);
+    background.override.addEventListener("click", selectBackground);
+    foreground.input.addEventListener("change", selectElement);
+    for (var option in background) {
+        background[option].addEventListener("click", selectBackgroundMap);
+    }
 
-    rendered.button.addEventListener("click", renderCard);
+    render.button.addEventListener("click", renderCard);
+
+    /* Initialize */
 
     tier.none.click();
-    element.dark.click();
+    element.none.click();
     energy.none.click();
-    advanced.defaultBackground.click();
-    advanced.override.background.custom.click();
-    advanced.defaultForeground.click();
-    advanced.override.foreground.custom.click();
     art.under.click();
     art.move.click();
+    foreground.default.click();
+    foreground.custom.click();
+    background.default.click();
+    background.custom.click();
 }
 
 window.addEventListener("DOMContentLoaded", init);
