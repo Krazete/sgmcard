@@ -515,7 +515,7 @@ function init() {
             "neutral": "gradient/DiamondGradientMapNeutralB.png"
         },
         "bg": { /* contains imageData, not dataURL as the name "gradientMapURL" implies */
-            "fire": getGradientDataFromText("#200 0%, #c01 20%, #f43 50%, #fb7 100%"),
+            "fire": getGradientDataFromText("#301 0%, #c40818 20%, #f54 50%, #fb7 100%"),
             "water": getGradientDataFromText("#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%"),
             "wind": getGradientDataFromText("#010 0%, #208038 20%, #48c048 50%, #bf7 100%"),
             "light": getGradientDataFromText("#950 0%, #db5 20%, #fea 50%, #fff 100%"),
