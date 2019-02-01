@@ -347,6 +347,14 @@ h3 {
     color: var(--bg);
 }
 
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+a:hover {
+    text-decoration: underline;
+}
+
 .disabled {
     opacity: 0.5;
     pointer-events: none;
