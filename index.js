@@ -47,13 +47,18 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
     return imageData;
 }
 
-function getImageFromImageData(imageData) {
+function getImageSrcFromImageData(imageData) {
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.width = imageData.width;
     canvas.height = imageData.height;
     context.putImageData(imageData, 0, 0);
-    return loadImage(canvas.toDataURL());
+    return canvas.toDataURL();
+}
+
+function loadImageFromImageData(imageData) {
+    var imageSrc = getImageSrcFromImageData(imageData);
+    return loadImage(imageSrc);
 }
 
 function getGradientDataFromText(text) {
@@ -94,7 +99,7 @@ function loadColorizedImage(imageSrc, gradientSrc) {
             var imageData = getImageDataFromImage(response[0]);
             var gradientData = getImageDataFromImage(response[1], 256, 1);
             var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
-            return getImageFromImageData(colorizedData);
+            return loadImageFromImageData(colorizedData);
         });
     }
     else {
@@ -103,7 +108,7 @@ function loadColorizedImage(imageSrc, gradientSrc) {
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
             var colorizedData = colorizeImageDataWithGradientData(imageData, gradientSrc);
-            return getImageFromImageData(colorizedData);
+            return loadImageFromImageData(colorizedData);
         });
     }
 }
@@ -721,8 +726,12 @@ function init() {
         if (/image\//.test(file.type)) {
             var reader = new FileReader();
             reader.addEventListener("load", function () {
-                artSrc = this.result;
-                selectOverlap();
+                /* stops animation and fixes orientation rendering issue */
+                loadImage(this.result).then(function (image) {
+                    var imageData = getImageDataFromImage(image);
+                    artSrc = getImageSrcFromImageData(imageData);
+                    selectOverlap();
+                });
             });
             reader.readAsDataURL(this.files[0]);
         }
