@@ -347,6 +347,11 @@ h3 {
     color: var(--bg);
 }
 
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 /* MENU INPUTS */
 
 input[type='radio'] + label,
@@ -419,11 +424,6 @@ input[type='file'],
 input[type='text'] {
     width: 85%;
     display: block;
-}
-
-.disabled {
-    opacity: 0.5;
-    pointer-events: none;
 }
 
 input[type='number'] {

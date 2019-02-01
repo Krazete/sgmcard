@@ -179,29 +179,33 @@ function init() {
         "override": document.getElementById("option-fg-override"),
         "submenu": document.getElementById("fg-submenu"),
         "input": document.getElementById("option-fg"),
-        "custom": document.getElementById("option-fg-custom"),
-        "bronze": document.getElementById("option-fg-bronze"),
-        "silver": document.getElementById("option-fg-silver"),
-        "gold": document.getElementById("option-fg-gold"),
-        "fire": document.getElementById("option-fg-fire"),
-        "water": document.getElementById("option-fg-water"),
-        "wind": document.getElementById("option-fg-wind"),
-        "light": document.getElementById("option-fg-light"),
-        "dark": document.getElementById("option-fg-dark"),
-        "neutral": document.getElementById("option-fg-neutral")
+        "map": {
+            "custom": document.getElementById("option-fg-custom"),
+            "bronze": document.getElementById("option-fg-bronze"),
+            "silver": document.getElementById("option-fg-silver"),
+            "gold": document.getElementById("option-fg-gold"),
+            "fire": document.getElementById("option-fg-fire"),
+            "water": document.getElementById("option-fg-water"),
+            "wind": document.getElementById("option-fg-wind"),
+            "light": document.getElementById("option-fg-light"),
+            "dark": document.getElementById("option-fg-dark"),
+            "neutral": document.getElementById("option-fg-neutral")
+        }
     };
     var background = {
         "default": document.getElementById("option-bg-default"),
         "override": document.getElementById("option-bg-override"),
         "submenu": document.getElementById("bg-submenu"),
         "input": document.getElementById("option-bg"),
-        "custom": document.getElementById("option-bg-custom"),
-        "fire": document.getElementById("option-bg-fire"),
-        "water": document.getElementById("option-bg-water"),
-        "wind": document.getElementById("option-bg-wind"),
-        "light": document.getElementById("option-bg-light"),
-        "dark": document.getElementById("option-bg-dark"),
-        "neutral": document.getElementById("option-bg-neutral")
+        "map": {
+            "custom": document.getElementById("option-bg-custom"),
+            "fire": document.getElementById("option-bg-fire"),
+            "water": document.getElementById("option-bg-water"),
+            "wind": document.getElementById("option-bg-wind"),
+            "light": document.getElementById("option-bg-light"),
+            "dark": document.getElementById("option-bg-dark"),
+            "neutral": document.getElementById("option-bg-neutral")
+        }
     };
     var render = {
         "button": document.getElementById("option-render"),
@@ -497,12 +501,12 @@ function init() {
             "neutral": "gradient/DiamondGradientMapNeutralB.png"
         },
         "bg": {
-            "fire": "gradient/DiamondGradientMapFireBackplate.png",
-            "water": "gradient/DiamondGradientWaterBackplate.png",
-            "wind": "gradient/DiamondGradientMapWindBackplate.png",
-            "light": "gradient/DiamondGradientLightBackplate.png",
-            "dark": "gradient/DiamondGradientDark.png",
-            "neutral": "gradient/DiamondGradientMapNeutralB.png"
+            "fire": getGradientDataFromText("#500 0%, #f43 50%, #fa7 100%"),
+            "water": getGradientDataFromText("#026 0%, #4be 50%, #7ff 100%"),
+            "wind": getGradientDataFromText("#033 0%, #5c4 50%, #bf7 100%"),
+            "light": getGradientDataFromText("#a72 0%, #fea 50%, #fff 100%"),
+            "dark": getGradientDataFromText("#113 0%, #a6a 50%, #ead 100%"),
+            "neutral": getGradientDataFromText("#333 0%, #aaa 50%, #eee 100%")
         }
     };
 
@@ -564,34 +568,34 @@ function init() {
                 gradientSrc = gradientMapSrc.fg.neutral;
             }
             if (foreground.override.checked) {
-                if (foreground.custom.checked) {
+                if (foreground.map.custom.checked) {
                     gradientSrc = getGradientDataFromText(foreground.input.value);
                 }
-                else if (foreground.bronze.checked) {
+                else if (foreground.map.bronze.checked) {
                     gradientSrc = gradientMapSrc.bronze;
                 }
-                else if (foreground.silver.checked) {
+                else if (foreground.map.silver.checked) {
                     gradientSrc = gradientMapSrc.silver;
                 }
-                else if (foreground.gold.checked) {
+                else if (foreground.map.gold.checked) {
                     gradientSrc = gradientMapSrc.gold;
                 }
-                else if (foreground.fire.checked) {
+                else if (foreground.map.fire.checked) {
                     gradientSrc = gradientMapSrc.fg.fire;
                 }
-                else if (foreground.water.checked) {
+                else if (foreground.map.water.checked) {
                     gradientSrc = gradientMapSrc.fg.water;
                 }
-                else if (foreground.wind.checked) {
+                else if (foreground.map.wind.checked) {
                     gradientSrc = gradientMapSrc.fg.wind;
                 }
-                else if (foreground.light.checked) {
+                else if (foreground.map.light.checked) {
                     gradientSrc = gradientMapSrc.fg.light;
                 }
-                else if (foreground.dark.checked) {
+                else if (foreground.map.dark.checked) {
                     gradientSrc = gradientMapSrc.fg.dark;
                 }
-                else if (foreground.neutral.checked) {
+                else if (foreground.map.neutral.checked) {
                     gradientSrc = gradientMapSrc.fg.neutral;
                 }
             }
@@ -652,25 +656,25 @@ function init() {
             gradientSrc = gradientMapSrc.bg.neutral;
         }
         if (background.override.checked) {
-            if (background.custom.checked) {
+            if (background.map.custom.checked) {
                 gradientSrc = getGradientDataFromText(background.input.value);
             }
-            else if (background.fire.checked) {
+            else if (background.map.fire.checked) {
                 gradientSrc = gradientMapSrc.bg.fire;
             }
-            else if (background.water.checked) {
+            else if (background.map.water.checked) {
                 gradientSrc = gradientMapSrc.bg.water;
             }
-            else if (background.wind.checked) {
+            else if (background.map.wind.checked) {
                 gradientSrc = gradientMapSrc.bg.wind;
             }
-            else if (background.light.checked) {
+            else if (background.map.light.checked) {
                 gradientSrc = gradientMapSrc.bg.light;
             }
-            else if (background.dark.checked) {
+            else if (background.map.dark.checked) {
                 gradientSrc = gradientMapSrc.bg.dark;
             }
-            else if (background.neutral.checked) {
+            else if (background.map.neutral.checked) {
                 gradientSrc = gradientMapSrc.bg.neutral;
             }
         }
@@ -783,7 +787,7 @@ function init() {
     }
 
     function selectForegroundMap() {
-        if (foreground.custom.checked) {
+        if (foreground.map.custom.checked) {
             foreground.input.classList.remove("disabled");
         }
         else {
@@ -793,7 +797,7 @@ function init() {
     }
 
     function selectBackgroundMap() {
-        if (background.custom.checked) {
+        if (background.map.custom.checked) {
             background.input.classList.remove("disabled");
         }
         else {
@@ -951,14 +955,14 @@ function init() {
     foreground.default.addEventListener("click", selectForeground);
     foreground.override.addEventListener("click", selectForeground);
     foreground.input.addEventListener("change", selectTier);
-    for (var option in foreground) {
-        foreground[option].addEventListener("click", selectForegroundMap);
+    for (var option in foreground.map) {
+        foreground.map[option].addEventListener("click", selectForegroundMap);
     }
     background.default.addEventListener("click", selectBackground);
     background.override.addEventListener("click", selectBackground);
-    foreground.input.addEventListener("change", selectElement);
-    for (var option in background) {
-        background[option].addEventListener("click", selectBackgroundMap);
+    background.input.addEventListener("input", selectElement);
+    for (var option in background.map) {
+        background.map[option].addEventListener("click", selectBackgroundMap);
     }
 
     render.button.addEventListener("click", renderCard);
@@ -971,9 +975,9 @@ function init() {
     art.under.click();
     art.move.click();
     foreground.default.click();
-    foreground.custom.click();
+    foreground.map.custom.click();
     background.default.click();
-    background.custom.click();
+    background.map.custom.click();
 }
 
 window.addEventListener("DOMContentLoaded", init);
