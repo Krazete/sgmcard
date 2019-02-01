@@ -520,7 +520,7 @@ function init() {
             "wind": getGradientDataFromText("#010 0%, #208038 20%, #48c048 50%, #bf7 100%"),
             "light": getGradientDataFromText("#950 0%, #db5 20%, #fea 50%, #fff 100%"),
             "dark": getGradientDataFromText("#113 0%, #536 20%, #a464a4 50%, #ead 100%"),
-            "neutral": getGradientDataFromText("#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"")
+            "neutral": getGradientDataFromText("#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%")
         }
     };
 
