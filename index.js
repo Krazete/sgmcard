@@ -960,7 +960,7 @@ function init() {
     }
     background.default.addEventListener("click", selectBackground);
     background.override.addEventListener("click", selectBackground);
-    background.input.addEventListener("input", selectElement);
+    background.input.addEventListener("change", selectElement);
     for (var option in background.map) {
         background.map[option].addEventListener("click", selectBackgroundMap);
     }
