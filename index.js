@@ -47,18 +47,13 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
     return imageData;
 }
 
-function getImageSrcFromImageData(imageData) {
+function getImageURLFromImageData(imageData) {
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.width = imageData.width;
     canvas.height = imageData.height;
     context.putImageData(imageData, 0, 0);
     return canvas.toDataURL();
-}
-
-function loadImageFromImageData(imageData) {
-    var imageSrc = getImageSrcFromImageData(imageData);
-    return loadImage(imageSrc);
 }
 
 function getGradientDataFromText(text) {
@@ -90,25 +85,25 @@ function getGradientDataFromText(text) {
     return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function loadColorizedImage(imageSrc, gradientSrc) {
-    if (typeof gradientSrc == "string") {
+function loadColorizedImageURL(imageURL, gradientDataOrURL) {
+    if (typeof gradientDataOrURL == "string") { /* if both arguments are URLs */
         return Promise.all([
-            loadImage(imageSrc),
-            loadImage(gradientSrc)
+            loadImage(imageURL),
+            loadImage(gradientDataOrURL)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
             var gradientData = getImageDataFromImage(response[1], 256, 1);
             var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
-            return loadImageFromImageData(colorizedData);
+            return getImageURLFromImageData(colorizedData);
         });
     }
     else {
         return Promise.all([
-            loadImage(imageSrc)
+            loadImage(imageURL)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
-            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientSrc);
-            return loadImageFromImageData(colorizedData);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientDataOrURL);
+            return getImageURLFromImageData(colorizedData);
         });
     }
 }
@@ -506,7 +501,7 @@ function init() {
 
     /* Menu Options */
 
-    var gradientMapSrc = {
+    var gradientMapURL = {
         "error": "gradient/36.png",
         "bronze": "gradient/BronzeGradient.png",
         "silver": "gradient/SilverGradient.png",
@@ -530,115 +525,115 @@ function init() {
     };
 
     function selectTier() {
-        var cardTopSrc = "";
-        var cardBottomSrc = "";
-        var cardElementSrc = "";
-        var cardLevelSrc = "";
+        var cardTopURL = "";
+        var cardBottomURL = "";
+        var cardElementURL = "";
+        var cardLevelURL = "";
         if (tier.none.checked) {
             preview.className = "";
         }
         if (tier.bronze.checked) {
             preview.className = "bronze";
-            cardTopSrc = "fragment/BronzeTop.png";
-            cardBottomSrc = "fragment/BronzeBottom.png";
-            cardElementSrc = "fragment/BronzeElement.png";
-            cardLevelSrc = "fragment/BronzeLevel.png";
+            cardTopURL = "fragment/BronzeTop.png";
+            cardBottomURL = "fragment/BronzeBottom.png";
+            cardElementURL = "fragment/BronzeElement.png";
+            cardLevelURL = "fragment/BronzeLevel.png";
         }
         else if (tier.silver.checked) {
             preview.className = "silver";
-            cardTopSrc = "fragment/SilverTop.png";
-            cardBottomSrc = "fragment/SilverBottom.png";
-            cardElementSrc = "fragment/SilverElement.png";
-            cardLevelSrc = "fragment/SilverLevel.png";
+            cardTopURL = "fragment/SilverTop.png";
+            cardBottomURL = "fragment/SilverBottom.png";
+            cardElementURL = "fragment/SilverElement.png";
+            cardLevelURL = "fragment/SilverLevel.png";
         }
         else if (tier.gold.checked) {
             preview.className = "gold";
-            cardTopSrc = "fragment/GoldTop.png";
-            cardBottomSrc = "fragment/GoldBottom.png";
-            cardElementSrc = "fragment/GoldElement.png";
-            cardLevelSrc = "fragment/GoldLevel.png";
+            cardTopURL = "fragment/GoldTop.png";
+            cardBottomURL = "fragment/GoldBottom.png";
+            cardElementURL = "fragment/GoldElement.png";
+            cardLevelURL = "fragment/GoldLevel.png";
         }
         else if (tier.diamond.checked) {
             preview.className = "diamond";
-            cardTopSrc = "fragment/DiamondTop.png";
-            cardBottomSrc = "fragment/DiamondBottom.png";
-            cardElementSrc = "fragment/DiamondElement.png";
-            cardLevelSrc = "fragment/DiamondLevel.png";
+            cardTopURL = "fragment/DiamondTop.png";
+            cardBottomURL = "fragment/DiamondBottom.png";
+            cardElementURL = "fragment/DiamondElement.png";
+            cardLevelURL = "fragment/DiamondLevel.png";
         }
 
         if (tier.diamond.checked && !element.none.checked || foreground.override.checked && !tier.none.checked) {
-            var gradientSrc = gradientMapSrc.error;
+            var gradientDataOrURL = gradientMapURL.error;
             if (element.fire.checked) {
-                gradientSrc = gradientMapSrc.fg.fire;
+                gradientDataOrURL = gradientMapURL.fg.fire;
             }
             else if (element.water.checked) {
-                gradientSrc = gradientMapSrc.fg.water;
+                gradientDataOrURL = gradientMapURL.fg.water;
             }
             else if (element.wind.checked) {
-                gradientSrc = gradientMapSrc.fg.wind;
+                gradientDataOrURL = gradientMapURL.fg.wind;
             }
             else if (element.light.checked) {
-                gradientSrc = gradientMapSrc.fg.light;
+                gradientDataOrURL = gradientMapURL.fg.light;
             }
             else if (element.dark.checked) {
-                gradientSrc = gradientMapSrc.fg.dark;
+                gradientDataOrURL = gradientMapURL.fg.dark;
             }
             else if (element.neutral.checked) {
-                gradientSrc = gradientMapSrc.fg.neutral;
+                gradientDataOrURL = gradientMapURL.fg.neutral;
             }
             if (foreground.override.checked) {
                 if (foreground.map.custom.checked) {
-                    gradientSrc = getGradientDataFromText(foreground.input.value);
+                    gradientDataOrURL = getGradientDataFromText(foreground.input.value);
                 }
                 else if (foreground.map.bronze.checked) {
-                    gradientSrc = gradientMapSrc.bronze;
+                    gradientDataOrURL = gradientMapURL.bronze;
                 }
                 else if (foreground.map.silver.checked) {
-                    gradientSrc = gradientMapSrc.silver;
+                    gradientDataOrURL = gradientMapURL.silver;
                 }
                 else if (foreground.map.gold.checked) {
-                    gradientSrc = gradientMapSrc.gold;
+                    gradientDataOrURL = gradientMapURL.gold;
                 }
                 else if (foreground.map.fire.checked) {
-                    gradientSrc = gradientMapSrc.fg.fire;
+                    gradientDataOrURL = gradientMapURL.fg.fire;
                 }
                 else if (foreground.map.water.checked) {
-                    gradientSrc = gradientMapSrc.fg.water;
+                    gradientDataOrURL = gradientMapURL.fg.water;
                 }
                 else if (foreground.map.wind.checked) {
-                    gradientSrc = gradientMapSrc.fg.wind;
+                    gradientDataOrURL = gradientMapURL.fg.wind;
                 }
                 else if (foreground.map.light.checked) {
-                    gradientSrc = gradientMapSrc.fg.light;
+                    gradientDataOrURL = gradientMapURL.fg.light;
                 }
                 else if (foreground.map.dark.checked) {
-                    gradientSrc = gradientMapSrc.fg.dark;
+                    gradientDataOrURL = gradientMapURL.fg.dark;
                 }
                 else if (foreground.map.neutral.checked) {
-                    gradientSrc = gradientMapSrc.fg.neutral;
+                    gradientDataOrURL = gradientMapURL.fg.neutral;
                 }
             }
             Promise.all([
-                loadColorizedImage(cardTopSrc, gradientSrc),
-                loadColorizedImage(cardBottomSrc, gradientSrc),
-                loadColorizedImage(cardElementSrc, gradientSrc),
-                loadColorizedImage(cardLevelSrc, gradientSrc)
+                loadColorizedImageURL(cardTopURL, gradientDataOrURL),
+                loadColorizedImageURL(cardBottomURL, gradientDataOrURL),
+                loadColorizedImageURL(cardElementURL, gradientDataOrURL),
+                loadColorizedImageURL(cardLevelURL, gradientDataOrURL)
             ]).then(function (response) {
-                card.top.src = response[0].src;
-                card.bottom.src = response[1].src;
-                card.elementLeft.src = response[2].src;
-                card.elementCenter.src = response[2].src;
-                card.elementRight.src = response[2].src;
-                card.level.src = response[3].src;
+                card.top.src = response[0];
+                card.bottom.src = response[1];
+                card.elementLeft.src = response[2];
+                card.elementCenter.src = response[2];
+                card.elementRight.src = response[2];
+                card.level.src = response[3];
             });
         }
         else {
-            card.top.src = cardTopSrc;
-            card.bottom.src = cardBottomSrc;
-            card.elementLeft.src = cardElementSrc;
-            card.elementCenter.src = cardElementSrc;
-            card.elementRight.src = cardElementSrc;
-            card.level.src = cardLevelSrc;
+            card.top.src = cardTopURL;
+            card.bottom.src = cardBottomURL;
+            card.elementLeft.src = cardElementURL;
+            card.elementCenter.src = cardElementURL;
+            card.elementRight.src = cardElementURL;
+            card.level.src = cardLevelURL;
         }
 
         resizeCardElement();
@@ -646,66 +641,66 @@ function init() {
     }
 
     function selectElement() {
-        var cardBackSrc = "fragment/GreyBackground.png";
-        var gradientSrc = gradientMapSrc.error;
+        var cardBackURL = "fragment/GreyBackground.png";
+        var gradientDataOrURL = gradientMapURL.error;
         if (element.none.checked) {
             card.elementIcon.src = "";
         }
         else if (element.fire.checked) {
             card.elementIcon.src = "fragment/ElementalIconFire.png";
-            gradientSrc = gradientMapSrc.bg.fire;
+            gradientDataOrURL = gradientMapURL.bg.fire;
         }
         else if (element.water.checked) {
             card.elementIcon.src = "fragment/ElementalIconWater.png";
-            gradientSrc = gradientMapSrc.bg.water;
+            gradientDataOrURL = gradientMapURL.bg.water;
         }
         else if (element.wind.checked) {
             card.elementIcon.src = "fragment/ElementalIconWind.png";
-            gradientSrc = gradientMapSrc.bg.wind;
+            gradientDataOrURL = gradientMapURL.bg.wind;
         }
         else if (element.light.checked) {
             card.elementIcon.src = "fragment/ElementalIconLight.png";
-            gradientSrc = gradientMapSrc.bg.light;
+            gradientDataOrURL = gradientMapURL.bg.light;
         }
         else if (element.dark.checked) {
             card.elementIcon.src = "fragment/ElementalIconDark.png";
-            gradientSrc = gradientMapSrc.bg.dark;
+            gradientDataOrURL = gradientMapURL.bg.dark;
         }
         else if (element.neutral.checked) {
             card.elementIcon.src = "fragment/ElementalIconNeutral.png";
-            gradientSrc = gradientMapSrc.bg.neutral;
+            gradientDataOrURL = gradientMapURL.bg.neutral;
         }
         if (background.override.checked) {
             if (background.map.custom.checked) {
-                gradientSrc = getGradientDataFromText(background.input.value);
+                gradientDataOrURL = getGradientDataFromText(background.input.value);
             }
             else if (background.map.fire.checked) {
-                gradientSrc = gradientMapSrc.bg.fire;
+                gradientDataOrURL = gradientMapURL.bg.fire;
             }
             else if (background.map.water.checked) {
-                gradientSrc = gradientMapSrc.bg.water;
+                gradientDataOrURL = gradientMapURL.bg.water;
             }
             else if (background.map.wind.checked) {
-                gradientSrc = gradientMapSrc.bg.wind;
+                gradientDataOrURL = gradientMapURL.bg.wind;
             }
             else if (background.map.light.checked) {
-                gradientSrc = gradientMapSrc.bg.light;
+                gradientDataOrURL = gradientMapURL.bg.light;
             }
             else if (background.map.dark.checked) {
-                gradientSrc = gradientMapSrc.bg.dark;
+                gradientDataOrURL = gradientMapURL.bg.dark;
             }
             else if (background.map.neutral.checked) {
-                gradientSrc = gradientMapSrc.bg.neutral;
+                gradientDataOrURL = gradientMapURL.bg.neutral;
             }
         }
 
         if (!element.none.checked || background.override.checked) {
-            loadColorizedImage(cardBackSrc, gradientSrc).then(function (response) {
-                card.back.src = response.src;
+            loadColorizedImageURL(cardBackURL, gradientDataOrURL).then(function (response) {
+                card.back.src = response;
             });
         }
         else {
-            card.back.src = cardBackSrc;
+            card.back.src = cardBackURL;
         }
 
         if (tier.diamond.checked && !foreground.override.checked) {
@@ -714,27 +709,27 @@ function init() {
     }
 
     function selectEnergy() {
-        var boltSrc = "";
+        var boltURL = "";
         if (energy.yellow.checked) {
-            boltSrc = "fragment/EnergyIcon.png";
+            boltURL = "fragment/EnergyIcon.png";
         }
         else if (energy.blue.checked) {
-            boltSrc = "fragment/EnergyIcon-Blue.png";
+            boltURL = "fragment/EnergyIcon-Blue.png";
         }
         else if (energy.blank.checked) {
-            boltSrc = "fragment/EnergyBlank.png";
+            boltURL = "fragment/EnergyBlank.png";
         }
         card.energy.innerHTML = "";
         if (!energy.none.checked) {
             for (var i = 0; i < 10; i++) {
                 var bolt = new Image();
-                bolt.src = boltSrc;
+                bolt.src = boltURL;
                 card.energy.appendChild(bolt);
             }
         }
     }
 
-    var artSrc = "";
+    var artURL = "";
 
     function selectArt() {
         var file = this.files[0];
@@ -744,7 +739,7 @@ function init() {
                 /* stops animation and fixes orientation rendering issue */
                 loadImage(this.result).then(function (image) {
                     var imageData = getImageDataFromImage(image);
-                    artSrc = getImageSrcFromImageData(imageData);
+                    artURL = getImageURLFromImageData(imageData);
                     selectOverlap();
                 });
             });
@@ -754,12 +749,12 @@ function init() {
 
     function selectOverlap() {
         if (art.under.checked) {
-            card.artUnder.src = artSrc;
+            card.artUnder.src = artURL;
             card.artOver.src = "";
         }
         else if (art.over.checked) {
             card.artUnder.src = "";
-            card.artOver.src = artSrc;
+            card.artOver.src = artURL;
         }
     }
 
