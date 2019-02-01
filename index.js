@@ -350,8 +350,8 @@ function init() {
         var y0 = Math.floor(art0.y - previewBox.top);
         var dx = e.x - e0.x;
         var dy = e.y - e0.y;
-        art.x.value = x0 + dx - 2;
-        art.y.value = y0 + dy - 2;
+        art.x.value = x0 + dx + 1;
+        art.y.value = y0 + dy + 1;
         setX();
         setY();
         setCircle(art0.x + dx, art0.y + dy);
