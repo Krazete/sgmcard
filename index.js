@@ -447,7 +447,6 @@ function init() {
 
     function rotateArt(e) {
         e = getPointer(e);
-        var previewBox = preview.getBoundingClientRect();
         var t0 = angleFromArt0(e0.x, e0.y);
         var t = angleFromArt0(e.x, e.y);
         art.angle.value = (720 - (art0.angle + t - t0)) % 360;
@@ -842,8 +841,8 @@ function init() {
 
         var canvas = document.createElement("canvas");
         var context = canvas.getContext("2d");
-        canvas.width = previewBox.width;
-        canvas.height = previewBox.height;
+        canvas.width = Math.round(previewBox.width);
+        canvas.height = Math.round(previewBox.height);
 
         var images = preview.getElementsByTagName("img");
         for (var image of images) {
@@ -926,6 +925,7 @@ function init() {
 
         var texts = preview.getElementsByTagName("input");
         for (var text of texts) {
+            context.save();
             var textBox = text.getBoundingClientRect();
             var textStyle = window.getComputedStyle(text);
             context.font = textStyle.font;
@@ -938,7 +938,17 @@ function init() {
             var x = (context.textAlign == "center" ? (textBox.left + textBox.right) / 2 : textBox.left) - previewBox.left;
             var y = (textBox.top + textBox.bottom) / 2 - previewBox.top;
             context.fillText(text.value.toUpperCase(), x, y);
+            context.restore();
         }
+
+        context.save();
+        context.font = "16px Washington";
+        context.fillStyle = "rgba(0, 0, 0, 0.05)";
+        context.textAlign = "left";
+        context.textBaseline = "bottom";
+        context.rotate(Math.PI * -90 / 180);
+        context.fillText("SGMCARD.NETLIFY.COM", -504, 395);
+        context.restore();
 
         render.link.href = canvas.toDataURL();
         render.image.src = canvas.toDataURL();
