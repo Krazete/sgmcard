@@ -208,14 +208,14 @@ function init() {
         }
     };
     var render = {
-        "button": document.getElementById("option-render"),
+        "create": document.getElementById("option-render"),
         "link": document.getElementById("render-link"),
         "image": document.getElementById("render-image")
     };
 
     /* Preview Inputs */
 
-    function getWidth(input) {
+    function getInputValueWidth(input) {
         var inputStyle = getComputedStyle(input);
         var copy = document.createElement("div");
         copy.innerHTML = input.value.toUpperCase();
@@ -232,7 +232,7 @@ function init() {
     function autoResize(input, maxSize, maxWidth) {
         for (var i = maxSize; i > 0; i--) {
             input.style.fontSize = i + "px";
-            var width = parseFloat(getWidth(input));
+            var width = parseFloat(getInputValueWidth(input));
             if (width < maxWidth) {
                 break;
             }
@@ -247,7 +247,7 @@ function init() {
 
     function resizeCardElement() {
         autoResize(card.elementText, 31, 150);
-        var width = parseInt(getWidth(card.elementText)) || 65;
+        var width = parseInt(getInputValueWidth(card.elementText)) || 65;
         var pad = 5;
         card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
         var offset = 29;
@@ -729,6 +729,7 @@ function init() {
         }
     }
 
+    var artType = "";
     var artURL = "";
 
     function selectArt() {
@@ -736,10 +737,16 @@ function init() {
         if (/image\//.test(file.type)) {
             var reader = new FileReader();
             reader.addEventListener("load", function () {
-                /* stops animation and fixes orientation rendering issue */
+                /* fixes orientation rendering issue, but allows gifs to animate */
                 loadImage(this.result).then(function (image) {
-                    var imageData = getImageDataFromImage(image);
-                    artURL = getImageURLFromImageData(imageData);
+                    artType = file.type;
+                    if (artType == "image/gif") {
+                        artURL = image.src;
+                    }
+                    else {
+                        var imageData = getImageDataFromImage(image);
+                        artURL = getImageURLFromImageData(imageData);
+                    }
                     selectOverlap();
                 });
             });
@@ -827,7 +834,7 @@ function init() {
 
     /* Card Renderer */
 
-    function renderCard() {
+    function renderCard(opaque) {
         var singlePattern = /-?\d+(\.\d+)?(px|%)?/g;
         var pairPattern = /-?\d+(\.\d+)?(px|%)\s+-?\d+(\.\d+)?(px|%)/g;
 
@@ -838,6 +845,12 @@ function init() {
         var context = canvas.getContext("2d");
         canvas.width = Math.round(previewBox.width);
         canvas.height = Math.round(previewBox.height);
+        if (opaque) {
+            context.save();
+            context.fillStyle = "#000000";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.restore();
+        }
 
         var images = preview.getElementsByTagName("img");
         for (var image of images) {
@@ -938,15 +951,110 @@ function init() {
 
         context.save();
         context.font = "16px Washington";
-        context.fillStyle = "rgba(0, 0, 0, 0.05)";
+        if (opaque) {
+            context.fillStyle = "rgba(255, 255, 255, 0.05)";
+        }
+        else {
+            context.fillStyle = "rgba(0, 0, 0, 0.05)";
+        }
         context.textAlign = "left";
         context.textBaseline = "bottom";
         context.rotate(Math.PI * -90 / 180);
         context.fillText("SGMCARD.NETLIFY.COM", -504, 395);
         context.restore();
 
+        return canvas;
+    }
+
+    function renderNextFrame(artSuperGIF, cardArt, i) {
+        function request(resolve, reject) {
+            var renderFrame = function () {
+                cardArt.removeEventListener("load", renderFrame);
+                resolve(renderCard(true));
+            };
+            cardArt.addEventListener("load", renderFrame);
+            artSuperGIF.move_to(i);
+            cardArt.src = artSuperGIF.get_canvas().toDataURL();
+        }
+        return new Promise(request);
+    }
+
+    function createAnimatedCard() {
+        document.body.classList.add("disabled");
+
+        var artGIF = new Image();
+        artGIF.className = "pre-jsgif";
+        artGIF.src = artURL;
+        document.body.appendChild(artGIF);
+
+        var artSuperGIF = new SuperGif({
+        	"gif": artGIF,
+        	"loop_mode": false,
+        	"max_width": art.width.value,
+        	"on_end": function () {
+                var frameLength = artSuperGIF.get_length();
+                if (frameLength <= 1) {
+                    createStaticCard();
+                    return;
+                }
+
+                var responses = [];
+                var cardArt = card.artUnder;
+                if (art.over.checked) {
+                    cardArt = card.artOver;
+                }
+                var promise = renderNextFrame(artSuperGIF, cardArt, 0);
+                for (var i = 1; i < frameLength; i++) {
+                    (function (i) {
+                        promise = promise.then(function (response) {
+                            responses.push(response);
+                            return renderNextFrame(artSuperGIF, cardArt, i);
+                        });
+                    })(i);
+                }
+                promise.then(function (response) {
+                    responses.push(response);
+
+                    var encoder = new GIFEncoder();
+            		encoder.setRepeat(0);
+                    encoder.setSize(response.width, response.height);
+                    encoder.setDelay(1);
+                    encoder.setQuality(256);
+            		encoder.start();
+                    for (var i in responses) {
+                        var responseContext = responses[i].getContext("2d");
+                        encoder.addFrame(responseContext);
+                    }
+                    encoder.finish();
+
+                    var cardURL = "data:image/gif;base64," + encode64(encoder.stream().getData());
+                    render.link.href = cardURL;
+                    render.image.src = cardURL;
+
+                    cardArt.src = artURL;
+                    artSuperGIF.get_canvas().parentElement.remove();
+                    document.body.classList.remove("disabled");
+                });
+            }
+        });
+        artSuperGIF.load();
+    }
+
+    function createStaticCard() {
+        document.body.classList.add("disabled");
+        var canvas = renderCard();
         render.link.href = canvas.toDataURL();
         render.image.src = canvas.toDataURL();
+        document.body.classList.remove("disabled");
+    }
+
+    function createCard() {
+        if (artType == "image/gif") {
+            createAnimatedCard();
+        }
+        else {
+            createStaticCard()
+        }
     }
 
     /* Event Listeners */
@@ -995,7 +1103,7 @@ function init() {
         background.map[option].addEventListener("click", selectBackgroundMap);
     }
 
-    render.button.addEventListener("click", renderCard);
+    render.create.addEventListener("click", createCard);
 
     /* Initialize */
 

@@ -29,6 +29,16 @@ The custom gradients allow you to override the default colors specified by the t
 You can select one of the familiar presets, or you can make your own gradient.
 Your own gradient must follow follow the format of a list of `(color name or color number) (brightness percentage)` separated by commas.
 
+### GIF Support
+
+Thanks to [libgif-js](https://github.com/buzzfeed/libgif-js) and [jsgif](https://github.com/antimatter15/jsgif), GIFs are supported.
+
+All animated cards are rendered with a frame delay of one millisecond.
+They also have a lower image quality and an opaque black background.
+The frame rate, quality, and transparency are not adjustable because GIFs are a pain and the HTML Canvas doesn't play well with GIFs.
+
+Try to avoid uploading GIFs with a large number of frames, unless you're willing to wait a long time.
+
 <!--
 ## Background Processes
 
@@ -57,4 +67,6 @@ The process of rendering the card preview area into a downloadable image relies 
 
 This was difficult to understand and complete because many of these CSS properties have varying origin points; some are relative to the element, some are relative to the preview area, and some are relative to the window.
 The order for applying clip paths and transformation matrices also compounded my confusion until I took an hour of hard thinking to figure it out.
+
+I decided to add support for animated GIFs due to some memes that Budget posted in the Skullgirls Discord server. It took an entire day and mostly involved a struggle with asynchronicity and promises.
 -->

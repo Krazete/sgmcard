@@ -500,3 +500,7 @@ input[type='button'] {
     border: 1px dashed var(--bg);
     border-radius: 4px;
 }
+
+.pre-jsgif, .jsgif{
+    display: none;
+}
