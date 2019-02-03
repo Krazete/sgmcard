@@ -7,8 +7,10 @@
         <link rel="shortcut icon" type="image/png" href="fragment/DiamondLevel.png">
         <link rel="stylesheet" href="index.css"></link>
         <!-- START GIF SUPPORT -->
-        <script src="libgif-js/libgif.js"></script>
-        <script src="gif-js/gif.js"></script>
+        <script src="library/libgif-js/libgif.js"></script>
+        <script src="library/gif-js/gif.js"></script>
+        <script src="library/jszip/jszip.min.js"></script>
+        <script src="library/FileSaver-js/FileSaver.min.js"></script>
         <!-- END GIF SUPPORT -->
         <script src="index.js"></script>
     </head>
@@ -190,10 +192,11 @@
                 </div>
             </div>
             <input type="button" value="Create Card" id="option-render">
-            <div id="render">
-                <a target="_blank" download="card" id="render-link">
-                    <img id="render-image">
-                </a>
+            <div id="render-image"></div>
+            <div class="hidden" id="render-disclaimer">
+                This website isn't too good at generating GIFs.
+                <div id="render-zip"></div>
+                Then go to <a target="_blank" href="https://ezgif.com/maker">ezgif</a> to make a better GIF than the one you see above.
             </div>
         </div>
     </body>

@@ -22,6 +22,15 @@ body {
     background: var(--bg);
 }
 
+a {
+    color: skyblue;
+    text-decoration: inherit;
+    cursor: pointer;
+}
+a:hover {
+    text-decoration: underline;
+}
+
 .flexbox {
     display: flex;
 }
@@ -347,14 +356,6 @@ h3 {
     color: var(--bg);
 }
 
-a {
-    color: inherit;
-    text-decoration: inherit;
-}
-a:hover {
-    text-decoration: underline;
-}
-
 .disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -491,14 +492,24 @@ input[type='button'] {
 
 /* RENDERED CARD */
 
-#render {
+#render-image {
     text-align: center;
 }
 
-#render-image {
+#render-image > img {
     width: 200px;
     border: 1px dashed var(--bg);
     border-radius: 4px;
+    cursor: pointer;
+}
+
+#render-disclaimer {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
 }
 
 .pre-jsgif, .jsgif {

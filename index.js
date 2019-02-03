@@ -209,8 +209,9 @@ function init() {
     };
     var render = {
         "create": document.getElementById("option-render"),
-        "link": document.getElementById("render-link"),
-        "image": document.getElementById("render-image")
+        "imageContainer": document.getElementById("render-image"),
+        "disclaimer": document.getElementById("render-disclaimer"),
+        "zipContainer": document.getElementById("render-zip"),
     };
 
     /* Preview Inputs */
@@ -970,13 +971,37 @@ function init() {
         function request(resolve, reject) {
             var renderFrame = function () {
                 cardArt.removeEventListener("load", renderFrame);
-                resolve(renderCard(true));
+                resolve({
+                    "transparent": renderCard(),
+                    "opaque": renderCard(true)
+                });
             };
             cardArt.addEventListener("load", renderFrame);
             artSuperGIF.move_to(i);
             cardArt.src = artSuperGIF.get_canvas().toDataURL();
         }
         return new Promise(request);
+    }
+
+    function createCardImage(dataURL) {
+        var image = new Image();
+        image.src = dataURL;
+        image.addEventListener("click", function () {
+            saveAs(dataURL, "card");
+        });
+        render.imageContainer.innerHTML = "";
+        render.imageContainer.appendChild(image);
+    }
+
+    function createCardZip(blob) {
+        var anchor = document.createElement("a");
+        anchor.innerHTML = "Click here to download the frames as a ZIP of individual PNGs instead.";
+        anchor.addEventListener("click", function () {
+            saveAs(blob, "card");
+        });
+        render.zipContainer.innerHTML = "";
+        render.zipContainer.appendChild(anchor);
+        render.disclaimer.className = "";
     }
 
     function createAnimatedCard() {
@@ -994,6 +1019,7 @@ function init() {
         artSuperGIF.load(function () {
             var frameLength = artSuperGIF.get_length();
             if (frameLength <= 1) {
+                artSuperGIF.get_canvas().parentElement.remove();
                 createStaticCard();
                 return;
             }
@@ -1015,28 +1041,30 @@ function init() {
             promise.then(function (response) {
                 responses.push(response);
 
+                var zip = new JSZip();
+                for (var i = 0; i < responses.length; i++) {
+                    var dataURL = responses[i].transparent.toDataURL();
+                    zip.file(i + ".png", dataURL.slice(22), {"base64": true});
+                }
+                zip.generateAsync({"type": "blob"}).then(createCardZip);
+
                 var encoder = new GIF({
                     "quality": 64,
                     "workers": 8,
                     "workerScript": "gif-js/gif.worker.js"
                 });
                 for (var i in responses) {
-                    encoder.addFrame(responses[i], {"delay": 1});
+                    encoder.addFrame(responses[i].opaque, {"delay": 1});
                 }
-
                 encoder.on("finished", function (blob) {
                     for (var worker of encoder.freeWorkers) {
                         worker.terminate();
                     }
-
                     var reader = new FileReader();
                     reader.addEventListener("load", function () {
-                        render.link.setAttribute("download", "card.gif");
-                        render.link.href = this.result;
-                        render.image.src = this.result;
-
-                        cardArt.src = artURL;
+                        createCardImage(this.result);
                         artSuperGIF.get_canvas().parentElement.remove();
+                        cardArt.src = artURL;
                         document.body.classList.remove("disabled");
                     });
                     reader.readAsDataURL(blob);
@@ -1049,9 +1077,8 @@ function init() {
     function createStaticCard() {
         document.body.classList.add("disabled");
         var canvas = renderCard();
-        render.link.setAttribute("download", "card.png");
-        render.link.href = canvas.toDataURL();
-        render.image.src = canvas.toDataURL();
+        createCardImage(canvas.toDataURL());
+        render.disclaimer.className = "hidden";
         document.body.classList.remove("disabled");
     }
 
