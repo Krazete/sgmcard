@@ -847,7 +847,7 @@ function init() {
         canvas.height = Math.round(previewBox.height);
         if (opaque) {
             context.save();
-            context.fillStyle = "#000000";
+            context.fillStyle = "black";
             context.fillRect(0, 0, canvas.width, canvas.height);
             context.restore();
         }
@@ -1017,25 +1017,28 @@ function init() {
             promise.then(function (response) {
                 responses.push(response);
 
-                var encoder = new GIFEncoder();
-                encoder.setRepeat(0);
-                encoder.setSize(response.width, response.height);
-                encoder.setDelay(1);
-                encoder.setQuality(32);
-                encoder.start();
+                var encoder = new GIF({
+                    "workers": 8,
+                    "quality": 64
+                });
                 for (var i in responses) {
-                    var responseContext = responses[i].getContext("2d");
-                    encoder.addFrame(responseContext);
+                    encoder.addFrame(responses[i], {"delay": 1});
                 }
-                encoder.finish();
 
-                var cardURL = "data:image/gif;base64," + encode64(encoder.stream().getData());
-                render.link.href = cardURL;
-                render.image.src = cardURL;
+                encoder.on("finished", function (blob) {
+                    for (var worker of encoder.freeWorkers) {
+                        worker.terminate();
+                    }
 
-                cardArt.src = artURL;
-                artSuperGIF.get_canvas().parentElement.remove();
-                document.body.classList.remove("disabled");
+                    var cardURL = URL.createObjectURL(blob);
+                    render.link.href = cardURL;
+                    render.image.src = cardURL;
+
+                    cardArt.src = artURL;
+                    artSuperGIF.get_canvas().parentElement.remove();
+                    document.body.classList.remove("disabled");
+                });
+                encoder.render();
             });
         });
     }
