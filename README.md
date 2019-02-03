@@ -1,6 +1,8 @@
 # Skullgirls Mobile Card Creator
 
 A tool for creating custom Skullgirls Mobile fighter cards.
+It performs best in Google Chrome and works in Safari both on desktop and on mobile devices.
+I have not tested the website in any other browser.
 
 <img src="sample.png">
 
