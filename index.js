@@ -989,55 +989,55 @@ function init() {
 
         var artSuperGIF = new SuperGif({
         	"gif": artGIF,
-        	"loop_mode": false,
-        	"max_width": art.width.value,
-        	"on_end": function () {
-                var frameLength = artSuperGIF.get_length();
-                if (frameLength <= 1) {
-                    createStaticCard();
-                    return;
-                }
-
-                var responses = [];
-                var cardArt = card.artUnder;
-                if (art.over.checked) {
-                    cardArt = card.artOver;
-                }
-                var promise = renderNextFrame(artSuperGIF, cardArt, 0);
-                for (var i = 1; i < frameLength; i++) {
-                    (function (i) {
-                        promise = promise.then(function (response) {
-                            responses.push(response);
-                            return renderNextFrame(artSuperGIF, cardArt, i);
-                        });
-                    })(i);
-                }
-                promise.then(function (response) {
-                    responses.push(response);
-
-                    var encoder = new GIFEncoder();
-            		encoder.setRepeat(0);
-                    encoder.setSize(response.width, response.height);
-                    encoder.setDelay(1);
-                    encoder.setQuality(256);
-            		encoder.start();
-                    for (var i in responses) {
-                        var responseContext = responses[i].getContext("2d");
-                        encoder.addFrame(responseContext);
-                    }
-                    encoder.finish();
-
-                    var cardURL = "data:image/gif;base64," + encode64(encoder.stream().getData());
-                    render.link.href = cardURL;
-                    render.image.src = cardURL;
-
-                    cardArt.src = artURL;
-                    artSuperGIF.get_canvas().parentElement.remove();
-                    document.body.classList.remove("disabled");
-                });
-            }
+            "loop_mode": false,
+            "autoplay": false,
+        	"max_width": art.width.value
         });
-        artSuperGIF.load();
+        artSuperGIF.load(function () {
+            var frameLength = artSuperGIF.get_length();
+            if (frameLength <= 1) {
+                createStaticCard();
+                return;
+            }
+
+            var responses = [];
+            var cardArt = card.artUnder;
+            if (art.over.checked) {
+                cardArt = card.artOver;
+            }
+            var promise = renderNextFrame(artSuperGIF, cardArt, 0);
+            for (var i = 1; i < frameLength; i++) {
+                (function (i) {
+                    promise = promise.then(function (response) {
+                        responses.push(response);
+                        return renderNextFrame(artSuperGIF, cardArt, i);
+                    });
+                })(i);
+            }
+            promise.then(function (response) {
+                responses.push(response);
+
+                var encoder = new GIFEncoder();
+                encoder.setRepeat(0);
+                encoder.setSize(response.width, response.height);
+                encoder.setDelay(1);
+                encoder.setQuality(256);
+                encoder.start();
+                for (var i in responses) {
+                    var responseContext = responses[i].getContext("2d");
+                    encoder.addFrame(responseContext);
+                }
+                encoder.finish();
+
+                var cardURL = "data:image/gif;base64," + encode64(encoder.stream().getData());
+                render.link.href = cardURL;
+                render.image.src = cardURL;
+
+                cardArt.src = artURL;
+                artSuperGIF.get_canvas().parentElement.remove();
+                document.body.classList.remove("disabled");
+            });
+        });
     }
 
     function createStaticCard() {

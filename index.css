@@ -501,6 +501,12 @@ input[type='button'] {
     border-radius: 4px;
 }
 
-.pre-jsgif, .jsgif{
-    display: none;
+.pre-jsgif, .jsgif {
+    text-align: center;
+}
+
+.jsgif:after {
+    content: 'LOADING...';
+    font-family: "Washington";
+    display: block;
 }
