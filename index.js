@@ -989,8 +989,6 @@ function init() {
 
         var artSuperGIF = new SuperGif({
         	"gif": artGIF,
-            "loop_mode": false,
-            "autoplay": false,
         	"max_width": art.width.value
         });
         artSuperGIF.load(function () {
