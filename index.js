@@ -1021,7 +1021,7 @@ function init() {
                 encoder.setRepeat(0);
                 encoder.setSize(response.width, response.height);
                 encoder.setDelay(1);
-                encoder.setQuality(256);
+                encoder.setQuality(32);
                 encoder.start();
                 for (var i in responses) {
                     var responseContext = responses[i].getContext("2d");
