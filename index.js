@@ -1051,7 +1051,7 @@ function init() {
                 var encoder = new GIF({
                     "quality": 64,
                     "workers": 8,
-                    "workerScript": "gif-js/gif.worker.js"
+                    "workerScript": "library/gif-js/gif.worker.js"
                 });
                 for (var i in responses) {
                     encoder.addFrame(responses[i].opaque, {"delay": 1});
