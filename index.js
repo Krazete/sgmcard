@@ -1030,7 +1030,6 @@ function init() {
 
                     var reader = new FileReader();
                     reader.addEventListener("load", function () {
-                        render.link.setAttribute("download", "card.gif");
                         render.link.href = this.result;
                         render.image.src = this.result;
 
@@ -1048,7 +1047,6 @@ function init() {
     function createStaticCard() {
         document.body.classList.add("disabled");
         var canvas = renderCard();
-        render.link.setAttribute("download", "card.png");
         render.link.href = canvas.toDataURL();
         render.image.src = canvas.toDataURL();
         document.body.classList.remove("disabled");
