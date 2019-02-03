@@ -33,13 +33,14 @@ Your own gradient must follow follow the format of a list of `(color name or col
 
 ### GIF Support
 
-Thanks to [buzzfeed/libgif-js](https://github.com/buzzfeed/libgif-js) and [jnordberg/gif.js](https://github.com/jnordberg/gif.js), GIFs are supported.
+Thanks to [buzzfeed/libgif-js](https://github.com/buzzfeed/libgif-js) and [jnordberg/gif.js](https://github.com/jnordberg/gif.js), this website supports GIFs (but just barely).
 
 All animated cards are rendered with a frame delay of one millisecond.
 They also have a lower image quality and an opaque black background.
 The frame rate, quality, and transparency are not adjustable because GIFs are a pain and the HTML Canvas doesn't play well with GIFs.
 
 GIFs with a large number of frames may take a while and result in a huge file size.
+If too large, you may even be unable to download the resulting image.
 
 <!--
 ## Background Processes
