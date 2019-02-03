@@ -500,7 +500,7 @@ input[type='button'] {
     width: 200px;
     border: 1px dashed var(--bg);
     border-radius: 4px;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 #render-disclaimer {

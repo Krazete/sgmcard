@@ -986,9 +986,9 @@ function init() {
     function createCardImage(dataURL) {
         var image = new Image();
         image.src = dataURL;
-        image.addEventListener("click", function () {
-            saveAs(dataURL, "card");
-        });
+        // image.addEventListener("click", function () {
+        //     saveAs(dataURL, "card");
+        // });
         render.imageContainer.innerHTML = "";
         render.imageContainer.appendChild(image);
     }
