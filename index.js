@@ -62,11 +62,18 @@ function getLinearGradientFromText(text) {
     var linearGradient = "linear-gradient(to right, black 0%, ";
     var colorStops = text.match(colorStopPattern);
     try {
+        var pairs = [];
         for (var colorStop of colorStops) {
             var colorStopSplit = colorStop.split(/\s+/);
             var color = colorStopSplit[0];
             var cstop = parseFloat(colorStopSplit[1]);
-            linearGradient += color + " " + cstop + "%, ";
+            pairs.push([color, cstop]);
+        }
+        pairs.sort(function (a, b) {
+            return a[1] - b[1];
+        });
+        for (var pair of pairs) {
+            linearGradient += pair[0] + " " + pair[1] + "%, ";
         }
     }
     catch (e) {
