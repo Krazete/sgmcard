@@ -56,6 +56,28 @@ function getImageURLFromImageData(imageData) {
     return canvas.toDataURL();
 }
 
+function getLinearGradientFromText(text) {
+    var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
+
+    var linearGradient = "linear-gradient(to right, black 0%, ";
+    var colorStops = text.match(colorStopPattern);
+    try {
+        for (var colorStop of colorStops) {
+            var colorStopSplit = colorStop.split(/\s+/);
+            var color = colorStopSplit[0];
+            var cstop = parseFloat(colorStopSplit[1]);
+            linearGradient += color + " " + cstop + "%, ";
+        }
+    }
+    catch (e) {
+        for (var i = 0; i < 16; i++) {
+            linearGradient += (i % 2 ? "black " : "white ") + i * 25 / 4 + "%, ";
+        }
+    }
+    linearGradient += "white 100%";
+    return linearGradient;
+}
+
 function getGradientDataFromText(text) {
     var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
 
@@ -178,6 +200,7 @@ function init() {
         "default": document.getElementById("option-fg-default"),
         "override": document.getElementById("option-fg-override"),
         "submenu": document.getElementById("fg-submenu"),
+        "preview": document.getElementById("fg-preview"),
         "input": document.getElementById("option-fg"),
         "map": {
             "custom": document.getElementById("option-fg-custom"),
@@ -196,6 +219,7 @@ function init() {
         "default": document.getElementById("option-bg-default"),
         "override": document.getElementById("option-bg-override"),
         "submenu": document.getElementById("bg-submenu"),
+        "preview": document.getElementById("bg-preview"),
         "input": document.getElementById("option-bg"),
         "map": {
             "custom": document.getElementById("option-bg-custom"),
@@ -639,6 +663,9 @@ function init() {
 
         resizeCardElement();
         resizeCardLevel();
+
+        var linearGradient = getLinearGradientFromText(foreground.input.value);
+        foreground.preview.style.background = linearGradient;
     }
 
     function selectElement() {
@@ -707,6 +734,9 @@ function init() {
         if (tier.diamond.checked && !foreground.override.checked) {
             selectTier();
         }
+
+        var linearGradient = getLinearGradientFromText(background.input.value);
+        background.preview.style.background = linearGradient;
     }
 
     function selectEnergy() {
@@ -815,9 +845,11 @@ function init() {
 
     function selectForegroundMap() {
         if (foreground.map.custom.checked) {
+            foreground.preview.classList.remove("disabled");
             foreground.input.classList.remove("disabled");
         }
         else {
+            foreground.preview.classList.add("disabled");
             foreground.input.classList.add("disabled");
         }
         selectTier();
@@ -825,9 +857,11 @@ function init() {
 
     function selectBackgroundMap() {
         if (background.map.custom.checked) {
+            background.preview.classList.remove("disabled");
             background.input.classList.remove("disabled");
         }
         else {
+            background.preview.classList.add("disabled");
             background.input.classList.add("disabled");
         }
         selectElement();

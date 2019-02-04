@@ -446,6 +446,13 @@ input[type='button'] {
     cursor: pointer;
 }
 
+#fg-preview, #bg-preview {
+    width: 85%;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 0 7px;
+}
+
 /* SPECIAL MENU BUTTONS */
 
 #option-move + label:hover > img {
