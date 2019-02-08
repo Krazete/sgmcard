@@ -977,7 +977,8 @@ function init() {
         for (var text of texts) {
             context.save();
             var textBox = text.getBoundingClientRect();
-            var textStyle = window.getComputedStyle(text);
+            var textStyle = getComputedStyle(text);
+            console.log(textStyle.font);
             context.font = textStyle.font;
             context.fillStyle = textStyle.color;
             context.textAlign = textStyle.textAlign;
