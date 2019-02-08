@@ -1191,6 +1191,13 @@ function init() {
     foreground.map.custom.click();
     background.default.click();
     background.map.custom.click();
+
+    /* Color Inputs */
+    var colorInput = document.getElementById("abc");
+    var colorLabel = document.getElementById("abc-label");
+    colorInput.addEventListener("change", function () {
+        colorLabel.innerHTML = this.value;
+    });
 }
 
 window.addEventListener("DOMContentLoaded", init);
