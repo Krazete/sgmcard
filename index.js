@@ -935,7 +935,7 @@ function init() {
             if (clipPath == "none") {
                 clipPath = imageStyle.webkitClipPath;
             }
-            if (clipPath != "none") {
+            if (typeof clipPath != "undefined" && clipPath != "none") {
                 context.beginPath();
                 var clipPoints = clipPath.match(pairPattern);
                 for (var i = 0; i < clipPoints.length; i++) {
