@@ -251,7 +251,8 @@ function init() {
         var inputStyle = getComputedStyle(input);
         var copy = document.createElement("div");
         copy.innerHTML = input.value.toUpperCase();
-        copy.style.font = inputStyle.font;
+        copy.style.fontSize = inputStyle.fontSize;
+        copy.style.fontFamily = inputStyle.fontFamily;
         copy.style.textTransform = inputStyle.textTransform;
         copy.style.whiteSpace = "pre";
         copy.style.display = "inline-block";
@@ -978,8 +979,7 @@ function init() {
             context.save();
             var textBox = text.getBoundingClientRect();
             var textStyle = getComputedStyle(text);
-            console.log(textStyle.font);
-            context.font = textStyle.font;
+            context.font = textStyle.fontSize + " " + textStyle.fontFamily;
             context.fillStyle = textStyle.color;
             context.textAlign = textStyle.textAlign;
             context.textBaseline = "middle";
