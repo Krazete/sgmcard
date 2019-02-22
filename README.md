@@ -6,6 +6,12 @@ It should also work for Firefox, but I have not tested the website in any other 
 
 <img src="sample.png">
 
+The official design of cards has changed slightly in version 3.1.0 of Skullgirls Mobile.
+I presume this is part of the optimizations as noted in the [patch notes](https://forum.skullgirlsmobile.com/threads/official-3-1-update-notes-coming-soon.5246/).
+
+This website was made during version 3.0.0 and thus generates cards consistent with the designs of 3.0.0.
+I do not plan on updating the look of the cards, partially because I prefer the old look.
+
 ## Features
 
 ### Preview
