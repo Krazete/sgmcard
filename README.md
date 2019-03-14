@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/fbc33fd2-56be-4c65-b34d-6946840deaf1/deploy-status)](https://app.netlify.com/sites/sgmcard/deploys)
+
 # Skullgirls Mobile Card Creator
 
 A tool for creating custom Skullgirls Mobile fighter cards.
