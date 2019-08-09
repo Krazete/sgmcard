@@ -32,6 +32,9 @@ You can choose the tier, element, and energy type of the card and you can upload
 With your uploaded image, you have the option to edit it using the text inputs or by selecting the move, scale, or rotate tool and then interacting with the card preview area.
 You can also specify whether the image should overlap the top border of the card.
 
+If the dimensions of your image is 360x340px, it is assumed to be from the [SGM Palette Editor](https://github.com/Krazete/sgmpalette).
+The optimal position parameters will be automatically set.
+
 ### Custom Gradients
 
 The custom gradients allow you to override the default colors specified by the tier and element options.

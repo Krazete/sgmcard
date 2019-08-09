@@ -785,6 +785,16 @@ function init() {
                     else {
                         var imageData = getImageDataFromImage(image);
                         artURL = getImageURLFromImageData(imageData);
+                        if (imageData.width == 360 && imageData.height == 340) {
+                            art.x.value = 198;
+                            art.y.value = 174;
+                            art.width.value = 362;
+                            art.angle.value = 0;
+                            setX();
+                            setY();
+                            setWidth();
+                            setAngle();
+                        }
                     }
                     selectOverlap();
                 });
