@@ -331,6 +331,7 @@ a:hover {
 /* MENU */
 
 #menu {
+    position: relative;
     min-height: 609px;
     width: max-content;
     background: var(--fg);
@@ -339,6 +340,15 @@ a:hover {
     border: 3px double var(--bg);
     border-radius: 16px;
     margin: auto;
+}
+
+#kofi img {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px;
+    margin: 6px;
+    display: block;
 }
 
 h1, h2, h3, label {
