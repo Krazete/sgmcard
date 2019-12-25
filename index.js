@@ -298,8 +298,7 @@ function init() {
         if (
             tier.bronze.checked && card.levelText.value >= 30 ||
             tier.silver.checked && card.levelText.value >= 40 ||
-            tier.gold.checked && card.levelText.value >= 50 ||
-            tier.diamond.checked && card.levelText.value >= 60
+            tier.gold.checked && card.levelText.value >= 50
         ) {
             card.levelText.style.color = "skyblue";
         }
