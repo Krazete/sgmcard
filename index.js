@@ -887,7 +887,7 @@ function init() {
     /* Card Renderer */
 
     function renderCard(opaque) {
-        var singlePattern = /-?\d+(\.\d+)?(px|%)?/g;
+        var singlePattern = /-?\d+(\.\d+)?(e-?\d+)?(px|%)?/g;
         var pairPattern = /-?\d+(\.\d+)?(px|%)\s+-?\d+(\.\d+)?(px|%)/g;
 
         var preview = document.getElementById("preview");
