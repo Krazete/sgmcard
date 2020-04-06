@@ -245,6 +245,16 @@ function init() {
         "zipContainer": document.getElementById("render-zip"),
     };
 
+    var clipPaths = { /* backup for firefox <54 */
+        "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
+        "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
+        "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
+        "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
+        "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
+        "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
+        "art": "none"
+    };
+
     /* Preview Inputs */
 
     function getInputValueWidth(input) {
@@ -528,6 +538,7 @@ function init() {
             ")";
             artMask.style.clipPath = polygon;
             artMask.style.webkitClipPath = polygon;
+            clipPaths.art = polygon;
         }
     }
 
@@ -944,6 +955,17 @@ function init() {
             var clipPath = imageStyle.clipPath;
             if (clipPath == "none") {
                 clipPath = imageStyle.webkitClipPath;
+            }
+            if (
+                (typeof clipPath == "undefined" || clipPath == "none") &&
+                image.id.includes("card-element-") &&
+                !image.id.includes("-icon")
+            ) {
+                var key = image.id.split("-").slice(-1)[0];
+                if (preview.classList.contains("gold")) {
+                    key += "Gold";
+                }
+                clipPath = clipPaths[key];
             }
             if (typeof clipPath != "undefined" && clipPath != "none") {
                 context.beginPath();
