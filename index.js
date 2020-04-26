@@ -1232,4 +1232,11 @@ function init() {
     });
 }
 
+function holup(e) {
+    e.preventDefault();
+    e.returnValue = "Changes you made may not be saved.";
+    return e.returnValue;
+}
+
 window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("beforeunload", holup);
