@@ -148,10 +148,10 @@ function init() {
         "maskRight": document.getElementById("mask-right"),
         "maskTop": document.getElementById("mask-top"),
         "maskBottom": document.getElementById("mask-bottom"),
-        "artMasks": document.getElementsByClassName("card-art-mask"),
-        "artUnder": document.getElementById("art-under"),
+        "overlapper": document.getElementById("card-overlapper"),
+        "artMask": document.getElementById("card-art-mask"),
+        "art": document.getElementById("art"),
         "top": document.getElementById("card-top"),
-        "artOver": document.getElementById("art-over"),
         "bottom": document.getElementById("card-bottom"),
         "elementIcon": document.getElementById("card-element-icon"),
         "elementLeft": document.getElementById("card-element-left"),
@@ -327,16 +327,16 @@ function init() {
     }
 
     function setArt0() {
-        var savedRotation = card.artUnder.style.transform;
-        card.artUnder.style.transform = "";
-        var artBox = card.artUnder.getBoundingClientRect();
+        var savedRotation = card.art.style.transform;
+        card.art.style.transform = "";
+        var artBox = card.art.getBoundingClientRect();
         art0 = {
             "x": (artBox.left + artBox.right) / 2,
             "y": (artBox.top + artBox.bottom) / 2,
             "width": artBox.width,
             "angle": -art.angle.value || 0
         };
-        card.artUnder.style.transform = savedRotation;
+        card.art.style.transform = savedRotation;
     }
 
     function distanceFromArt0(x, y) {
@@ -370,13 +370,11 @@ function init() {
     /* Art Move Tool */
 
     function setX() {
-        card.artUnder.style.left = art.x.value + "px";
-        card.artOver.style.left = art.x.value + "px";
+        card.art.style.left = art.x.value + "px";
     }
 
     function setY() {
-        card.artUnder.style.top = art.y.value + "px";
-        card.artOver.style.top = art.y.value + "px";
+        card.art.style.top = art.y.value + "px";
     }
 
     function startMoveArt(e) {
@@ -418,8 +416,7 @@ function init() {
     /* Art Scale Tool */
 
     function setWidth() {
-        card.artUnder.style.width = art.width.value + "px";
-        card.artOver.style.width = art.width.value + "px";
+        card.art.style.width = art.width.value + "px";
     }
 
     function startScaleArt(e) {
@@ -456,8 +453,7 @@ function init() {
     /* Art Rotate Tool */
 
     function setAngle() {
-        card.artUnder.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
-        card.artOver.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
+        card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
     }
 
     function startRotateArt(e) {
@@ -521,17 +517,15 @@ function init() {
             this.className = "active";
         }
         setArtMaskPath();
-        for (var artMask of card.artMasks) {
-            var polygon = "polygon(" +
-                artMaskPath[0] + "px " + artMaskPath[1] + "px," +
-                artMaskPath[2] + "px " + artMaskPath[1] + "px," +
-                artMaskPath[2] + "px " + artMaskPath[3] + "px," +
-                artMaskPath[0] + "px " + artMaskPath[3] + "px" +
-            ")";
-            artMask.style.clipPath = polygon;
-            artMask.style.webkitClipPath = polygon;
-            clipPaths.art = polygon;
-        }
+        var polygon = "polygon(" +
+            artMaskPath[0] + "px " + artMaskPath[1] + "px," +
+            artMaskPath[2] + "px " + artMaskPath[1] + "px," +
+            artMaskPath[2] + "px " + artMaskPath[3] + "px," +
+            artMaskPath[0] + "px " + artMaskPath[3] + "px" +
+        ")";
+        card.artMask.style.clipPath = polygon;
+        card.artMask.style.webkitClipPath = polygon;
+        clipPaths.art = polygon;
     }
 
     /* Menu Options */
@@ -794,7 +788,7 @@ function init() {
                             setAngle();
                         }
                     }
-                    selectOverlap();
+                    card.art.src = artURL;
                 });
             });
             reader.readAsDataURL(this.files[0]);
@@ -803,12 +797,10 @@ function init() {
 
     function selectOverlap() {
         if (art.under.checked) {
-            card.artUnder.src = artURL;
-            card.artOver.src = "";
+            card.overlapper.appendChild(card.top);
         }
         else if (art.over.checked) {
-            card.artUnder.src = "";
-            card.artOver.src = artURL;
+            card.overlapper.appendChild(card.artMask);
         }
     }
 
@@ -887,7 +879,7 @@ function init() {
         for (var image of images) {
             context.save();
 
-            if (image == card.artUnder || image == card.artOver) {
+            if (image == card.art) {
                 context.moveTo(artMaskPath[0], artMaskPath[1]);
                 context.lineTo(artMaskPath[2], artMaskPath[1]);
                 context.lineTo(artMaskPath[2], artMaskPath[3]);
@@ -1066,16 +1058,12 @@ function init() {
             }
 
             var responses = [];
-            var cardArt = card.artUnder;
-            if (art.over.checked) {
-                cardArt = card.artOver;
-            }
-            var promise = renderNextFrame(artSuperGIF, cardArt, 0);
+            var promise = renderNextFrame(artSuperGIF, card.art, 0);
             for (var i = 1; i < frameLength; i++) {
                 (function (i) {
                     promise = promise.then(function (response) {
                         responses.push(response);
-                        return renderNextFrame(artSuperGIF, cardArt, i);
+                        return renderNextFrame(artSuperGIF, card.art, i);
                     });
                 })(i);
             }

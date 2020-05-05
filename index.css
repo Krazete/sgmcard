@@ -67,8 +67,7 @@ a:hover {
     width: 295px;
 }
 
-#art-under,
-#art-over {
+#art {
     position: absolute;
     top: 198px;
     left: 198px;
@@ -80,6 +79,7 @@ a:hover {
 #card-element-left,
 #card-element-center,
 #card-element-right {
+    position: absolute;
     top: 3px;
 }
 
