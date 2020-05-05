@@ -12,6 +12,7 @@
         <script src="library/jszip/jszip.min.js"></script>
         <script src="library/FileSaver-js/FileSaver.min.js"></script>
         <!-- END GIF SUPPORT -->
+        <script src="library/jsscrub.js"></script>
         <script src="index.js"></script>
     </head>
     <body>
@@ -108,19 +109,19 @@
                                 <input type="radio" name="position" id="option-move" checked>
                                 <label for="option-move"><img src="menu/Drag1F.png"></label>
                                 <label for="option-x">X:</label>
-                                <input type="number" placeholder="198" value="198" id="option-x">
+                                <input type="number" placeholder="198" value="198" class="jsscrub" id="option-x">
                                 <label for="option-y">Y:</label>
-                                <input type="number" placeholder="198" value="198" id="option-y">
+                                <input type="number" placeholder="198" value="198" class="jsscrub" id="option-y">
                                 <br>
                                 <input type="radio" name="position" id="option-scale">
                                 <label for="option-scale"><img src="menu/Drag1F.png"> <img src="menu/Drag1F.png"></label>
                                 <label for="option-width">Width:</label>
-                                <input type="number" min="0" placeholder="295" value="295" id="option-width">
+                                <input type="number" min="0" placeholder="295" value="295" class="jsscrub" id="option-width">
                                 <br>
                                 <input type="radio" name="position" id="option-rotate">
                                 <label for="option-rotate"><img src="menu/Drag1F.png"></label>
                                 <label for="option-angle">Angle:</label>
-                                <input type="number" min="0" max="360" placeholder="0" value="0" id="option-angle">
+                                <input type="number" min="0" max="360" placeholder="0" value="0" class="jsscrub" data-jsscrub="continuous" id="option-angle">
                             </div>
                             <div>
                                 <h3>Overlap</h3>
