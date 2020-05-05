@@ -34,8 +34,11 @@ a:hover {
 .flexbox {
     display: flex;
 }
+.flexbox > * {
+    flex: auto;
+}
 .flexbox > :last-child {
-    flex: 1;
+    flex: none;
 }
 
 /* CARD PREVIEW */
@@ -47,7 +50,7 @@ a:hover {
     background: var(--bg);
     padding: 0;
     border-radius: 8px;
-    margin: 8px 4px;
+    margin: 4px;
     overflow: hidden;
     -webkit-user-select: none;
     user-select: none;
@@ -356,7 +359,7 @@ h1, h2, h3, label {
     text-transform: uppercase;
     text-shadow: 0.1em 0.1em black;
     letter-spacing: 0.1em;
-    margin: 4px;
+    margin: 4px 4px 0 4px;
 }
 
 h1 {
@@ -463,6 +466,13 @@ input[type='button'] {
 }
 
 /* SPECIAL MENU BUTTONS */
+
+#option-move + label,
+#option-scale + label,
+#option-rotate + label {
+    width: 64px;
+    padding: 0;
+}
 
 #option-move + label:hover > img {
     animation: 1s circuit linear infinite;
