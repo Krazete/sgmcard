@@ -461,6 +461,7 @@ input[type='button'] {
 
 #fg-preview, #bg-preview {
     padding: 8px;
+    border: 3px double var(--fg);
     border-radius: 4px;
     margin: 4px;
 }

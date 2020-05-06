@@ -42,7 +42,7 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
         imageData.data[4 * i] = gradientData.data[4 * intensity];
         imageData.data[4 * i + 1] = gradientData.data[4 * intensity + 1];
         imageData.data[4 * i + 2] = gradientData.data[4 * intensity + 2];
-        imageData.data[4 * i + 3] = a;
+        imageData.data[4 * i + 3] = Math.min(a, gradientData.data[4 * intensity + 3]);
     }
     return imageData;
 }
