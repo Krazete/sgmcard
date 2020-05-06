@@ -667,7 +667,7 @@ function init() {
         resizeCardLevel();
 
         var linearGradient = getLinearGradientFromText(foreground.input.value);
-        foreground.preview.style.background = linearGradient;
+        foreground.preview.style.backgroundImage = linearGradient;
     }
 
     function selectElement() {
@@ -736,7 +736,7 @@ function init() {
         }
 
         var linearGradient = getLinearGradientFromText(background.input.value);
-        background.preview.style.background = linearGradient;
+        background.preview.style.backgroundImage = linearGradient;
     }
 
     function selectEnergy() {

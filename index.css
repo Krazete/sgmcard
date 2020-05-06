@@ -460,6 +460,7 @@ input[type='button'] {
 }
 
 #fg-preview, #bg-preview {
+    background-origin: border-box;
     padding: 8px;
     border: 3px double var(--fg);
     border-radius: 4px;
