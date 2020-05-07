@@ -114,11 +114,11 @@ function getGradientDataFromText(text) {
     return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function loadColorizedImageURL(imageURL, gradientDataOrURL) {
-    if (typeof gradientDataOrURL == "string") { /* if both arguments are URLs */
+function loadColorizedImageURL(imageURL, gradientURLOrText) {
+    if (gradientURLOrText.indexOf(".png") >= 0) { /* if both arguments are URLs */
         return Promise.all([
             loadImage(imageURL),
-            loadImage(gradientDataOrURL)
+            loadImage(gradientURLOrText)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
             var gradientData = getImageDataFromImage(response[1], 256, 1);
@@ -131,7 +131,8 @@ function loadColorizedImageURL(imageURL, gradientDataOrURL) {
             loadImage(imageURL)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
-            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientDataOrURL);
+            var gradientData = getGradientDataFromText(gradientURLOrText);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
             return getImageURLFromImageData(colorizedData);
         });
     }
@@ -530,7 +531,7 @@ function init() {
 
     /* Menu Options */
 
-    var gradientMapURL = {
+    var gradientMapImage = {
         "error": "gradient/36.png",
         "bronze": "gradient/BronzeGradient.png",
         "silver": "gradient/SilverGradient.png",
@@ -543,13 +544,13 @@ function init() {
             "dark": "gradient/DiamondGradientDark.png",
             "neutral": "gradient/DiamondGradientMapNeutralB.png"
         },
-        "bg": { /* contains imageData, not dataURL as the name "gradientMapURL" implies */
-            "fire": getGradientDataFromText("#301 0%, #c40818 20%, #f54 50%, #fb7 100%"),
-            "water": getGradientDataFromText("#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%"),
-            "wind": getGradientDataFromText("#010 0%, #208038 20%, #48c048 50%, #bf7 100%"),
-            "light": getGradientDataFromText("#950 0%, #db5 20%, #fea 50%, #fff 100%"),
-            "dark": getGradientDataFromText("#113 0%, #536 20%, #a464a4 50%, #ead 100%"),
-            "neutral": getGradientDataFromText("#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%")
+        "bg": {
+            "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
+            "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
+            "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
+            "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
+            "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
+            "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
         }
     };
 
@@ -590,61 +591,61 @@ function init() {
             cardLevelURL = "fragment/DiamondLevel.png";
         }
 
+        var gradientURLOrText = gradientMapImage.error;
+        if (element.fire.checked) {
+            gradientURLOrText = gradientMapImage.fg.fire;
+        }
+        else if (element.water.checked) {
+            gradientURLOrText = gradientMapImage.fg.water;
+        }
+        else if (element.wind.checked) {
+            gradientURLOrText = gradientMapImage.fg.wind;
+        }
+        else if (element.light.checked) {
+            gradientURLOrText = gradientMapImage.fg.light;
+        }
+        else if (element.dark.checked) {
+            gradientURLOrText = gradientMapImage.fg.dark;
+        }
+        else if (element.neutral.checked) {
+            gradientURLOrText = gradientMapImage.fg.neutral;
+        }
+        if (foreground.custom.checked) {
+            gradientURLOrText = foreground.input.value;
+        }
+        else if (foreground.bronze.checked) {
+            gradientURLOrText = gradientMapImage.bronze;
+        }
+        else if (foreground.silver.checked) {
+            gradientURLOrText = gradientMapImage.silver;
+        }
+        else if (foreground.gold.checked) {
+            gradientURLOrText = gradientMapImage.gold;
+        }
+        else if (foreground.fire.checked) {
+            gradientURLOrText = gradientMapImage.fg.fire;
+        }
+        else if (foreground.water.checked) {
+            gradientURLOrText = gradientMapImage.fg.water;
+        }
+        else if (foreground.wind.checked) {
+            gradientURLOrText = gradientMapImage.fg.wind;
+        }
+        else if (foreground.light.checked) {
+            gradientURLOrText = gradientMapImage.fg.light;
+        }
+        else if (foreground.dark.checked) {
+            gradientURLOrText = gradientMapImage.fg.dark;
+        }
+        else if (foreground.neutral.checked) {
+            gradientURLOrText = gradientMapImage.fg.neutral;
+        }
         if (tier.diamond.checked && !element.none.checked || !foreground.default.checked && !tier.none.checked) {
-            var gradientDataOrURL = gradientMapURL.error;
-            if (element.fire.checked) {
-                gradientDataOrURL = gradientMapURL.fg.fire;
-            }
-            else if (element.water.checked) {
-                gradientDataOrURL = gradientMapURL.fg.water;
-            }
-            else if (element.wind.checked) {
-                gradientDataOrURL = gradientMapURL.fg.wind;
-            }
-            else if (element.light.checked) {
-                gradientDataOrURL = gradientMapURL.fg.light;
-            }
-            else if (element.dark.checked) {
-                gradientDataOrURL = gradientMapURL.fg.dark;
-            }
-            else if (element.neutral.checked) {
-                gradientDataOrURL = gradientMapURL.fg.neutral;
-            }
-            if (foreground.custom.checked) {
-                gradientDataOrURL = getGradientDataFromText(foreground.input.value);
-            }
-            else if (foreground.bronze.checked) {
-                gradientDataOrURL = gradientMapURL.bronze;
-            }
-            else if (foreground.silver.checked) {
-                gradientDataOrURL = gradientMapURL.silver;
-            }
-            else if (foreground.gold.checked) {
-                gradientDataOrURL = gradientMapURL.gold;
-            }
-            else if (foreground.fire.checked) {
-                gradientDataOrURL = gradientMapURL.fg.fire;
-            }
-            else if (foreground.water.checked) {
-                gradientDataOrURL = gradientMapURL.fg.water;
-            }
-            else if (foreground.wind.checked) {
-                gradientDataOrURL = gradientMapURL.fg.wind;
-            }
-            else if (foreground.light.checked) {
-                gradientDataOrURL = gradientMapURL.fg.light;
-            }
-            else if (foreground.dark.checked) {
-                gradientDataOrURL = gradientMapURL.fg.dark;
-            }
-            else if (foreground.neutral.checked) {
-                gradientDataOrURL = gradientMapURL.fg.neutral;
-            }
             Promise.all([
-                loadColorizedImageURL(cardTopURL, gradientDataOrURL),
-                loadColorizedImageURL(cardBottomURL, gradientDataOrURL),
-                loadColorizedImageURL(cardElementURL, gradientDataOrURL),
-                loadColorizedImageURL(cardLevelURL, gradientDataOrURL)
+                loadColorizedImageURL(cardTopURL, gradientURLOrText),
+                loadColorizedImageURL(cardBottomURL, gradientURLOrText),
+                loadColorizedImageURL(cardElementURL, gradientURLOrText),
+                loadColorizedImageURL(cardLevelURL, gradientURLOrText)
             ]).then(function (response) {
                 card.top.src = response[0];
                 card.bottom.src = response[1];
@@ -666,64 +667,71 @@ function init() {
         resizeCardElement();
         resizeCardLevel();
 
-        var linearGradient = getLinearGradientFromText(foreground.input.value);
-        foreground.preview.style.backgroundImage = linearGradient;
+        if (foreground.default.checked) {
+            foreground.preview.style.backgroundImage = getLinearGradientFromText("");
+        }
+        else if (gradientURLOrText.indexOf(".png") >= 0) {
+            foreground.preview.style.backgroundImage = "url('" + gradientURLOrText + "')";
+        }
+        else {
+            foreground.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        }
     }
 
     function selectElement() {
         var cardBackURL = "fragment/GreyBackground.png";
-        var gradientDataOrURL = gradientMapURL.error;
+        var gradientURLOrText = gradientMapImage.error;
         if (element.none.checked) {
             card.elementIcon.src = "";
         }
         else if (element.fire.checked) {
             card.elementIcon.src = "fragment/ElementalIconFire.png";
-            gradientDataOrURL = gradientMapURL.bg.fire;
+            gradientURLOrText = gradientMapImage.bg.fire;
         }
         else if (element.water.checked) {
             card.elementIcon.src = "fragment/ElementalIconWater.png";
-            gradientDataOrURL = gradientMapURL.bg.water;
+            gradientURLOrText = gradientMapImage.bg.water;
         }
         else if (element.wind.checked) {
             card.elementIcon.src = "fragment/ElementalIconWind.png";
-            gradientDataOrURL = gradientMapURL.bg.wind;
+            gradientURLOrText = gradientMapImage.bg.wind;
         }
         else if (element.light.checked) {
             card.elementIcon.src = "fragment/ElementalIconLight.png";
-            gradientDataOrURL = gradientMapURL.bg.light;
+            gradientURLOrText = gradientMapImage.bg.light;
         }
         else if (element.dark.checked) {
             card.elementIcon.src = "fragment/ElementalIconDark.png";
-            gradientDataOrURL = gradientMapURL.bg.dark;
+            gradientURLOrText = gradientMapImage.bg.dark;
         }
         else if (element.neutral.checked) {
             card.elementIcon.src = "fragment/ElementalIconNeutral.png";
-            gradientDataOrURL = gradientMapURL.bg.neutral;
+            gradientURLOrText = gradientMapImage.bg.neutral;
         }
         if (background.custom.checked) {
-            gradientDataOrURL = getGradientDataFromText(background.input.value);
+            gradientURLOrText = background.input.value;
         }
         else if (background.fire.checked) {
-            gradientDataOrURL = gradientMapURL.bg.fire;
+            gradientURLOrText = gradientMapImage.bg.fire;
         }
         else if (background.water.checked) {
-            gradientDataOrURL = gradientMapURL.bg.water;
+            gradientURLOrText = gradientMapImage.bg.water;
         }
         else if (background.wind.checked) {
-            gradientDataOrURL = gradientMapURL.bg.wind;
+            gradientURLOrText = gradientMapImage.bg.wind;
         }
         else if (background.light.checked) {
-            gradientDataOrURL = gradientMapURL.bg.light;
+            gradientURLOrText = gradientMapImage.bg.light;
         }
         else if (background.dark.checked) {
-            gradientDataOrURL = gradientMapURL.bg.dark;
+            gradientURLOrText = gradientMapImage.bg.dark;
         }
         else if (background.neutral.checked) {
-            gradientDataOrURL = gradientMapURL.bg.neutral;
+            gradientURLOrText = gradientMapImage.bg.neutral;
         }
 
         if (!element.none.checked || !background.default.checked) {
-            loadColorizedImageURL(cardBackURL, gradientDataOrURL).then(function (response) {
+            loadColorizedImageURL(cardBackURL, gradientURLOrText).then(function (response) {
                 card.back.src = response;
             });
         }
@@ -735,8 +743,12 @@ function init() {
             selectTier();
         }
 
-        var linearGradient = getLinearGradientFromText(background.input.value);
-        background.preview.style.backgroundImage = linearGradient;
+        if (background.default.checked) {
+            background.preview.style.backgroundImage = getLinearGradientFromText("");
+        }
+        else {
+            background.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        }
     }
 
     function selectEnergy() {
@@ -832,24 +844,32 @@ function init() {
     }
 
     function selectForeground() {
-        if (foreground.custom.checked) {
+        if (foreground.default.checked) {
+            foreground.preview.classList.add("disabled");
+        }
+        else {
             foreground.preview.classList.remove("disabled");
+        }
+        if (foreground.custom.checked) {
             foreground.input.classList.remove("disabled");
         }
         else {
-            foreground.preview.classList.add("disabled");
             foreground.input.classList.add("disabled");
         }
         selectTier();
     }
 
     function selectBackground() {
-        if (background.custom.checked) {
+        if (background.default.checked) {
+            background.preview.classList.add("disabled");
+        }
+        else {
             background.preview.classList.remove("disabled");
+        }
+        if (background.custom.checked) {
             background.input.classList.remove("disabled");
         }
         else {
-            background.preview.classList.add("disabled");
             background.input.classList.add("disabled");
         }
         selectElement();
