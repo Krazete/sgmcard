@@ -1066,6 +1066,7 @@ function init() {
     }
 
     function createAnimatedCard() {
+        document.body.classList.add("disabled");
         render.create.classList.add("loading");
 
         var artGIF = new Image();
@@ -1077,8 +1078,8 @@ function init() {
         	"gif": artGIF,
         	"max_width": art.width.value
         });
+        window.scrollTo(0, innerHeight);
         artSuperGIF.load(function () {
-            window.scrollTo(0, innerHeight);
             var frameLength = artSuperGIF.get_length();
             if (frameLength <= 1) {
                 artSuperGIF.get_canvas().parentElement.remove();
@@ -1122,7 +1123,11 @@ function init() {
                     reader.addEventListener("load", function () {
                         createCardImage(this.result);
                         artSuperGIF.get_canvas().parentElement.remove();
-                        cardArt.src = artURL;
+                        document.body.classList.remove("disabled");
+                        render.create.classList.remove("loading");
+                    });
+                    reader.addEventListener("error", function () {
+                        document.body.classList.remove("disabled");
                         render.create.classList.remove("loading");
                     });
                     reader.readAsDataURL(blob);
