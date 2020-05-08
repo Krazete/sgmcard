@@ -369,11 +369,6 @@ h3 {
     color: var(--bg);
 }
 
-.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
 /* MENU INPUTS */
 
 #outlink {
@@ -486,6 +481,30 @@ input[type='button'] {
     border: 3px double var(--fg);
     border-radius: 4px;
     margin: 4px;
+    cursor: crosshair;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.dim {
+    opacity: 0.5;
+}
+
+input[type='button'].loading {
+    background-image: linear-gradient(to right, var(--bg), var(--fg) 50%);
+    background-size: 16px;
+    animation: 1s loading linear infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 0px 0;
+    }
+    100% {
+        background-position: 16px 0;
+    }
 }
 
 /* SPECIAL MENU BUTTONS */

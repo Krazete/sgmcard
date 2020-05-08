@@ -845,32 +845,40 @@ function init() {
 
     function selectForeground() {
         if (foreground.default.checked) {
-            foreground.preview.classList.add("disabled");
+            foreground.preview.classList.add("dim");
         }
         else {
-            foreground.preview.classList.remove("disabled");
+            foreground.preview.classList.remove("dim");
         }
         if (foreground.custom.checked) {
+            foreground.preview.classList.remove("disabled");
             foreground.input.classList.remove("disabled");
+            foreground.input.classList.remove("dim");
         }
         else {
+            foreground.preview.classList.add("disabled");
             foreground.input.classList.add("disabled");
+            foreground.input.classList.add("dim");
         }
         selectTier();
     }
 
     function selectBackground() {
         if (background.default.checked) {
-            background.preview.classList.add("disabled");
+            background.preview.classList.add("dim");
         }
         else {
-            background.preview.classList.remove("disabled");
+            background.preview.classList.remove("dim");
         }
         if (background.custom.checked) {
+            background.preview.classList.remove("disabled");
             background.input.classList.remove("disabled");
+            background.input.classList.remove("dim");
         }
         else {
+            background.preview.classList.add("disabled");
             background.input.classList.add("disabled");
+            background.input.classList.add("dim");
         }
         selectElement();
     }
@@ -1058,7 +1066,7 @@ function init() {
     }
 
     function createAnimatedCard() {
-        document.body.classList.add("disabled");
+        render.create.classList.add("loading");
 
         var artGIF = new Image();
         artGIF.className = "pre-jsgif";
@@ -1070,6 +1078,7 @@ function init() {
         	"max_width": art.width.value
         });
         artSuperGIF.load(function () {
+            window.scrollTo(0, innerHeight);
             var frameLength = artSuperGIF.get_length();
             if (frameLength <= 1) {
                 artSuperGIF.get_canvas().parentElement.remove();
@@ -1114,7 +1123,7 @@ function init() {
                         createCardImage(this.result);
                         artSuperGIF.get_canvas().parentElement.remove();
                         cardArt.src = artURL;
-                        document.body.classList.remove("disabled");
+                        render.create.classList.remove("loading");
                     });
                     reader.readAsDataURL(blob);
                 });
@@ -1124,11 +1133,11 @@ function init() {
     }
 
     function createStaticCard() {
-        document.body.classList.add("disabled");
+        render.create.classList.add("loading");
         var canvas = renderCard();
         createCardImage(canvas.toDataURL());
         render.disclaimer.className = "hidden";
-        document.body.classList.remove("disabled");
+        render.create.classList.remove("loading");
     }
 
     function createCard() {
