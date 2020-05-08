@@ -1154,6 +1154,8 @@ function init() {
         }
     }
 
+    /* Gradient Picker */
+
     var picker;
     function initIro() {
         picker = new iro.ColorPicker("#iro", {
@@ -1233,13 +1235,15 @@ function init() {
 
     /* Initialize */
 
-    tier.none.click();
-    element.none.click();
-    energy.none.click();
-    art.under.click();
-    art.move.click();
-    foreground.default.click();
-    background.default.click();
+    window.addEventListener("load", function () {
+        tier.none.checked = true;
+        element.none.checked = true;
+        energy.none.click();
+        art.under.click();
+        art.move.click();
+        foreground.default.click();
+        background.default.click();
+    });
 }
 
 function holup(e) {
