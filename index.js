@@ -78,7 +78,7 @@ function getLinearGradientFromText(text) {
     }
     catch (e) {
         for (var i = 0; i < 16; i++) {
-            linearGradient += (i % 2 ? "black " : "white ") + i * 25 / 4 + "%, ";
+            linearGradient += (i % 2 ? "transparent " : "white ") + i * 25 / 4 + "%, ";
         }
     }
     linearGradient += "white 100%";
@@ -106,7 +106,7 @@ function getGradientDataFromText(text) {
     }
     catch (e) {
         for (var i = 0; i < 16; i++) {
-            fillStyle.addColorStop(i / 16, i % 2 ? "black" : "white");
+            fillStyle.addColorStop(i / 16, i % 2 ? "transparent" : "white");
         }
     }
     context.fillStyle = fillStyle;
@@ -1154,6 +1154,35 @@ function init() {
         }
     }
 
+    var picker;
+    function initIro() {
+        picker = new iro.ColorPicker("#iro", {
+            "width": 192,
+            "borderWidth": 1,
+            "sliderMargin": 3,
+            "layout": [
+                {
+                    "component": iro.ui.Box,
+                },
+                {
+                    "component": iro.ui.Slider,
+                    "options": {
+                        "sliderType": "hue"
+                    }
+                },
+                {
+                    "component": iro.ui.Slider,
+                    "options": {
+                        "sliderType": "alpha",
+                        "padding": 0,
+                    }
+                }
+            ]
+        });
+    }
+    initIro();
+    console.log(picker.props);
+
     /* Event Listeners */
 
     card.elementText.addEventListener("input", resizeCardElement);
@@ -1211,13 +1240,6 @@ function init() {
     art.move.click();
     foreground.default.click();
     background.default.click();
-
-    /* Color Inputs */
-    var colorInput = document.getElementById("abc");
-    var colorLabel = document.getElementById("abc-label");
-    colorInput.addEventListener("change", function () {
-        colorLabel.innerHTML = this.value;
-    });
 }
 
 function holup(e) {
