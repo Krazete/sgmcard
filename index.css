@@ -376,6 +376,23 @@ h3 {
 
 /* MENU INPUTS */
 
+#outlink {
+    text-align: right;
+}
+
+#outlink a {
+    background: var(--fg);
+    color: var(--bg);
+    font-family: 'Cinema';
+    font-size: 18px;
+    text-transform: uppercase;
+    line-height: 32px;
+    padding: 8px;
+    border: 3px double var(--bg);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 input[type='radio'] + label,
 input[type='file'],
 input[type='text'],
@@ -394,7 +411,8 @@ input[type='radio'] + label:hover,
 input[type='file']:hover,
 input[type='text']:hover,
 input[type='number']:hover,
-input[type='button']:hover {
+input[type='button']:hover,
+#outlink a:hover {
     color: white;
     border-color: white;
 }
@@ -428,9 +446,11 @@ input[type='radio']:checked + label {
     border-color: var(--fg);
 }
 
-input[type='radio'] + label img {
+input[type='radio'] + label img,
+#outlink img {
     max-height: 32px;
     max-width: 32px;
+    vertical-align: bottom;
 }
 
 input[type='file'],
