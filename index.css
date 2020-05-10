@@ -477,11 +477,23 @@ input[type='button'] {
 #fg-preview, #bg-preview {
     background-size: 100% 100%;
     background-origin: border-box;
+    position: relative;
     padding: 8px;
     border: 3px double var(--fg);
     border-radius: 4px;
     margin: 4px;
     cursor: crosshair;
+}
+
+.swatch {
+    position: absolute;
+    width: 0.5%; /* unused because nonconstant */
+    width: 4px;
+    top: -4px;
+    bottom: -4px;
+    background: black;
+    outline: 1px solid white;
+    cursor: pointer;
 }
 
 .disabled {
@@ -505,6 +517,14 @@ input[type='button'].loading {
     100% {
         background-position: 16px 0;
     }
+}
+
+/* COLOR PICKER */
+
+#iro {
+    position: absolute;
+    bottom: 100%;
+    left: 100%;
 }
 
 /* SPECIAL MENU BUTTONS */

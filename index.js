@@ -1185,6 +1185,27 @@ function init() {
     initIro();
     console.log(picker.props);
 
+    var k = {};
+
+    function onClickPreview(e) {
+        var pickerRect = picker.el.getBoundingClientRect();
+        var previewRect = foreground.preview.getBoundingClientRect();
+        var i = 20 * Math.round(5 * (e.offsetX / previewRect.width));
+        if (!(i in k)) {
+            k[i] = true;
+            var swatch = document.createElement("div");
+            swatch.className = "swatch";
+            swatch.style.left = i + "%";
+            swatch.style.transform = "translate(-50%)";
+            foreground.preview.appendChild(swatch);
+        }
+
+        picker.el.style.left = previewRect.left + previewRect.width * i / 100 - pickerRect.width / 2 + "px";
+        picker.el.style.bottom = innerHeight - previewRect.top - scrollY + "px";
+    }
+    foreground.preview.addEventListener("click", onClickPreview);
+    p=onClickPreview;
+
     /* Event Listeners */
 
     card.elementText.addEventListener("input", resizeCardElement);
