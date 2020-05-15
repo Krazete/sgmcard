@@ -494,7 +494,10 @@ input[type='button'] {
     bottom: -4px;
     background: black;
     outline: 1px solid white;
-    cursor: pointer;
+    cursor: default;
+}
+.swatch:hover {
+    outline-color: var(--bg);
 }
 
 .disabled {
@@ -522,10 +525,23 @@ input[type='button'].loading {
 
 /* COLOR PICKER */
 
-#iro {
+#ijoi {
+    background: var(--bg);
+    box-shadow: 0 0 8px 8px var(--fg);
     position: absolute;
     bottom: 100%;
     left: 100%;
+    padding: 6px;
+    border: 3px double var(--fg);
+    border-radius: 16px;
+}
+
+#hex {
+    width: 6em;
+}
+
+#percent {
+    width: 3em;
 }
 
 /* SPECIAL MENU BUTTONS */
