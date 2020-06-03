@@ -1227,6 +1227,7 @@ function init() {
             previewRect = e.target.getBoundingClientRect();
         }
         ijoi.style.bottom = innerHeight - previewRect.top - scrollY + 16 + "px";
+        onMoveSwatch(e);
         window.addEventListener("mousemove", onMoveSwatch);
         window.addEventListener("mouseup", onEndSwatch);
 
