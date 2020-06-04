@@ -1205,7 +1205,9 @@ function init() {
     var activeSwatch, previewRect;
     function onEndSwatch(e) {
         window.removeEventListener("mousemove", onMoveSwatch);
+        window.removeEventListener("touchmove", onMoveSwatch);
         window.removeEventListener("mouseup", onEndSwatch);
+        window.removeEventListener("touchend", onEndSwatch);
     }
     function onMoveSwatch(e) {
         var ijoiRect = ijoi.getBoundingClientRect();
@@ -1229,11 +1231,15 @@ function init() {
         ijoi.style.bottom = innerHeight - previewRect.top - scrollY + 16 + "px";
         onMoveSwatch(e);
         window.addEventListener("mousemove", onMoveSwatch);
+        window.addEventListener("touchmove", onMoveSwatch);
         window.addEventListener("mouseup", onEndSwatch);
+        window.addEventListener("touchend", onEndSwatch);
 
     }
     foreground.preview.addEventListener("mousedown", onStartSwatch);
+    foreground.preview.addEventListener("touchstart", onStartSwatch);
     background.preview.addEventListener("mousedown", onStartSwatch);
+    background.preview.addEventListener("touchstart", onStartSwatch);
 
     /* Event Listeners */
 
