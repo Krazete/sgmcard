@@ -486,7 +486,7 @@ input[type='button'] {
     cursor: crosshair;
 }
 
-.swatch {
+.band {
     position: absolute;
     width: 0.5%; /* unused because nonconstant */
     width: 4px;
@@ -496,7 +496,7 @@ input[type='button'] {
     outline: 1px solid white;
     cursor: default;
 }
-.swatch:hover {
+.band:hover {
     outline-color: var(--bg);
 }
 
@@ -525,11 +525,11 @@ input[type='button'].loading {
 
 /* COLOR PICKER */
 
-#ijoi {
+#swatch {
     background: var(--bg);
     box-shadow: 0 0 8px 8px var(--fg);
     position: absolute;
-    bottom: 100%;
+    top: -100%;
     left: 100%;
     padding: 6px;
     border: 3px double var(--fg);

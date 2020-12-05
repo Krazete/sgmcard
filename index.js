@@ -322,7 +322,8 @@ function init() {
             e.preventDefault();
             return {
                 "x": e.touches[0].clientX,
-                "y": e.touches[0].clientY
+                "y": e.touches[0].clientY,
+                "target": e.touches[0].target
             };
         }
     }
@@ -1156,7 +1157,7 @@ function init() {
 
     /* Gradient Picker */
 
-    var ijoi = document.getElementById("ijoi");
+    var swatch = document.getElementById("swatch");
     var picker;
     var hex = document.getElementById("hex");
     var percent = document.getElementById("percent");
@@ -1195,51 +1196,59 @@ function init() {
 
     function onCancelPreview(e) {
         console.log(9);
-        if (e.target != ijoi) {
-            ijoi.style = "";
+        if (e.target != swatch) {
+            swatch.style = "";
             window.removeEventListener("click", onCancelPreview);
             foreground.preview.addEventListener("click", onClickPreview);
         }
     }
 
-    var activeSwatch, previewRect;
-    function onEndSwatch(e) {
-        window.removeEventListener("mousemove", onMoveSwatch);
-        window.removeEventListener("touchmove", onMoveSwatch);
-        window.removeEventListener("mouseup", onEndSwatch);
-        window.removeEventListener("touchend", onEndSwatch);
+    var activeBand, previewRect;
+    function onEndBand(e) {
+        document.body.style = "none";
+        window.removeEventListener("mousemove", onMoveBand);
+        window.removeEventListener("touchmove", onMoveBand);
+        window.removeEventListener("mouseup", onEndBand);
+        window.removeEventListener("touchend", onEndBand);
     }
-    function onMoveSwatch(e) {
-        var ijoiRect = ijoi.getBoundingClientRect();
+    function onMoveBand(e) {
+        e = getPointer(e);
+        var swatchRect = swatch.getBoundingClientRect();
         var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
-        activeSwatch.style.left = i + "%";
-        activeSwatch.style.transform = "translate(-50%)";
-        ijoi.style.left = previewRect.left + previewRect.width * i / 100 - ijoiRect.width / 2 + "px";
+        activeBand.style.left = i + "%";
+        activeBand.style.transform = "translate(-50%)";
+        swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
         percent.value = i;
     }
-    function onStartSwatch(e) {
-        if (e.target.classList.contains("swatch")) {
-            activeSwatch = e.target;
+    function onStartBand(e) {
+        e = getPointer(e);
+        var swatchRect = swatch.getBoundingClientRect();
+        if (e.target.classList.contains("band")) {
+            activeBand = e.target;
             previewRect = e.target.parentElement.getBoundingClientRect();
         }
         else {
-            activeSwatch = document.createElement("div");
-            activeSwatch.className = "swatch";
-            this.appendChild(activeSwatch);
+            activeBand = document.createElement("div");
+            activeBand.className = "band";
+            this.appendChild(activeBand);
             previewRect = e.target.getBoundingClientRect();
         }
-        ijoi.style.bottom = innerHeight - previewRect.top - scrollY + 16 + "px";
-        onMoveSwatch(e);
-        window.addEventListener("mousemove", onMoveSwatch);
-        window.addEventListener("touchmove", onMoveSwatch);
-        window.addEventListener("mouseup", onEndSwatch);
-        window.addEventListener("touchend", onEndSwatch);
+        swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
+        onMoveBand(e);
+
+        document.body.style.webkitUserSelect = "none";
+        document.body.style.userSelect = "none";
+        document.body.style.pointerEvents = "none";
+        window.addEventListener("mousemove", onMoveBand);
+        window.addEventListener("touchmove", onMoveBand);
+        window.addEventListener("mouseup", onEndBand);
+        window.addEventListener("touchend", onEndBand);
 
     }
-    foreground.preview.addEventListener("mousedown", onStartSwatch);
-    foreground.preview.addEventListener("touchstart", onStartSwatch);
-    background.preview.addEventListener("mousedown", onStartSwatch);
-    background.preview.addEventListener("touchstart", onStartSwatch);
+    foreground.preview.addEventListener("mousedown", onStartBand);
+    foreground.preview.addEventListener("touchstart", onStartBand);
+    background.preview.addEventListener("mousedown", onStartBand);
+    background.preview.addEventListener("touchstart", onStartBand);
 
     /* Event Listeners */
 
