@@ -168,6 +168,16 @@ function init() {
         "fighter": document.getElementById("card-fighter")
     };
 
+    var clipPaths = { /* backup for firefox <54 */
+        "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
+        "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
+        "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
+        "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
+        "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
+        "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
+        "art": "none"
+    };
+
     /* Menu Option Elements */
 
     var tier = {
@@ -238,52 +248,27 @@ function init() {
         "zipContainer": document.getElementById("render-zip"),
     };
 
-    var clipPaths = { /* backup for firefox <54 */
-        "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
-        "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
-        "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
-        "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
-        "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
-        "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
-        "art": "none"
-    };
-
     /* Preview Inputs */
 
-    function getInputValueWidth(input) {
-        var inputStyle = getComputedStyle(input);
-        var copy = document.createElement("div");
-        copy.innerHTML = input.value.toUpperCase();
-        copy.style.fontSize = inputStyle.fontSize;
-        copy.style.fontFamily = inputStyle.fontFamily;
-        copy.style.textTransform = inputStyle.textTransform;
-        copy.style.whiteSpace = "pre";
-        copy.style.display = "inline-block";
-        document.body.appendChild(copy);
-        var width = getComputedStyle(copy).width;
-        copy.remove();
-        return width;
-    }
+    var ruler = document.createElement("canvas").getContext("2d");
 
-    function autoResize(input, maxSize, maxWidth) {
+    function autofit(input, maxSize, maxWidth) {
+        var style = getComputedStyle(input);
+        var value = input.value.toUpperCase();
+        var width;
         for (var i = maxSize; i > 0; i--) {
-            input.style.fontSize = i + "px";
-            var width = parseFloat(getInputValueWidth(input));
+            ruler.font = i + "px " + style.fontFamily;
+            width = ruler.measureText(value).width;
             if (width < maxWidth) {
                 break;
             }
         }
+        input.style.fontSize = i + "px";
+        return width;
     }
 
-    function newAutoResizer(maxSize, maxWidth) {
-        return function () {
-            autoResize(this, maxSize, maxWidth);
-        };
-    }
-
-    function resizeCardElement() {
-        autoResize(card.elementText, 31, 150);
-        var width = parseInt(getInputValueWidth(card.elementText)) || 65;
+    function fitCardElement() {
+        var width = parseInt(autofit(card.elementText, 31, 150)) || 65;
         var pad = 5;
         card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
         var offset = 29;
@@ -296,18 +281,16 @@ function init() {
         card.elementRight.style.left = offset + width + "px";
     }
 
-    function resizeCardLevel() {
-        autoResize(card.levelText, 31, 40);
-        if (
-            tier.bronze.checked && card.levelText.value >= 30 ||
-            tier.silver.checked && card.levelText.value >= 40 ||
-            tier.gold.checked && card.levelText.value >= 50
-        ) {
-            card.levelText.style.color = "skyblue";
-        }
-        else {
-            card.levelText.style.color = "";
-        }
+    function fitCardLevel() {
+        autofit(card.levelText, 31, 40);
+    }
+
+    function fitCardVariant() {
+        autofit(card.variant, 58, 320);
+    }
+
+    function fitCardFighter() {
+        autofit(card.fighter, 38, 250);
     }
 
     /* Art Position Tools */
@@ -665,8 +648,8 @@ function init() {
             card.level.src = cardLevelURL;
         }
 
-        resizeCardElement();
-        resizeCardLevel();
+        fitCardElement();
+        fitCardLevel();
 
         if (foreground.default.checked) {
             foreground.preview.style.backgroundImage = getLinearGradientFromText("");
@@ -1252,10 +1235,10 @@ function init() {
 
     /* Event Listeners */
 
-    card.elementText.addEventListener("input", resizeCardElement);
-    card.levelText.addEventListener("input", resizeCardLevel);
-    card.variant.addEventListener("input", newAutoResizer(58, 320));
-    card.fighter.addEventListener("input", newAutoResizer(38, 250));
+    card.elementText.addEventListener("input", fitCardElement);
+    card.levelText.addEventListener("input", fitCardLevel);
+    card.variant.addEventListener("input", fitCardVariant);
+    card.fighter.addEventListener("input", fitCardFighter);
 
     card.maskLeft.addEventListener("click", toggleMaskSegment);
     card.maskRight.addEventListener("click", toggleMaskSegment);
