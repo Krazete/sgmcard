@@ -298,17 +298,19 @@ function init() {
     var e0, art0, circle = document.getElementById("circle");
 
     function getPointer(e) {
-        if (e.x || e.y) {
-            return e;
-        }
-        else {
-            e.preventDefault();
+        e.preventDefault();
+        if (e.touches) {
             return {
                 "x": e.touches[0].clientX,
                 "y": e.touches[0].clientY,
                 "target": e.touches[0].target
             };
         }
+        return {
+            "x": e.clientX,
+            "y": e.clientY,
+            "target": e.target
+        };
     }
 
     function setArt0() {
