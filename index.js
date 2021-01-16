@@ -364,77 +364,10 @@ function init() {
         card.art.style.top = art.y.value + "px";
     }
 
-    function startMoveArt(e) {
-        e = getPointer(e);
-        e0 = e;
-        setArt0();
-        var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r / 2);
-        card.artPositionTool.addEventListener("mousemove", moveArt);
-        card.artPositionTool.addEventListener("touchmove", moveArt);
-        card.artPositionTool.addEventListener("mouseup", stopMoveArt);
-        card.artPositionTool.addEventListener("mouseout", stopMoveArt);
-        card.artPositionTool.addEventListener("touchend", stopMoveArt);
-    }
-
-    function moveArt(e) {
-        e = getPointer(e);
-        var previewBox = preview.getBoundingClientRect();
-        var x0 = Math.floor(art0.x - previewBox.left);
-        var y0 = Math.floor(art0.y - previewBox.top);
-        var dx = e.x - e0.x;
-        var dy = e.y - e0.y;
-        art.x.value = x0 + dx + 1;
-        art.y.value = y0 + dy + 1;
-        setX();
-        setY();
-        setCircle(art0.x + dx, art0.y + dy);
-    }
-
-    function stopMoveArt(e) {
-        removeCircle();
-        card.artPositionTool.removeEventListener("mousemove", moveArt);
-        card.artPositionTool.removeEventListener("touchmove", moveArt);
-        card.artPositionTool.removeEventListener("mouseup", stopMoveArt);
-        card.artPositionTool.removeEventListener("mouseout", stopMoveArt);
-        card.artPositionTool.removeEventListener("touchend", stopMoveArt);
-    }
-
     /* Art Scale Tool */
 
     function setWidth() {
         card.art.style.width = art.width.value + "px";
-    }
-
-    function startScaleArt(e) {
-        e = getPointer(e);
-        e0 = e;
-        setArt0();
-        var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r);
-        card.artPositionTool.addEventListener("mousemove", scaleArt);
-        card.artPositionTool.addEventListener("touchmove", scaleArt);
-        card.artPositionTool.addEventListener("mouseup", stopScaleArt);
-        card.artPositionTool.addEventListener("mouseout", stopScaleArt);
-        card.artPositionTool.addEventListener("touchend", stopScaleArt);
-    }
-
-    function scaleArt(e) {
-        e = getPointer(e);
-        var r0 = distanceFromArt0(e0.x, e0.y);
-        var r = distanceFromArt0(e.x, e.y);
-        art.width.value = art0.width * r / r0 || 1;
-        setWidth();
-        setCircle(art0.x, art0.y, r);
-    }
-
-    function stopScaleArt(e) {
-        removeCircle();
-        card.artPositionTool.removeEventListener("mousemove", scaleArt);
-        card.artPositionTool.removeEventListener("touchmove", scaleArt);
-        card.artPositionTool.removeEventListener("mouseup", stopScaleArt);
-        card.artPositionTool.removeEventListener("mouseout", stopScaleArt);
-        card.artPositionTool.removeEventListener("touchend", stopScaleArt);
     }
 
     /* Art Rotate Tool */
@@ -443,37 +376,64 @@ function init() {
         card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
     }
 
-    function startRotateArt(e) {
+    function onPoseStart(e) {
         e = getPointer(e);
         e0 = e;
         setArt0();
-        var t = angleFromArt0(e.x, e.y);
         var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r, t);
-        card.artPositionTool.addEventListener("mousemove", rotateArt);
-        card.artPositionTool.addEventListener("touchmove", rotateArt);
-        card.artPositionTool.addEventListener("mouseup", stopRotateArt);
-        card.artPositionTool.addEventListener("mouseout", stopRotateArt);
-        card.artPositionTool.addEventListener("touchend", stopRotateArt);
+        if (mode == "option-move") {
+            setCircle(art0.x, art0.y, r / 2);
+        }
+        else if (mode == "option-scale") {
+            setCircle(art0.x, art0.y, r);
+        }
+        else if (mode == "option-rotate") {
+            var t = angleFromArt0(e.x, e.y);
+            setCircle(art0.x, art0.y, r, t);
+        }
+        window.addEventListener("mousemove", onPoseMove);
+        window.addEventListener("touchmove", onPoseMove);
+        window.addEventListener("mouseup", onPoseEnd);
+        window.addEventListener("touchend", onPoseEnd);
     }
 
-    function rotateArt(e) {
+    function onPoseMove(e) {
         e = getPointer(e);
-        var t0 = angleFromArt0(e0.x, e0.y);
-        var t = angleFromArt0(e.x, e.y);
-        art.angle.value = (720 - (art0.angle + t - t0)) % 360;
-        setAngle();
-        var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r, t);
+        if (mode == "option-move") {
+            var previewBox = preview.getBoundingClientRect();
+            var x0 = Math.floor(art0.x - previewBox.left);
+            var y0 = Math.floor(art0.y - previewBox.top);
+            var dx = e.x - e0.x;
+            var dy = e.y - e0.y;
+            art.x.value = x0 + dx + 1;
+            art.y.value = y0 + dy + 1;
+            setX();
+            setY();
+            setCircle(art0.x + dx, art0.y + dy);
+        }
+        else if (mode == "option-scale") {
+            var r0 = distanceFromArt0(e0.x, e0.y);
+            var r = distanceFromArt0(e.x, e.y);
+            art.width.value = art0.width * r / r0 || 1;
+            setWidth();
+            setCircle(art0.x, art0.y, r);
+        }
+        else if (mode == "option-rotate") {
+            var t0 = angleFromArt0(e0.x, e0.y);
+            var t = angleFromArt0(e.x, e.y);
+            art.angle.value = (720 - (art0.angle + t - t0)) % 360;
+            setAngle();
+            var r = distanceFromArt0(e.x, e.y);
+            setCircle(art0.x, art0.y, r, t);
+        }
     }
 
-    function stopRotateArt(e) {
+    function onPoseEnd(e) {
         removeCircle();
-        card.artPositionTool.removeEventListener("mousemove", rotateArt);
-        card.artPositionTool.removeEventListener("touchmove", rotateArt);
-        card.artPositionTool.removeEventListener("mouseup", stopRotateArt);
-        card.artPositionTool.removeEventListener("mouseout", stopRotateArt);
-        card.artPositionTool.removeEventListener("touchend", stopRotateArt);
+        window.removeEventListener("mousemove", onPoseMove);
+        window.removeEventListener("touchmove", onPoseMove);
+        window.removeEventListener("mouseup", onPoseEnd);
+        window.removeEventListener("touchend", onPoseEnd);
     }
 
     /* Art Mask Tool */
@@ -758,6 +718,12 @@ function init() {
         }
     }
 
+    var mode;
+
+    function selectPoser() {
+        mode = this.id;
+    }
+
     var artType = "";
     var artURL = "";
 
@@ -800,33 +766,6 @@ function init() {
         else if (art.over.checked) {
             card.overlapper.appendChild(card.artMask);
         }
-    }
-
-    function selectArtMoveTool() {
-        card.artPositionTool.addEventListener("mousedown", startMoveArt);
-        card.artPositionTool.addEventListener("touchstart", startMoveArt);
-        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
-        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
-        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
-        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
-    }
-
-    function selectArtScaleTool() {
-        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
-        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
-        card.artPositionTool.addEventListener("mousedown", startScaleArt);
-        card.artPositionTool.addEventListener("touchstart", startScaleArt);
-        card.artPositionTool.removeEventListener("mousedown", startRotateArt);
-        card.artPositionTool.removeEventListener("touchstart", startRotateArt);
-    }
-
-    function selectArtRotateTool() {
-        card.artPositionTool.removeEventListener("mousedown", startMoveArt);
-        card.artPositionTool.removeEventListener("touchstart", startMoveArt);
-        card.artPositionTool.removeEventListener("mousedown", startScaleArt);
-        card.artPositionTool.removeEventListener("touchstart", startScaleArt);
-        card.artPositionTool.addEventListener("mousedown", startRotateArt);
-        card.artPositionTool.addEventListener("touchstart", startRotateArt);
     }
 
     function selectForeground() {
@@ -1242,6 +1181,9 @@ function init() {
     card.variant.addEventListener("input", fitCardVariant);
     card.fighter.addEventListener("input", fitCardFighter);
 
+    card.artPositionTool.addEventListener("mousedown", onPoseStart);
+    card.artPositionTool.addEventListener("touchstart", onPoseStart);
+
     card.maskLeft.addEventListener("click", toggleMaskSegment);
     card.maskRight.addEventListener("click", toggleMaskSegment);
     card.maskTop.addEventListener("click", toggleMaskSegment);
@@ -1260,12 +1202,12 @@ function init() {
     art.file.addEventListener("change", selectArt);
     art.over.addEventListener("click", selectOverlap);
     art.under.addEventListener("click", selectOverlap);
-    art.move.addEventListener("click", selectArtMoveTool);
+    art.move.addEventListener("click", selectPoser);
     art.x.addEventListener("input", setX);
     art.y.addEventListener("input", setY);
-    art.scale.addEventListener("click", selectArtScaleTool);
+    art.scale.addEventListener("click", selectPoser);
     art.width.addEventListener("input", setWidth);
-    art.rotate.addEventListener("click", selectArtRotateTool);
+    art.rotate.addEventListener("click", selectPoser);
     art.angle.addEventListener("input", setAngle);
 
     for (var option in foreground) {
