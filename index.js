@@ -356,11 +356,29 @@ function init() {
 
     /* Art Move Tool */
 
+    function bound(input, n) {
+        return Math.max(input.min, Math.min(n, input.max));
+    }
+
+    function updateBounds() {
+        var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
+        var artRect1 = card.art.getBoundingClientRect();
+        art.x.min = 50 + Math.floor(-artRect1.width / 2);
+        art.x.max = 50 + Math.ceil(artPositionToolBox.width + artRect1.width / 2);
+        art.y.min = 50 + Math.floor(-artRect1.height / 2);
+        art.y.max = 50 + Math.ceil(artPositionToolBox.height + artRect1.height / 2);
+
+        art.x.dispatchEvent(new InputEvent("input"));
+        art.y.dispatchEvent(new InputEvent("input"));
+    }
+
     function setX() {
+        art.x.value = bound(art.x, art.x.value);
         card.art.style.left = art.x.value + "px";
     }
 
     function setY() {
+        art.y.value = bound(art.y, art.y.value);
         card.art.style.top = art.y.value + "px";
     }
 
@@ -368,12 +386,14 @@ function init() {
 
     function setWidth() {
         card.art.style.width = art.width.value + "px";
+        updateBounds();
     }
 
     /* Art Rotate Tool */
 
     function setAngle() {
         card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
+        updateBounds();
     }
 
     function onPoseStart(e) {
@@ -391,6 +411,7 @@ function init() {
             var t = angleFromArt0(e.x, e.y);
             setCircle(art0.x, art0.y, r, t);
         }
+        updateBounds();
         window.addEventListener("mousemove", onPoseMove);
         window.addEventListener("touchmove", onPoseMove);
         window.addEventListener("mouseup", onPoseEnd);
@@ -435,6 +456,7 @@ function init() {
         window.removeEventListener("mouseup", onPoseEnd);
         window.removeEventListener("touchend", onPoseEnd);
     }
+    updateBounds();
 
     /* Art Mask Tool */
 
