@@ -1,3 +1,4 @@
+window.addEventListener("DOMContentLoaded", function () {
 /* Image Processing */
 
 function loadImage(src) {
@@ -138,1127 +139,1130 @@ function loadColorizedImageURL(imageURL, gradientURLOrText) {
     }
 }
 
-/* Main */
+/* Elements */
 
-function init() {
-    /* Preview Elements */
+var card = {
+    "back": document.getElementById("card-back"),
+    "maskLeft": document.getElementById("mask-left"),
+    "maskRight": document.getElementById("mask-right"),
+    "maskTop": document.getElementById("mask-top"),
+    "maskBottom": document.getElementById("mask-bottom"),
+    "overlapper": document.getElementById("card-overlapper"),
+    "artMask": document.getElementById("card-art-mask"),
+    "art": document.getElementById("art"),
+    "top": document.getElementById("card-top"),
+    "bottom": document.getElementById("card-bottom"),
+    "elementIcon": document.getElementById("card-element-icon"),
+    "elementLeft": document.getElementById("card-element-left"),
+    "elementCenter": document.getElementById("card-element-center"),
+    "elementRight": document.getElementById("card-element-right"),
+    "level": document.getElementById("card-level"),
+    "energy": document.getElementById("card-energy"),
+    "artPositionTool": document.getElementById("card-art-position-tool"),
+    "circle": document.getElementById("circle"),
+    "elementText": document.getElementById("card-element-text"),
+    "levelText": document.getElementById("card-level-text"),
+    "variant": document.getElementById("card-variant"),
+    "fighter": document.getElementById("card-fighter")
+};
 
-    var card = {
-        "back": document.getElementById("card-back"),
-        "maskLeft": document.getElementById("mask-left"),
-        "maskRight": document.getElementById("mask-right"),
-        "maskTop": document.getElementById("mask-top"),
-        "maskBottom": document.getElementById("mask-bottom"),
-        "overlapper": document.getElementById("card-overlapper"),
-        "artMask": document.getElementById("card-art-mask"),
-        "art": document.getElementById("art"),
-        "top": document.getElementById("card-top"),
-        "bottom": document.getElementById("card-bottom"),
-        "elementIcon": document.getElementById("card-element-icon"),
-        "elementLeft": document.getElementById("card-element-left"),
-        "elementCenter": document.getElementById("card-element-center"),
-        "elementRight": document.getElementById("card-element-right"),
-        "level": document.getElementById("card-level"),
-        "energy": document.getElementById("card-energy"),
-        "artPositionTool": document.getElementById("card-art-position-tool"),
-        "circle": document.getElementById("circle"),
-        "elementText": document.getElementById("card-element-text"),
-        "levelText": document.getElementById("card-level-text"),
-        "variant": document.getElementById("card-variant"),
-        "fighter": document.getElementById("card-fighter")
-    };
+var tier = {
+    "none": document.getElementById("option-no-tier"),
+    "bronze": document.getElementById("option-bronze"),
+    "silver": document.getElementById("option-silver"),
+    "gold": document.getElementById("option-gold"),
+    "diamond": document.getElementById("option-diamond")
+};
 
-    var clipPaths = { /* backup for firefox <54 */
-        "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
-        "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
-        "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
-        "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
-        "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
-        "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
-        "art": "none"
-    };
+var element = {
+    "none": document.getElementById("option-no-element"),
+    "fire": document.getElementById("option-fire"),
+    "water": document.getElementById("option-water"),
+    "wind": document.getElementById("option-wind"),
+    "light": document.getElementById("option-light"),
+    "dark": document.getElementById("option-dark"),
+    "neutral": document.getElementById("option-neutral")
+};
 
-    /* Menu Option Elements */
+var energy = {
+    "none": document.getElementById("option-no-energy"),
+    "yellow": document.getElementById("option-yellow"),
+    "blue": document.getElementById("option-blue"),
+    "blank": document.getElementById("option-blank")
+};
 
-    var tier = {
-        "none": document.getElementById("option-no-tier"),
-        "bronze": document.getElementById("option-bronze"),
-        "silver": document.getElementById("option-silver"),
-        "gold": document.getElementById("option-gold"),
-        "diamond": document.getElementById("option-diamond")
-    };
-    var element = {
-        "none": document.getElementById("option-no-element"),
-        "fire": document.getElementById("option-fire"),
-        "water": document.getElementById("option-water"),
-        "wind": document.getElementById("option-wind"),
-        "light": document.getElementById("option-light"),
-        "dark": document.getElementById("option-dark"),
-        "neutral": document.getElementById("option-neutral")
-    };
-    var energy = {
-        "none": document.getElementById("option-no-energy"),
-        "yellow": document.getElementById("option-yellow"),
-        "blue": document.getElementById("option-blue"),
-        "blank": document.getElementById("option-blank")
-    };
-    var art = {
-        "file": document.getElementById("option-art"),
-        "move": document.getElementById("option-move"),
-        "x": document.getElementById("option-x"),
-        "y": document.getElementById("option-y"),
-        "scale": document.getElementById("option-scale"),
-        "width": document.getElementById("option-width"),
-        "rotate": document.getElementById("option-rotate"),
-        "angle": document.getElementById("option-angle"),
-        "under": document.getElementById("option-under"),
-        "over": document.getElementById("option-over")
-    };
-    var foreground = {
-        "default": document.getElementById("option-fg-default"),
-        "custom": document.getElementById("option-fg-custom"),
-        "bronze": document.getElementById("option-fg-bronze"),
-        "silver": document.getElementById("option-fg-silver"),
-        "gold": document.getElementById("option-fg-gold"),
-        "fire": document.getElementById("option-fg-fire"),
-        "water": document.getElementById("option-fg-water"),
-        "wind": document.getElementById("option-fg-wind"),
-        "light": document.getElementById("option-fg-light"),
-        "dark": document.getElementById("option-fg-dark"),
-        "neutral": document.getElementById("option-fg-neutral"),
-        "preview": document.getElementById("fg-preview"),
-        "input": document.getElementById("option-fg")
-    };
-    var background = {
-        "default": document.getElementById("option-bg-default"),
-        "custom": document.getElementById("option-bg-custom"),
-        "fire": document.getElementById("option-bg-fire"),
-        "water": document.getElementById("option-bg-water"),
-        "wind": document.getElementById("option-bg-wind"),
-        "light": document.getElementById("option-bg-light"),
-        "dark": document.getElementById("option-bg-dark"),
-        "neutral": document.getElementById("option-bg-neutral"),
-        "preview": document.getElementById("bg-preview"),
-        "input": document.getElementById("option-bg")
-    };
-    var render = {
-        "create": document.getElementById("option-render"),
-        "imageContainer": document.getElementById("render-image"),
-        "disclaimer": document.getElementById("render-disclaimer"),
-        "zipContainer": document.getElementById("render-zip"),
-    };
+var art = {
+    "file": document.getElementById("option-art"),
+    "move": document.getElementById("option-move"),
+    "x": document.getElementById("option-x"),
+    "y": document.getElementById("option-y"),
+    "scale": document.getElementById("option-scale"),
+    "width": document.getElementById("option-width"),
+    "rotate": document.getElementById("option-rotate"),
+    "angle": document.getElementById("option-angle"),
+    "under": document.getElementById("option-under"),
+    "over": document.getElementById("option-over")
+};
 
-    /* Preview Inputs */
+var foreground = {
+    "default": document.getElementById("option-fg-default"),
+    "custom": document.getElementById("option-fg-custom"),
+    "bronze": document.getElementById("option-fg-bronze"),
+    "silver": document.getElementById("option-fg-silver"),
+    "gold": document.getElementById("option-fg-gold"),
+    "fire": document.getElementById("option-fg-fire"),
+    "water": document.getElementById("option-fg-water"),
+    "wind": document.getElementById("option-fg-wind"),
+    "light": document.getElementById("option-fg-light"),
+    "dark": document.getElementById("option-fg-dark"),
+    "neutral": document.getElementById("option-fg-neutral"),
+    "preview": document.getElementById("fg-preview"),
+    "input": document.getElementById("option-fg")
+};
 
-    var ruler = document.createElement("canvas").getContext("2d");
+var background = {
+    "default": document.getElementById("option-bg-default"),
+    "custom": document.getElementById("option-bg-custom"),
+    "fire": document.getElementById("option-bg-fire"),
+    "water": document.getElementById("option-bg-water"),
+    "wind": document.getElementById("option-bg-wind"),
+    "light": document.getElementById("option-bg-light"),
+    "dark": document.getElementById("option-bg-dark"),
+    "neutral": document.getElementById("option-bg-neutral"),
+    "preview": document.getElementById("bg-preview"),
+    "input": document.getElementById("option-bg")
+};
 
-    function autofit(input, maxSize, maxWidth) {
-        var style = getComputedStyle(input);
-        var value = input.value.toUpperCase();
-        var width;
-        for (var i = maxSize; i > 0; i--) {
-            ruler.font = i + "px " + style.fontFamily;
-            width = ruler.measureText(value).width;
-            if (width < maxWidth) {
-                break;
-            }
+var render = {
+    "create": document.getElementById("option-render"),
+    "imageContainer": document.getElementById("render-image"),
+    "disclaimer": document.getElementById("render-disclaimer"),
+    "zipContainer": document.getElementById("render-zip"),
+};
+
+/* Data */
+
+var ruler = document.createElement("canvas").getContext("2d");
+
+var clipPaths = { /* backup for firefox <54 */
+    "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
+    "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
+    "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
+    "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
+    "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
+    "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
+    "art": "none"
+};
+
+/* Preview Inputs */
+
+function autofit(input, maxSize, maxWidth) {
+    var style = getComputedStyle(input);
+    var value = input.value.toUpperCase();
+    var width;
+    for (var i = maxSize; i > 0; i--) {
+        ruler.font = i + "px " + style.fontFamily;
+        width = ruler.measureText(value).width;
+        if (width < maxWidth) {
+            break;
         }
-        input.style.fontSize = i + "px";
-        return width;
     }
+    input.style.fontSize = i + "px";
+    return width;
+}
 
-    function fitCardElement() {
-        var width = parseInt(autofit(card.elementText, 31, 150)) || 65;
-        var pad = 5;
-        card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
-        var offset = 29;
-        if (preview.className == "gold") {
-            offset = 22;
-        }
-        else if (preview.className == "diamond") {
-            offset = 28;
-        }
-        card.elementRight.style.left = offset + width + "px";
+function fitCardElement() {
+    var width = parseInt(autofit(card.elementText, 31, 150)) || 65;
+    var pad = 5;
+    card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
+    var offset = 29;
+    if (preview.className == "gold") {
+        offset = 22;
     }
-
-    function fitCardLevel() {
-        autofit(card.levelText, 31, 40);
+    else if (preview.className == "diamond") {
+        offset = 28;
     }
+    card.elementRight.style.left = offset + width + "px";
+}
 
-    function fitCardVariant() {
-        autofit(card.variant, 58, 320);
-    }
+function fitCardLevel() {
+    autofit(card.levelText, 31, 40);
+}
 
-    function fitCardFighter() {
-        autofit(card.fighter, 38, 250);
-    }
+function fitCardVariant() {
+    autofit(card.variant, 58, 320);
+}
 
-    /* Art Position Tools */
+function fitCardFighter() {
+    autofit(card.fighter, 38, 250);
+}
 
-    var e0, art0, circle = document.getElementById("circle");
+/* Art Position Tools */
 
-    function getPointer(e) {
-        e.preventDefault();
-        if (e.touches) {
-            return {
-                "x": e.touches[0].clientX,
-                "y": e.touches[0].clientY,
-                "target": e.touches[0].target
-            };
-        }
+var e0, art0, circle = document.getElementById("circle");
+
+function getPointer(e) {
+    e.preventDefault();
+    if (e.touches) {
         return {
-            "x": e.clientX,
-            "y": e.clientY,
-            "target": e.target
+            "x": e.touches[0].clientX,
+            "y": e.touches[0].clientY,
+            "target": e.touches[0].target
         };
     }
+    return {
+        "x": e.clientX,
+        "y": e.clientY,
+        "target": e.target
+    };
+}
 
-    function setArt0() {
-        var savedRotation = card.art.style.transform;
-        card.art.style.transform = "";
-        var artBox = card.art.getBoundingClientRect();
-        art0 = {
-            "x": (artBox.left + artBox.right) / 2,
-            "y": (artBox.top + artBox.bottom) / 2,
-            "width": artBox.width,
-            "angle": -art.angle.value || 0
-        };
-        card.art.style.transform = savedRotation;
+function setArt0() {
+    var savedRotation = card.art.style.transform;
+    card.art.style.transform = "";
+    var artBox = card.art.getBoundingClientRect();
+    art0 = {
+        "x": (artBox.left + artBox.right) / 2,
+        "y": (artBox.top + artBox.bottom) / 2,
+        "width": artBox.width,
+        "angle": -art.angle.value || 0
+    };
+    card.art.style.transform = savedRotation;
+}
+
+function distanceFromArt0(x, y) {
+    return Math.sqrt(Math.pow(x - art0.x, 2) + Math.pow(y - art0.y, 2));
+}
+
+function angleFromArt0(x, y) {
+    return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
+}
+
+function setCircle(x, y, r, t) {
+    var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
+    circle.style.left = x - artPositionToolBox.left + "px";
+    circle.style.top = y - artPositionToolBox.top + "px";
+    if (r) {
+        circle.style.width = 2 * r + "px";
+        circle.style.height = 2 * r + "px";
     }
-
-    function distanceFromArt0(x, y) {
-        return Math.sqrt(Math.pow(x - art0.x, 2) + Math.pow(y - art0.y, 2));
+    if (t) {
+        circle.style.borderWidth = "0 5px 0 1px";
+        circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
     }
+    document.body.className = "editing-art";
+}
 
-    function angleFromArt0(x, y) {
-        return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
+function removeCircle() {
+    circle.style = "";
+    document.body.className = "";
+}
+
+/* Art Move Tool */
+
+function bound(input, n) {
+    return Math.max(input.min, Math.min(n, input.max));
+}
+
+function updateBounds() {
+    var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
+    var artRect1 = card.art.getBoundingClientRect();
+    art.x.min = 50 + Math.floor(-artRect1.width / 2);
+    art.x.max = 50 + Math.ceil(artPositionToolBox.width + artRect1.width / 2);
+    art.y.min = 50 + Math.floor(-artRect1.height / 2);
+    art.y.max = 50 + Math.ceil(artPositionToolBox.height + artRect1.height / 2);
+
+    art.x.dispatchEvent(new InputEvent("input"));
+    art.y.dispatchEvent(new InputEvent("input"));
+}
+
+function setX() {
+    art.x.value = bound(art.x, art.x.value);
+    card.art.style.left = art.x.value + "px";
+}
+
+function setY() {
+    art.y.value = bound(art.y, art.y.value);
+    card.art.style.top = art.y.value + "px";
+}
+
+/* Art Scale Tool */
+
+function setWidth() {
+    card.art.style.width = art.width.value + "px";
+    updateBounds();
+}
+
+/* Art Rotate Tool */
+
+function setAngle() {
+    card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
+    updateBounds();
+}
+
+function onPoseStart(e) {
+    e = getPointer(e);
+    e0 = e;
+    setArt0();
+    var r = distanceFromArt0(e.x, e.y);
+    if (mode == "option-move") {
+        setCircle(art0.x, art0.y, r / 2);
     }
-
-    function setCircle(x, y, r, t) {
-        var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
-        circle.style.left = x - artPositionToolBox.left + "px";
-        circle.style.top = y - artPositionToolBox.top + "px";
-        if (r) {
-            circle.style.width = 2 * r + "px";
-            circle.style.height = 2 * r + "px";
-        }
-        if (t) {
-            circle.style.borderWidth = "0 5px 0 1px";
-            circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
-        }
-        document.body.className = "editing-art";
+    else if (mode == "option-scale") {
+        setCircle(art0.x, art0.y, r);
     }
-
-    function removeCircle() {
-        circle.style = "";
-        document.body.className = "";
-    }
-
-    /* Art Move Tool */
-
-    function bound(input, n) {
-        return Math.max(input.min, Math.min(n, input.max));
-    }
-
-    function updateBounds() {
-        var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
-        var artRect1 = card.art.getBoundingClientRect();
-        art.x.min = 50 + Math.floor(-artRect1.width / 2);
-        art.x.max = 50 + Math.ceil(artPositionToolBox.width + artRect1.width / 2);
-        art.y.min = 50 + Math.floor(-artRect1.height / 2);
-        art.y.max = 50 + Math.ceil(artPositionToolBox.height + artRect1.height / 2);
-
-        art.x.dispatchEvent(new InputEvent("input"));
-        art.y.dispatchEvent(new InputEvent("input"));
-    }
-
-    function setX() {
-        art.x.value = bound(art.x, art.x.value);
-        card.art.style.left = art.x.value + "px";
-    }
-
-    function setY() {
-        art.y.value = bound(art.y, art.y.value);
-        card.art.style.top = art.y.value + "px";
-    }
-
-    /* Art Scale Tool */
-
-    function setWidth() {
-        card.art.style.width = art.width.value + "px";
-        updateBounds();
-    }
-
-    /* Art Rotate Tool */
-
-    function setAngle() {
-        card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
-        updateBounds();
-    }
-
-    function onPoseStart(e) {
-        e = getPointer(e);
-        e0 = e;
-        setArt0();
-        var r = distanceFromArt0(e.x, e.y);
-        if (mode == "option-move") {
-            setCircle(art0.x, art0.y, r / 2);
-        }
-        else if (mode == "option-scale") {
-            setCircle(art0.x, art0.y, r);
-        }
-        else if (mode == "option-rotate") {
-            var t = angleFromArt0(e.x, e.y);
-            setCircle(art0.x, art0.y, r, t);
-        }
-        updateBounds();
-        window.addEventListener("mousemove", onPoseMove);
-        window.addEventListener("touchmove", onPoseMove);
-        window.addEventListener("mouseup", onPoseEnd);
-        window.addEventListener("touchend", onPoseEnd);
-    }
-
-    function onPoseMove(e) {
-        e = getPointer(e);
-        if (mode == "option-move") {
-            var previewBox = preview.getBoundingClientRect();
-            var x0 = Math.floor(art0.x - previewBox.left);
-            var y0 = Math.floor(art0.y - previewBox.top);
-            var dx = e.x - e0.x;
-            var dy = e.y - e0.y;
-            art.x.value = x0 + dx + 1;
-            art.y.value = y0 + dy + 1;
-            setX();
-            setY();
-            setCircle(art0.x + dx, art0.y + dy);
-        }
-        else if (mode == "option-scale") {
-            var r0 = distanceFromArt0(e0.x, e0.y);
-            var r = distanceFromArt0(e.x, e.y);
-            art.width.value = art0.width * r / r0 || 1;
-            setWidth();
-            setCircle(art0.x, art0.y, r);
-        }
-        else if (mode == "option-rotate") {
-            var t0 = angleFromArt0(e0.x, e0.y);
-            var t = angleFromArt0(e.x, e.y);
-            art.angle.value = (720 - (art0.angle + t - t0)) % 360;
-            setAngle();
-            var r = distanceFromArt0(e.x, e.y);
-            setCircle(art0.x, art0.y, r, t);
-        }
-    }
-
-    function onPoseEnd(e) {
-        removeCircle();
-        window.removeEventListener("mousemove", onPoseMove);
-        window.removeEventListener("touchmove", onPoseMove);
-        window.removeEventListener("mouseup", onPoseEnd);
-        window.removeEventListener("touchend", onPoseEnd);
+    else if (mode == "option-rotate") {
+        var t = angleFromArt0(e.x, e.y);
+        setCircle(art0.x, art0.y, r, t);
     }
     updateBounds();
+    window.addEventListener("mousemove", onPoseMove);
+    window.addEventListener("touchmove", onPoseMove);
+    window.addEventListener("mouseup", onPoseEnd);
+    window.addEventListener("touchend", onPoseEnd);
+}
 
-    /* Art Mask Tool */
+function onPoseMove(e) {
+    e = getPointer(e);
+    if (mode == "option-move") {
+        var previewBox = preview.getBoundingClientRect();
+        var x0 = Math.floor(art0.x - previewBox.left);
+        var y0 = Math.floor(art0.y - previewBox.top);
+        var dx = e.x - e0.x;
+        var dy = e.y - e0.y;
+        art.x.value = x0 + dx + 1;
+        art.y.value = y0 + dy + 1;
+        setX();
+        setY();
+        setCircle(art0.x + dx, art0.y + dy);
+    }
+    else if (mode == "option-scale") {
+        var r0 = distanceFromArt0(e0.x, e0.y);
+        var r = distanceFromArt0(e.x, e.y);
+        art.width.value = art0.width * r / r0 || 1;
+        setWidth();
+        setCircle(art0.x, art0.y, r);
+    }
+    else if (mode == "option-rotate") {
+        var t0 = angleFromArt0(e0.x, e0.y);
+        var t = angleFromArt0(e.x, e.y);
+        art.angle.value = (720 - (art0.angle + t - t0)) % 360;
+        setAngle();
+        var r = distanceFromArt0(e.x, e.y);
+        setCircle(art0.x, art0.y, r, t);
+    }
+}
 
-    var artMaskPath = [0, 0, 395, 504];
+function onPoseEnd(e) {
+    removeCircle();
+    window.removeEventListener("mousemove", onPoseMove);
+    window.removeEventListener("touchmove", onPoseMove);
+    window.removeEventListener("mouseup", onPoseEnd);
+    window.removeEventListener("touchend", onPoseEnd);
+}
+updateBounds();
 
-    function setArtMaskPath() {
-        artMaskPath = [0, 0, 395, 504];
-        if (card.maskLeft.className == "active") {
-            artMaskPath[0] = 50;
-        }
-        if (card.maskRight.className == "active") {
-            artMaskPath[2] = 345;
-        }
-        if (card.maskTop.className == "active") {
-            artMaskPath[1] = 50;
-        }
-        if (card.maskBottom.className == "active") {
-            artMaskPath[3] = 345;
-        }
+/* Art Mask Tool */
+
+var artMaskPath = [0, 0, 395, 504];
+
+function setArtMaskPath() {
+    artMaskPath = [0, 0, 395, 504];
+    if (card.maskLeft.className == "active") {
+        artMaskPath[0] = 50;
+    }
+    if (card.maskRight.className == "active") {
+        artMaskPath[2] = 345;
+    }
+    if (card.maskTop.className == "active") {
+        artMaskPath[1] = 50;
+    }
+    if (card.maskBottom.className == "active") {
+        artMaskPath[3] = 345;
+    }
+}
+
+function toggleMaskSegment() {
+    if (this.className == "active") {
+        this.className = "";
+    }
+    else {
+        this.className = "active";
+    }
+    setArtMaskPath();
+    var polygon = "polygon(" +
+        artMaskPath[0] + "px " + artMaskPath[1] + "px," +
+        artMaskPath[2] + "px " + artMaskPath[1] + "px," +
+        artMaskPath[2] + "px " + artMaskPath[3] + "px," +
+        artMaskPath[0] + "px " + artMaskPath[3] + "px" +
+    ")";
+    card.artMask.style.clipPath = polygon;
+    card.artMask.style.webkitClipPath = polygon;
+    clipPaths.art = polygon;
+}
+
+/* Menu Options */
+
+var gradientMapImage = {
+    "error": "gradient/36.png",
+    "bronze": "gradient/BronzeGradient.png",
+    "silver": "gradient/SilverGradient.png",
+    "gold": "gradient/GoldGradient.png",
+    "fg": {
+        "fire": "gradient/DiamondGradientMapFire.png",
+        "water": "gradient/DiamondGradientWater.png",
+        "wind": "gradient/DiamondGradientMapWind.png",
+        "light": "gradient/DiamondGradientLight.png",
+        "dark": "gradient/DiamondGradientDark.png",
+        "neutral": "gradient/DiamondGradientMapNeutralB.png"
+    },
+    "bg": {
+        "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
+        "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
+        "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
+        "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
+        "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
+        "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
+    }
+};
+
+function selectTier() {
+    var cardTopURL = "";
+    var cardBottomURL = "";
+    var cardElementURL = "";
+    var cardLevelURL = "";
+    if (tier.none.checked) {
+        preview.className = "";
+    }
+    if (tier.bronze.checked) {
+        preview.className = "bronze";
+        cardTopURL = "fragment/BronzeTop.png";
+        cardBottomURL = "fragment/BronzeBottom.png";
+        cardElementURL = "fragment/BronzeElement.png";
+        cardLevelURL = "fragment/BronzeLevel.png";
+    }
+    else if (tier.silver.checked) {
+        preview.className = "silver";
+        cardTopURL = "fragment/SilverTop.png";
+        cardBottomURL = "fragment/SilverBottom.png";
+        cardElementURL = "fragment/SilverElement.png";
+        cardLevelURL = "fragment/SilverLevel.png";
+    }
+    else if (tier.gold.checked) {
+        preview.className = "gold";
+        cardTopURL = "fragment/GoldTop.png";
+        cardBottomURL = "fragment/GoldBottom.png";
+        cardElementURL = "fragment/GoldElement.png";
+        cardLevelURL = "fragment/GoldLevel.png";
+    }
+    else if (tier.diamond.checked) {
+        preview.className = "diamond";
+        cardTopURL = "fragment/DiamondTop.png";
+        cardBottomURL = "fragment/DiamondBottom.png";
+        cardElementURL = "fragment/DiamondElement.png";
+        cardLevelURL = "fragment/DiamondLevel.png";
     }
 
-    function toggleMaskSegment() {
-        if (this.className == "active") {
-            this.className = "";
-        }
-        else {
-            this.className = "active";
-        }
-        setArtMaskPath();
-        var polygon = "polygon(" +
-            artMaskPath[0] + "px " + artMaskPath[1] + "px," +
-            artMaskPath[2] + "px " + artMaskPath[1] + "px," +
-            artMaskPath[2] + "px " + artMaskPath[3] + "px," +
-            artMaskPath[0] + "px " + artMaskPath[3] + "px" +
-        ")";
-        card.artMask.style.clipPath = polygon;
-        card.artMask.style.webkitClipPath = polygon;
-        clipPaths.art = polygon;
+    var gradientURLOrText = gradientMapImage.error;
+    if (element.fire.checked) {
+        gradientURLOrText = gradientMapImage.fg.fire;
+    }
+    else if (element.water.checked) {
+        gradientURLOrText = gradientMapImage.fg.water;
+    }
+    else if (element.wind.checked) {
+        gradientURLOrText = gradientMapImage.fg.wind;
+    }
+    else if (element.light.checked) {
+        gradientURLOrText = gradientMapImage.fg.light;
+    }
+    else if (element.dark.checked) {
+        gradientURLOrText = gradientMapImage.fg.dark;
+    }
+    else if (element.neutral.checked) {
+        gradientURLOrText = gradientMapImage.fg.neutral;
+    }
+    if (foreground.custom.checked) {
+        gradientURLOrText = foreground.input.value;
+    }
+    else if (foreground.bronze.checked) {
+        gradientURLOrText = gradientMapImage.bronze;
+    }
+    else if (foreground.silver.checked) {
+        gradientURLOrText = gradientMapImage.silver;
+    }
+    else if (foreground.gold.checked) {
+        gradientURLOrText = gradientMapImage.gold;
+    }
+    else if (foreground.fire.checked) {
+        gradientURLOrText = gradientMapImage.fg.fire;
+    }
+    else if (foreground.water.checked) {
+        gradientURLOrText = gradientMapImage.fg.water;
+    }
+    else if (foreground.wind.checked) {
+        gradientURLOrText = gradientMapImage.fg.wind;
+    }
+    else if (foreground.light.checked) {
+        gradientURLOrText = gradientMapImage.fg.light;
+    }
+    else if (foreground.dark.checked) {
+        gradientURLOrText = gradientMapImage.fg.dark;
+    }
+    else if (foreground.neutral.checked) {
+        gradientURLOrText = gradientMapImage.fg.neutral;
+    }
+    if (tier.diamond.checked && !element.none.checked || !foreground.default.checked && !tier.none.checked) {
+        Promise.all([
+            loadColorizedImageURL(cardTopURL, gradientURLOrText),
+            loadColorizedImageURL(cardBottomURL, gradientURLOrText),
+            loadColorizedImageURL(cardElementURL, gradientURLOrText),
+            loadColorizedImageURL(cardLevelURL, gradientURLOrText)
+        ]).then(function (response) {
+            card.top.src = response[0];
+            card.bottom.src = response[1];
+            card.elementLeft.src = response[2];
+            card.elementCenter.src = response[2];
+            card.elementRight.src = response[2];
+            card.level.src = response[3];
+        });
+    }
+    else {
+        card.top.src = cardTopURL;
+        card.bottom.src = cardBottomURL;
+        card.elementLeft.src = cardElementURL;
+        card.elementCenter.src = cardElementURL;
+        card.elementRight.src = cardElementURL;
+        card.level.src = cardLevelURL;
     }
 
-    /* Menu Options */
+    fitCardElement();
+    fitCardLevel();
 
-    var gradientMapImage = {
-        "error": "gradient/36.png",
-        "bronze": "gradient/BronzeGradient.png",
-        "silver": "gradient/SilverGradient.png",
-        "gold": "gradient/GoldGradient.png",
-        "fg": {
-            "fire": "gradient/DiamondGradientMapFire.png",
-            "water": "gradient/DiamondGradientWater.png",
-            "wind": "gradient/DiamondGradientMapWind.png",
-            "light": "gradient/DiamondGradientLight.png",
-            "dark": "gradient/DiamondGradientDark.png",
-            "neutral": "gradient/DiamondGradientMapNeutralB.png"
-        },
-        "bg": {
-            "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
-            "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
-            "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
-            "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
-            "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
-            "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
-        }
-    };
+    if (foreground.default.checked) {
+        foreground.preview.style.backgroundImage = getLinearGradientFromText("");
+    }
+    else if (gradientURLOrText.indexOf(".png") >= 0) {
+        foreground.preview.style.backgroundImage = "url('" + gradientURLOrText + "')";
+    }
+    else {
+        foreground.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+    }
+}
 
-    function selectTier() {
-        var cardTopURL = "";
-        var cardBottomURL = "";
-        var cardElementURL = "";
-        var cardLevelURL = "";
-        if (tier.none.checked) {
-            preview.className = "";
-        }
-        if (tier.bronze.checked) {
-            preview.className = "bronze";
-            cardTopURL = "fragment/BronzeTop.png";
-            cardBottomURL = "fragment/BronzeBottom.png";
-            cardElementURL = "fragment/BronzeElement.png";
-            cardLevelURL = "fragment/BronzeLevel.png";
-        }
-        else if (tier.silver.checked) {
-            preview.className = "silver";
-            cardTopURL = "fragment/SilverTop.png";
-            cardBottomURL = "fragment/SilverBottom.png";
-            cardElementURL = "fragment/SilverElement.png";
-            cardLevelURL = "fragment/SilverLevel.png";
-        }
-        else if (tier.gold.checked) {
-            preview.className = "gold";
-            cardTopURL = "fragment/GoldTop.png";
-            cardBottomURL = "fragment/GoldBottom.png";
-            cardElementURL = "fragment/GoldElement.png";
-            cardLevelURL = "fragment/GoldLevel.png";
-        }
-        else if (tier.diamond.checked) {
-            preview.className = "diamond";
-            cardTopURL = "fragment/DiamondTop.png";
-            cardBottomURL = "fragment/DiamondBottom.png";
-            cardElementURL = "fragment/DiamondElement.png";
-            cardLevelURL = "fragment/DiamondLevel.png";
-        }
-
-        var gradientURLOrText = gradientMapImage.error;
-        if (element.fire.checked) {
-            gradientURLOrText = gradientMapImage.fg.fire;
-        }
-        else if (element.water.checked) {
-            gradientURLOrText = gradientMapImage.fg.water;
-        }
-        else if (element.wind.checked) {
-            gradientURLOrText = gradientMapImage.fg.wind;
-        }
-        else if (element.light.checked) {
-            gradientURLOrText = gradientMapImage.fg.light;
-        }
-        else if (element.dark.checked) {
-            gradientURLOrText = gradientMapImage.fg.dark;
-        }
-        else if (element.neutral.checked) {
-            gradientURLOrText = gradientMapImage.fg.neutral;
-        }
-        if (foreground.custom.checked) {
-            gradientURLOrText = foreground.input.value;
-        }
-        else if (foreground.bronze.checked) {
-            gradientURLOrText = gradientMapImage.bronze;
-        }
-        else if (foreground.silver.checked) {
-            gradientURLOrText = gradientMapImage.silver;
-        }
-        else if (foreground.gold.checked) {
-            gradientURLOrText = gradientMapImage.gold;
-        }
-        else if (foreground.fire.checked) {
-            gradientURLOrText = gradientMapImage.fg.fire;
-        }
-        else if (foreground.water.checked) {
-            gradientURLOrText = gradientMapImage.fg.water;
-        }
-        else if (foreground.wind.checked) {
-            gradientURLOrText = gradientMapImage.fg.wind;
-        }
-        else if (foreground.light.checked) {
-            gradientURLOrText = gradientMapImage.fg.light;
-        }
-        else if (foreground.dark.checked) {
-            gradientURLOrText = gradientMapImage.fg.dark;
-        }
-        else if (foreground.neutral.checked) {
-            gradientURLOrText = gradientMapImage.fg.neutral;
-        }
-        if (tier.diamond.checked && !element.none.checked || !foreground.default.checked && !tier.none.checked) {
-            Promise.all([
-                loadColorizedImageURL(cardTopURL, gradientURLOrText),
-                loadColorizedImageURL(cardBottomURL, gradientURLOrText),
-                loadColorizedImageURL(cardElementURL, gradientURLOrText),
-                loadColorizedImageURL(cardLevelURL, gradientURLOrText)
-            ]).then(function (response) {
-                card.top.src = response[0];
-                card.bottom.src = response[1];
-                card.elementLeft.src = response[2];
-                card.elementCenter.src = response[2];
-                card.elementRight.src = response[2];
-                card.level.src = response[3];
-            });
-        }
-        else {
-            card.top.src = cardTopURL;
-            card.bottom.src = cardBottomURL;
-            card.elementLeft.src = cardElementURL;
-            card.elementCenter.src = cardElementURL;
-            card.elementRight.src = cardElementURL;
-            card.level.src = cardLevelURL;
-        }
-
-        fitCardElement();
-        fitCardLevel();
-
-        if (foreground.default.checked) {
-            foreground.preview.style.backgroundImage = getLinearGradientFromText("");
-        }
-        else if (gradientURLOrText.indexOf(".png") >= 0) {
-            foreground.preview.style.backgroundImage = "url('" + gradientURLOrText + "')";
-        }
-        else {
-            foreground.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
-        }
+function selectElement() {
+    var cardBackURL = "fragment/GreyBackground.png";
+    var gradientURLOrText = gradientMapImage.error;
+    if (element.none.checked) {
+        card.elementIcon.src = "";
+    }
+    else if (element.fire.checked) {
+        card.elementIcon.src = "fragment/ElementalIconFire.png";
+        gradientURLOrText = gradientMapImage.bg.fire;
+    }
+    else if (element.water.checked) {
+        card.elementIcon.src = "fragment/ElementalIconWater.png";
+        gradientURLOrText = gradientMapImage.bg.water;
+    }
+    else if (element.wind.checked) {
+        card.elementIcon.src = "fragment/ElementalIconWind.png";
+        gradientURLOrText = gradientMapImage.bg.wind;
+    }
+    else if (element.light.checked) {
+        card.elementIcon.src = "fragment/ElementalIconLight.png";
+        gradientURLOrText = gradientMapImage.bg.light;
+    }
+    else if (element.dark.checked) {
+        card.elementIcon.src = "fragment/ElementalIconDark.png";
+        gradientURLOrText = gradientMapImage.bg.dark;
+    }
+    else if (element.neutral.checked) {
+        card.elementIcon.src = "fragment/ElementalIconNeutral.png";
+        gradientURLOrText = gradientMapImage.bg.neutral;
+    }
+    if (background.custom.checked) {
+        gradientURLOrText = background.input.value;
+    }
+    else if (background.fire.checked) {
+        gradientURLOrText = gradientMapImage.bg.fire;
+    }
+    else if (background.water.checked) {
+        gradientURLOrText = gradientMapImage.bg.water;
+    }
+    else if (background.wind.checked) {
+        gradientURLOrText = gradientMapImage.bg.wind;
+    }
+    else if (background.light.checked) {
+        gradientURLOrText = gradientMapImage.bg.light;
+    }
+    else if (background.dark.checked) {
+        gradientURLOrText = gradientMapImage.bg.dark;
+    }
+    else if (background.neutral.checked) {
+        gradientURLOrText = gradientMapImage.bg.neutral;
     }
 
-    function selectElement() {
-        var cardBackURL = "fragment/GreyBackground.png";
-        var gradientURLOrText = gradientMapImage.error;
-        if (element.none.checked) {
-            card.elementIcon.src = "";
-        }
-        else if (element.fire.checked) {
-            card.elementIcon.src = "fragment/ElementalIconFire.png";
-            gradientURLOrText = gradientMapImage.bg.fire;
-        }
-        else if (element.water.checked) {
-            card.elementIcon.src = "fragment/ElementalIconWater.png";
-            gradientURLOrText = gradientMapImage.bg.water;
-        }
-        else if (element.wind.checked) {
-            card.elementIcon.src = "fragment/ElementalIconWind.png";
-            gradientURLOrText = gradientMapImage.bg.wind;
-        }
-        else if (element.light.checked) {
-            card.elementIcon.src = "fragment/ElementalIconLight.png";
-            gradientURLOrText = gradientMapImage.bg.light;
-        }
-        else if (element.dark.checked) {
-            card.elementIcon.src = "fragment/ElementalIconDark.png";
-            gradientURLOrText = gradientMapImage.bg.dark;
-        }
-        else if (element.neutral.checked) {
-            card.elementIcon.src = "fragment/ElementalIconNeutral.png";
-            gradientURLOrText = gradientMapImage.bg.neutral;
-        }
-        if (background.custom.checked) {
-            gradientURLOrText = background.input.value;
-        }
-        else if (background.fire.checked) {
-            gradientURLOrText = gradientMapImage.bg.fire;
-        }
-        else if (background.water.checked) {
-            gradientURLOrText = gradientMapImage.bg.water;
-        }
-        else if (background.wind.checked) {
-            gradientURLOrText = gradientMapImage.bg.wind;
-        }
-        else if (background.light.checked) {
-            gradientURLOrText = gradientMapImage.bg.light;
-        }
-        else if (background.dark.checked) {
-            gradientURLOrText = gradientMapImage.bg.dark;
-        }
-        else if (background.neutral.checked) {
-            gradientURLOrText = gradientMapImage.bg.neutral;
-        }
-
-        if (!element.none.checked || !background.default.checked) {
-            loadColorizedImageURL(cardBackURL, gradientURLOrText).then(function (response) {
-                card.back.src = response;
-            });
-        }
-        else {
-            card.back.src = cardBackURL;
-        }
-
-        if (tier.diamond.checked && foreground.default.checked) {
-            selectTier();
-        }
-
-        if (background.default.checked) {
-            background.preview.style.backgroundImage = getLinearGradientFromText("");
-        }
-        else {
-            background.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
-        }
+    if (!element.none.checked || !background.default.checked) {
+        loadColorizedImageURL(cardBackURL, gradientURLOrText).then(function (response) {
+            card.back.src = response;
+        });
+    }
+    else {
+        card.back.src = cardBackURL;
     }
 
-    function selectEnergy() {
-        var boltURL = "";
-        if (energy.yellow.checked) {
-            boltURL = "fragment/EnergyIcon.png";
-        }
-        else if (energy.blue.checked) {
-            boltURL = "fragment/EnergyIcon-Blue.png";
-        }
-        else if (energy.blank.checked) {
-            boltURL = "fragment/EnergyBlank.png";
-        }
-        card.energy.innerHTML = "";
-        if (!energy.none.checked) {
-            for (var i = 0; i < 10; i++) {
-                var bolt = new Image();
-                bolt.src = boltURL;
-                card.energy.appendChild(bolt);
-            }
-        }
-    }
-
-    var mode;
-
-    function selectPoser() {
-        mode = this.id;
-    }
-
-    var artType = "";
-    var artURL = "";
-
-    function selectArt() {
-        var file = this.files[0];
-        if (/image\//.test(file.type)) {
-            var reader = new FileReader();
-            reader.addEventListener("load", function () {
-                /* fixes orientation rendering issue, but allows gifs to animate */
-                loadImage(this.result).then(function (image) {
-                    artType = file.type;
-                    if (artType == "image/gif") {
-                        artURL = image.src;
-                    }
-                    else {
-                        var imageData = getImageDataFromImage(image);
-                        artURL = getImageURLFromImageData(imageData);
-                        if (imageData.width == 360 && imageData.height == 340) {
-                            art.x.value = 198;
-                            art.y.value = 174;
-                            art.width.value = 362;
-                            art.angle.value = 0;
-                            setX();
-                            setY();
-                            setWidth();
-                            setAngle();
-                        }
-                    }
-                    card.art.src = artURL;
-                });
-            });
-            reader.readAsDataURL(this.files[0]);
-        }
-    }
-
-    function selectOverlap() {
-        if (art.under.checked) {
-            card.overlapper.appendChild(card.top);
-        }
-        else if (art.over.checked) {
-            card.overlapper.appendChild(card.artMask);
-        }
-    }
-
-    function selectForeground() {
-        if (foreground.default.checked) {
-            foreground.preview.classList.add("dim");
-        }
-        else {
-            foreground.preview.classList.remove("dim");
-        }
-        if (foreground.custom.checked) {
-            foreground.preview.classList.remove("disabled");
-            foreground.input.classList.remove("disabled");
-            foreground.input.classList.remove("dim");
-        }
-        else {
-            foreground.preview.classList.add("disabled");
-            foreground.input.classList.add("disabled");
-            foreground.input.classList.add("dim");
-        }
+    if (tier.diamond.checked && foreground.default.checked) {
         selectTier();
     }
 
-    function selectBackground() {
-        if (background.default.checked) {
-            background.preview.classList.add("dim");
-        }
-        else {
-            background.preview.classList.remove("dim");
-        }
-        if (background.custom.checked) {
-            background.preview.classList.remove("disabled");
-            background.input.classList.remove("disabled");
-            background.input.classList.remove("dim");
-        }
-        else {
-            background.preview.classList.add("disabled");
-            background.input.classList.add("disabled");
-            background.input.classList.add("dim");
-        }
-        selectElement();
+    if (background.default.checked) {
+        background.preview.style.backgroundImage = getLinearGradientFromText("");
     }
+    else {
+        background.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+    }
+}
 
-    /* Card Renderer */
-
-    function renderCard(opaque) {
-        var singlePattern = /-?\d+(\.\d+)?(e-?\d+)?(px|%)?/g;
-        var pairPattern = /-?\d+(\.\d+)?(px|%)\s+-?\d+(\.\d+)?(px|%)/g;
-
-        var preview = document.getElementById("preview");
-        var previewBox = preview.getBoundingClientRect();
-
-        var canvas = document.createElement("canvas");
-        var context = canvas.getContext("2d");
-        canvas.width = Math.round(previewBox.width);
-        canvas.height = Math.round(previewBox.height);
-        if (opaque) {
-            context.save();
-            context.fillStyle = "black";
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            context.restore();
+function selectEnergy() {
+    var boltURL = "";
+    if (energy.yellow.checked) {
+        boltURL = "fragment/EnergyIcon.png";
+    }
+    else if (energy.blue.checked) {
+        boltURL = "fragment/EnergyIcon-Blue.png";
+    }
+    else if (energy.blank.checked) {
+        boltURL = "fragment/EnergyBlank.png";
+    }
+    card.energy.innerHTML = "";
+    if (!energy.none.checked) {
+        for (var i = 0; i < 10; i++) {
+            var bolt = new Image();
+            bolt.src = boltURL;
+            card.energy.appendChild(bolt);
         }
+    }
+}
 
-        var images = preview.getElementsByTagName("img");
-        for (var image of images) {
-            context.save();
+var mode;
 
-            if (image == card.art) {
-                context.moveTo(artMaskPath[0], artMaskPath[1]);
-                context.lineTo(artMaskPath[2], artMaskPath[1]);
-                context.lineTo(artMaskPath[2], artMaskPath[3]);
-                context.lineTo(artMaskPath[0], artMaskPath[3]);
-                context.clip();
-            }
+function selectPoser() {
+    mode = this.id;
+}
 
-            var imageStyle = getComputedStyle(image);
-            var matrix = imageStyle.transform.match(singlePattern) || [
-                1, 0, 0,
-                1, 0, 0
-            ];
-            var a = parseFloat(matrix[0]);
-            var b = parseFloat(matrix[1]);
-            var c = parseFloat(matrix[2]);
-            var d = parseFloat(matrix[3]);
-            var e = parseFloat(matrix[4]);
-            var f = parseFloat(matrix[5]);
-            var origin = imageStyle.transformOrigin.match(singlePattern) || [
-                parseFloat(imageStyle.width) / 2,
-                parseFloat(imageStyle.height) / 2
-            ];
-            var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]);
-            var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]);
-            context.translate(x0, y0);
-            context.transform(a, b, c, d, e, f);
-            context.translate(-x0, -y0);
+var artType = "";
+var artURL = "";
 
-            var savedTransform = image.style.transform;
-            image.style.transform = "none";
-            var imageBox = image.getBoundingClientRect();
-
-            var clipPath = imageStyle.clipPath;
-            if (clipPath == "none") {
-                clipPath = imageStyle.webkitClipPath;
-            }
-            if (
-                (typeof clipPath == "undefined" || clipPath == "none") &&
-                image.id.includes("card-element-") &&
-                !image.id.includes("-icon")
-            ) {
-                var key = image.id.split("-").slice(-1)[0];
-                if (preview.classList.contains("gold")) {
-                    key += "Gold";
+function selectArt() {
+    var file = this.files[0];
+    if (/image\//.test(file.type)) {
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+            /* fixes orientation rendering issue, but allows gifs to animate */
+            loadImage(this.result).then(function (image) {
+                artType = file.type;
+                if (artType == "image/gif") {
+                    artURL = image.src;
                 }
-                clipPath = clipPaths[key];
-            }
-            if (typeof clipPath != "undefined" && clipPath != "none") {
-                context.beginPath();
-                var clipPoints = clipPath.match(pairPattern);
-                for (var i = 0; i < clipPoints.length; i++) {
-                    var clipPoint = clipPoints[i].match(singlePattern);
-                    var x = parseFloat(clipPoint[0]);
-                    var y = parseFloat(clipPoint[1]);
-                    if (/%/.test(clipPoint[0])) {
-                        x *= imageBox.width / 100;
-                    }
-                    if (/%/.test(clipPoint[1])) {
-                        y *= imageBox.height / 100;
-                    }
-                    x += imageBox.left - previewBox.left;
-                    y += imageBox.top - previewBox.top;
-                    if (i == 0) {
-                        context.moveTo(x, y);
-                    }
-                    else {
-                        context.lineTo(x, y);
+                else {
+                    var imageData = getImageDataFromImage(image);
+                    artURL = getImageURLFromImageData(imageData);
+                    if (imageData.width == 360 && imageData.height == 340) {
+                        art.x.value = 198;
+                        art.y.value = 174;
+                        art.width.value = 362;
+                        art.angle.value = 0;
+                        setX();
+                        setY();
+                        setWidth();
+                        setAngle();
                     }
                 }
-                context.clip();
-            }
-
-            context.drawImage(
-                image,
-                imageBox.left - previewBox.left,
-                imageBox.top - previewBox.top,
-                imageBox.width,
-                imageBox.height
-            );
-
-            image.style.transform = savedTransform;
-
-            context.restore();
-        }
-
-        var texts = preview.getElementsByTagName("input");
-        for (var text of texts) {
-            context.save();
-            var textBox = text.getBoundingClientRect();
-            var textStyle = getComputedStyle(text);
-            context.font = textStyle.fontSize + " " + textStyle.fontFamily;
-            context.fillStyle = textStyle.color;
-            context.textAlign = textStyle.textAlign;
-            context.textBaseline = "middle";
-            context.shadowOffsetX = 0.07 * parseFloat(textStyle.fontSize);
-            context.shadowOffsetY = 0.07 * parseFloat(textStyle.fontSize);
-            context.shadowColor = "black";
-            var x = (context.textAlign == "center" ? (textBox.left + textBox.right) / 2 : textBox.left) - previewBox.left;
-            var y = (textBox.top + textBox.bottom) / 2 - previewBox.top;
-            context.fillText(text.value.toUpperCase(), x, y);
-            context.restore();
-        }
-
-        context.save();
-        context.font = "16px Washington";
-        if (opaque) {
-            context.fillStyle = "rgba(255, 255, 255, 0.05)";
-        }
-        else {
-            context.fillStyle = "rgba(0, 0, 0, 0.05)";
-        }
-        context.textAlign = "left";
-        context.textBaseline = "bottom";
-        context.rotate(Math.PI * -90 / 180);
-        context.fillText("SGMCARD.NETLIFY.COM", -504, 395);
-        context.restore();
-
-        return canvas;
-    }
-
-    function renderNextFrame(artSuperGIF, cardArt, i) {
-        function request(resolve, reject) {
-            var renderFrame = function () {
-                cardArt.removeEventListener("load", renderFrame);
-                resolve({
-                    "transparent": renderCard(),
-                    "opaque": renderCard(true)
-                });
-            };
-            cardArt.addEventListener("load", renderFrame);
-            artSuperGIF.move_to(i);
-            cardArt.src = artSuperGIF.get_canvas().toDataURL();
-        }
-        return new Promise(request);
-    }
-
-    function createCardImage(dataURL) {
-        var image = new Image();
-        image.src = dataURL;
-        // image.addEventListener("click", function () {
-        //     saveAs(dataURL, "card");
-        // });
-        render.imageContainer.innerHTML = "";
-        render.imageContainer.appendChild(image);
-    }
-
-    function createCardZip(blob) {
-        var anchor = document.createElement("a");
-        anchor.innerHTML = "Click here to download the frames as a ZIP of individual PNGs instead.";
-        anchor.addEventListener("click", function () {
-            saveAs(blob, "card");
-        });
-        render.zipContainer.innerHTML = "";
-        render.zipContainer.appendChild(anchor);
-        render.disclaimer.className = "";
-    }
-
-    function createAnimatedCard() {
-        document.body.classList.add("disabled");
-        render.create.classList.add("loading");
-
-        var artGIF = new Image();
-        artGIF.className = "pre-jsgif";
-        artGIF.src = artURL;
-        document.body.appendChild(artGIF);
-
-        var artSuperGIF = new SuperGif({
-        	"gif": artGIF,
-        	"max_width": art.width.value
-        });
-        window.scrollTo(0, innerHeight);
-        artSuperGIF.load(function () {
-            var frameLength = artSuperGIF.get_length();
-            if (frameLength <= 1) {
-                artSuperGIF.get_canvas().parentElement.remove();
-                createStaticCard();
-                return;
-            }
-
-            var responses = [];
-            var promise = renderNextFrame(artSuperGIF, card.art, 0);
-            for (var i = 1; i < frameLength; i++) {
-                (function (i) {
-                    promise = promise.then(function (response) {
-                        responses.push(response);
-                        return renderNextFrame(artSuperGIF, card.art, i);
-                    });
-                })(i);
-            }
-            promise.then(function (response) {
-                responses.push(response);
-
-                var zip = new JSZip();
-                for (var i = 0; i < responses.length; i++) {
-                    var dataURL = responses[i].transparent.toDataURL();
-                    zip.file(i + ".png", dataURL.slice(22), {"base64": true});
-                }
-                zip.generateAsync({"type": "blob"}).then(createCardZip);
-
-                var encoder = new GIF({
-                    "quality": 64,
-                    "workers": 8,
-                    "workerScript": "library/gif-js/gif.worker.js"
-                });
-                for (var i in responses) {
-                    encoder.addFrame(responses[i].opaque, {"delay": 1});
-                }
-                encoder.on("finished", function (blob) {
-                    for (var worker of encoder.freeWorkers) {
-                        worker.terminate();
-                    }
-                    var reader = new FileReader();
-                    reader.addEventListener("load", function () {
-                        createCardImage(this.result);
-                        artSuperGIF.get_canvas().parentElement.remove();
-                        document.body.classList.remove("disabled");
-                        render.create.classList.remove("loading");
-                    });
-                    reader.addEventListener("error", function () {
-                        document.body.classList.remove("disabled");
-                        render.create.classList.remove("loading");
-                    });
-                    reader.readAsDataURL(blob);
-                });
-                encoder.render();
+                card.art.src = artURL;
             });
         });
+        reader.readAsDataURL(this.files[0]);
+    }
+}
+
+function selectOverlap() {
+    if (art.under.checked) {
+        card.overlapper.appendChild(card.top);
+    }
+    else if (art.over.checked) {
+        card.overlapper.appendChild(card.artMask);
+    }
+}
+
+function selectForeground() {
+    if (foreground.default.checked) {
+        foreground.preview.classList.add("dim");
+    }
+    else {
+        foreground.preview.classList.remove("dim");
+    }
+    if (foreground.custom.checked) {
+        foreground.preview.classList.remove("disabled");
+        foreground.input.classList.remove("disabled");
+        foreground.input.classList.remove("dim");
+    }
+    else {
+        foreground.preview.classList.add("disabled");
+        foreground.input.classList.add("disabled");
+        foreground.input.classList.add("dim");
+    }
+    selectTier();
+}
+
+function selectBackground() {
+    if (background.default.checked) {
+        background.preview.classList.add("dim");
+    }
+    else {
+        background.preview.classList.remove("dim");
+    }
+    if (background.custom.checked) {
+        background.preview.classList.remove("disabled");
+        background.input.classList.remove("disabled");
+        background.input.classList.remove("dim");
+    }
+    else {
+        background.preview.classList.add("disabled");
+        background.input.classList.add("disabled");
+        background.input.classList.add("dim");
+    }
+    selectElement();
+}
+
+/* Card Renderer */
+
+function renderCard(opaque) {
+    var singlePattern = /-?\d+(\.\d+)?(e-?\d+)?(px|%)?/g;
+    var pairPattern = /-?\d+(\.\d+)?(px|%)\s+-?\d+(\.\d+)?(px|%)/g;
+
+    var preview = document.getElementById("preview");
+    var previewBox = preview.getBoundingClientRect();
+
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.width = Math.round(previewBox.width);
+    canvas.height = Math.round(previewBox.height);
+    if (opaque) {
+        context.save();
+        context.fillStyle = "black";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.restore();
     }
 
-    function createStaticCard() {
-        render.create.classList.add("loading");
-        var canvas = renderCard();
-        createCardImage(canvas.toDataURL());
-        render.disclaimer.className = "hidden";
-        render.create.classList.remove("loading");
-    }
+    var images = preview.getElementsByTagName("img");
+    for (var image of images) {
+        context.save();
 
-    function createCard() {
-        if (artType == "image/gif") {
-            createAnimatedCard();
+        if (image == card.art) {
+            context.moveTo(artMaskPath[0], artMaskPath[1]);
+            context.lineTo(artMaskPath[2], artMaskPath[1]);
+            context.lineTo(artMaskPath[2], artMaskPath[3]);
+            context.lineTo(artMaskPath[0], artMaskPath[3]);
+            context.clip();
         }
-        else {
-            createStaticCard()
+
+        var imageStyle = getComputedStyle(image);
+        var matrix = imageStyle.transform.match(singlePattern) || [
+            1, 0, 0,
+            1, 0, 0
+        ];
+        var a = parseFloat(matrix[0]);
+        var b = parseFloat(matrix[1]);
+        var c = parseFloat(matrix[2]);
+        var d = parseFloat(matrix[3]);
+        var e = parseFloat(matrix[4]);
+        var f = parseFloat(matrix[5]);
+        var origin = imageStyle.transformOrigin.match(singlePattern) || [
+            parseFloat(imageStyle.width) / 2,
+            parseFloat(imageStyle.height) / 2
+        ];
+        var x0 = parseFloat(imageStyle.left) + parseFloat(origin[0]);
+        var y0 = parseFloat(imageStyle.top) + parseFloat(origin[1]);
+        context.translate(x0, y0);
+        context.transform(a, b, c, d, e, f);
+        context.translate(-x0, -y0);
+
+        var savedTransform = image.style.transform;
+        image.style.transform = "none";
+        var imageBox = image.getBoundingClientRect();
+
+        var clipPath = imageStyle.clipPath;
+        if (clipPath == "none") {
+            clipPath = imageStyle.webkitClipPath;
         }
-    }
-
-    /* Gradient Picker */
-
-    var swatch = document.getElementById("swatch");
-    var picker;
-    var hex = document.getElementById("hex");
-    var percent = document.getElementById("percent");
-    function initIro() {
-        picker = new iro.ColorPicker("#iro", {
-            "width": 192,
-            "borderWidth": 1,
-            "borderColor": "var(--fg)",
-            "sliderMargin": 3,
-            "layoutDirection": "horizontal",
-            "layout": [
-                {
-                    "component": iro.ui.Box,
-                },
-                {
-                    "component": iro.ui.Slider,
-                    "options": {
-                        "sliderType": "hue"
-                    }
-                },
-                {
-                    "component": iro.ui.Slider,
-                    "options": {
-                        "sliderType": "alpha",
-                        "padding": 0,
-                    }
+        if (
+            (typeof clipPath == "undefined" || clipPath == "none") &&
+            image.id.includes("card-element-") &&
+            !image.id.includes("-icon")
+        ) {
+            var key = image.id.split("-").slice(-1)[0];
+            if (preview.classList.contains("gold")) {
+                key += "Gold";
+            }
+            clipPath = clipPaths[key];
+        }
+        if (typeof clipPath != "undefined" && clipPath != "none") {
+            context.beginPath();
+            var clipPoints = clipPath.match(pairPattern);
+            for (var i = 0; i < clipPoints.length; i++) {
+                var clipPoint = clipPoints[i].match(singlePattern);
+                var x = parseFloat(clipPoint[0]);
+                var y = parseFloat(clipPoint[1]);
+                if (/%/.test(clipPoint[0])) {
+                    x *= imageBox.width / 100;
                 }
-            ]
+                if (/%/.test(clipPoint[1])) {
+                    y *= imageBox.height / 100;
+                }
+                x += imageBox.left - previewBox.left;
+                y += imageBox.top - previewBox.top;
+                if (i == 0) {
+                    context.moveTo(x, y);
+                }
+                else {
+                    context.lineTo(x, y);
+                }
+            }
+            context.clip();
+        }
+
+        context.drawImage(
+            image,
+            imageBox.left - previewBox.left,
+            imageBox.top - previewBox.top,
+            imageBox.width,
+            imageBox.height
+        );
+
+        image.style.transform = savedTransform;
+
+        context.restore();
+    }
+
+    var texts = preview.getElementsByTagName("input");
+    for (var text of texts) {
+        context.save();
+        var textBox = text.getBoundingClientRect();
+        var textStyle = getComputedStyle(text);
+        context.font = textStyle.fontSize + " " + textStyle.fontFamily;
+        context.fillStyle = textStyle.color;
+        context.textAlign = textStyle.textAlign;
+        context.textBaseline = "middle";
+        context.shadowOffsetX = 0.07 * parseFloat(textStyle.fontSize);
+        context.shadowOffsetY = 0.07 * parseFloat(textStyle.fontSize);
+        context.shadowColor = "black";
+        var x = (context.textAlign == "center" ? (textBox.left + textBox.right) / 2 : textBox.left) - previewBox.left;
+        var y = (textBox.top + textBox.bottom) / 2 - previewBox.top;
+        context.fillText(text.value.toUpperCase(), x, y);
+        context.restore();
+    }
+
+    context.save();
+    context.font = "16px Washington";
+    if (opaque) {
+        context.fillStyle = "rgba(255, 255, 255, 0.05)";
+    }
+    else {
+        context.fillStyle = "rgba(0, 0, 0, 0.05)";
+    }
+    context.textAlign = "left";
+    context.textBaseline = "bottom";
+    context.rotate(Math.PI * -90 / 180);
+    context.fillText("SGMCARD.NETLIFY.COM", -504, 395);
+    context.restore();
+
+    return canvas;
+}
+
+function renderNextFrame(artSuperGIF, cardArt, i) {
+    function request(resolve, reject) {
+        var renderFrame = function () {
+            cardArt.removeEventListener("load", renderFrame);
+            resolve({
+                "transparent": renderCard(),
+                "opaque": renderCard(true)
+            });
+        };
+        cardArt.addEventListener("load", renderFrame);
+        artSuperGIF.move_to(i);
+        cardArt.src = artSuperGIF.get_canvas().toDataURL();
+    }
+    return new Promise(request);
+}
+
+function createCardImage(dataURL) {
+    var image = new Image();
+    image.src = dataURL;
+    // image.addEventListener("click", function () {
+    //     saveAs(dataURL, "card");
+    // });
+    render.imageContainer.innerHTML = "";
+    render.imageContainer.appendChild(image);
+}
+
+function createCardZip(blob) {
+    var anchor = document.createElement("a");
+    anchor.innerHTML = "Click here to download the frames as a ZIP of individual PNGs instead.";
+    anchor.addEventListener("click", function () {
+        saveAs(blob, "card");
+    });
+    render.zipContainer.innerHTML = "";
+    render.zipContainer.appendChild(anchor);
+    render.disclaimer.className = "";
+}
+
+function createAnimatedCard() {
+    document.body.classList.add("disabled");
+    render.create.classList.add("loading");
+
+    var artGIF = new Image();
+    artGIF.className = "pre-jsgif";
+    artGIF.src = artURL;
+    document.body.appendChild(artGIF);
+
+    var artSuperGIF = new SuperGif({
+    	"gif": artGIF,
+    	"max_width": art.width.value
+    });
+    window.scrollTo(0, innerHeight);
+    artSuperGIF.load(function () {
+        var frameLength = artSuperGIF.get_length();
+        if (frameLength <= 1) {
+            artSuperGIF.get_canvas().parentElement.remove();
+            createStaticCard();
+            return;
+        }
+
+        var responses = [];
+        var promise = renderNextFrame(artSuperGIF, card.art, 0);
+        for (var i = 1; i < frameLength; i++) {
+            (function (i) {
+                promise = promise.then(function (response) {
+                    responses.push(response);
+                    return renderNextFrame(artSuperGIF, card.art, i);
+                });
+            })(i);
+        }
+        promise.then(function (response) {
+            responses.push(response);
+
+            var zip = new JSZip();
+            for (var i = 0; i < responses.length; i++) {
+                var dataURL = responses[i].transparent.toDataURL();
+                zip.file(i + ".png", dataURL.slice(22), {"base64": true});
+            }
+            zip.generateAsync({"type": "blob"}).then(createCardZip);
+
+            var encoder = new GIF({
+                "quality": 64,
+                "workers": 8,
+                "workerScript": "library/gif-js/gif.worker.js"
+            });
+            for (var i in responses) {
+                encoder.addFrame(responses[i].opaque, {"delay": 1});
+            }
+            encoder.on("finished", function (blob) {
+                card.art.src = artURL;
+                for (var worker of encoder.freeWorkers) {
+                    worker.terminate();
+                }
+                var reader = new FileReader();
+                reader.addEventListener("load", function () {
+                    createCardImage(this.result);
+                    artSuperGIF.get_canvas().parentElement.remove();
+                    document.body.classList.remove("disabled");
+                    render.create.classList.remove("loading");
+                });
+                reader.addEventListener("error", function () {
+                    document.body.classList.remove("disabled");
+                    render.create.classList.remove("loading");
+                });
+                reader.readAsDataURL(blob);
+            });
+            encoder.render();
         });
-        picker.on("color:change", function () {
-            hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-        })
-    }
-    initIro();
-    console.log(picker.props);
-
-    function onCancelPreview(e) {
-        console.log(9);
-        if (e.target != swatch) {
-            swatch.style = "";
-            window.removeEventListener("click", onCancelPreview);
-            foreground.preview.addEventListener("click", onClickPreview);
-        }
-    }
-
-    var activeBand, previewRect;
-    function onEndBand(e) {
-        document.body.style = "none";
-        window.removeEventListener("mousemove", onMoveBand);
-        window.removeEventListener("touchmove", onMoveBand);
-        window.removeEventListener("mouseup", onEndBand);
-        window.removeEventListener("touchend", onEndBand);
-    }
-    function onMoveBand(e) {
-        e = getPointer(e);
-        var swatchRect = swatch.getBoundingClientRect();
-        var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
-        activeBand.style.left = i + "%";
-        activeBand.style.transform = "translate(-50%)";
-        swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
-        percent.value = i;
-    }
-    function onStartBand(e) {
-        e = getPointer(e);
-        var swatchRect = swatch.getBoundingClientRect();
-        if (e.target.classList.contains("band")) {
-            activeBand = e.target;
-            previewRect = e.target.parentElement.getBoundingClientRect();
-        }
-        else {
-            activeBand = document.createElement("div");
-            activeBand.className = "band";
-            this.appendChild(activeBand);
-            previewRect = e.target.getBoundingClientRect();
-        }
-        swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
-        onMoveBand(e);
-
-        document.body.style.webkitUserSelect = "none";
-        document.body.style.userSelect = "none";
-        document.body.style.pointerEvents = "none";
-        window.addEventListener("mousemove", onMoveBand);
-        window.addEventListener("touchmove", onMoveBand);
-        window.addEventListener("mouseup", onEndBand);
-        window.addEventListener("touchend", onEndBand);
-
-    }
-    foreground.preview.addEventListener("mousedown", onStartBand);
-    foreground.preview.addEventListener("touchstart", onStartBand);
-    background.preview.addEventListener("mousedown", onStartBand);
-    background.preview.addEventListener("touchstart", onStartBand);
-
-    /* Event Listeners */
-
-    card.elementText.addEventListener("input", fitCardElement);
-    card.levelText.addEventListener("input", fitCardLevel);
-    card.variant.addEventListener("input", fitCardVariant);
-    card.fighter.addEventListener("input", fitCardFighter);
-
-    card.artPositionTool.addEventListener("mousedown", onPoseStart);
-    card.artPositionTool.addEventListener("touchstart", onPoseStart);
-
-    card.maskLeft.addEventListener("click", toggleMaskSegment);
-    card.maskRight.addEventListener("click", toggleMaskSegment);
-    card.maskTop.addEventListener("click", toggleMaskSegment);
-    card.maskBottom.addEventListener("click", toggleMaskSegment);
-
-    for (var option in tier) {
-        tier[option].addEventListener("click", selectTier);
-    }
-    for (var option in element) {
-        element[option].addEventListener("click", selectElement);
-    }
-    for (var option in energy) {
-        energy[option].addEventListener("click", selectEnergy);
-    }
-
-    art.file.addEventListener("change", selectArt);
-    art.over.addEventListener("click", selectOverlap);
-    art.under.addEventListener("click", selectOverlap);
-    art.move.addEventListener("click", selectPoser);
-    art.x.addEventListener("input", setX);
-    art.y.addEventListener("input", setY);
-    art.scale.addEventListener("click", selectPoser);
-    art.width.addEventListener("input", setWidth);
-    art.rotate.addEventListener("click", selectPoser);
-    art.angle.addEventListener("input", setAngle);
-
-    for (var option in foreground) {
-        if (foreground[option].type == "radio") {
-            foreground[option].addEventListener("click", selectForeground);
-        }
-    }
-    foreground.input.addEventListener("change", selectTier);
-    for (var option in background) {
-        if (background[option].type == "radio") {
-            background[option].addEventListener("click", selectBackground);
-        }
-    }
-    background.input.addEventListener("change", selectElement);
-
-    render.create.addEventListener("click", createCard);
-
-    /* Initialize */
-
-    window.addEventListener("load", function () {
-        tier.none.checked = true;
-        element.none.checked = true;
-        energy.none.click();
-        art.under.click();
-        art.move.click();
-        foreground.default.click();
-        background.default.click();
     });
 }
+
+function createStaticCard() {
+    render.create.classList.add("loading");
+    var canvas = renderCard();
+    createCardImage(canvas.toDataURL());
+    render.disclaimer.className = "hidden";
+    render.create.classList.remove("loading");
+}
+
+function createCard() {
+    if (artType == "image/gif") {
+        createAnimatedCard();
+    }
+    else {
+        createStaticCard()
+    }
+}
+
+/* Gradient Picker */
+
+var swatch = document.getElementById("swatch");
+var picker;
+var hex = document.getElementById("hex");
+var percent = document.getElementById("percent");
+function initIro() {
+    picker = new iro.ColorPicker("#iro", {
+        "width": 192,
+        "borderWidth": 1,
+        "borderColor": "var(--fg)",
+        "sliderMargin": 3,
+        "layoutDirection": "horizontal",
+        "layout": [
+            {
+                "component": iro.ui.Box,
+            },
+            {
+                "component": iro.ui.Slider,
+                "options": {
+                    "sliderType": "hue"
+                }
+            },
+            {
+                "component": iro.ui.Slider,
+                "options": {
+                    "sliderType": "alpha",
+                    "padding": 0,
+                }
+            }
+        ]
+    });
+    picker.on("color:change", function () {
+        hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+    })
+}
+initIro();
+console.log(picker.props);
+
+function onCancelPreview(e) {
+    console.log(9);
+    if (e.target != swatch) {
+        swatch.style = "";
+        window.removeEventListener("click", onCancelPreview);
+        foreground.preview.addEventListener("click", onClickPreview);
+    }
+}
+
+var activeBand, previewRect;
+function onEndBand(e) {
+    document.body.style = "none";
+    window.removeEventListener("mousemove", onMoveBand);
+    window.removeEventListener("touchmove", onMoveBand);
+    window.removeEventListener("mouseup", onEndBand);
+    window.removeEventListener("touchend", onEndBand);
+}
+function onMoveBand(e) {
+    e = getPointer(e);
+    var swatchRect = swatch.getBoundingClientRect();
+    var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
+    activeBand.style.left = i + "%";
+    activeBand.style.transform = "translate(-50%)";
+    swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
+    percent.value = i;
+}
+function onStartBand(e) {
+    e = getPointer(e);
+    var swatchRect = swatch.getBoundingClientRect();
+    if (e.target.classList.contains("band")) {
+        activeBand = e.target;
+        previewRect = e.target.parentElement.getBoundingClientRect();
+    }
+    else {
+        activeBand = document.createElement("div");
+        activeBand.className = "band";
+        this.appendChild(activeBand);
+        previewRect = e.target.getBoundingClientRect();
+    }
+    swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
+    onMoveBand(e);
+
+    document.body.style.webkitUserSelect = "none";
+    document.body.style.userSelect = "none";
+    document.body.style.pointerEvents = "none";
+    window.addEventListener("mousemove", onMoveBand);
+    window.addEventListener("touchmove", onMoveBand);
+    window.addEventListener("mouseup", onEndBand);
+    window.addEventListener("touchend", onEndBand);
+
+}
+foreground.preview.addEventListener("mousedown", onStartBand);
+foreground.preview.addEventListener("touchstart", onStartBand);
+background.preview.addEventListener("mousedown", onStartBand);
+background.preview.addEventListener("touchstart", onStartBand);
+
+/* Event Listeners */
+
+card.elementText.addEventListener("input", fitCardElement);
+card.levelText.addEventListener("input", fitCardLevel);
+card.variant.addEventListener("input", fitCardVariant);
+card.fighter.addEventListener("input", fitCardFighter);
+
+card.artPositionTool.addEventListener("mousedown", onPoseStart);
+card.artPositionTool.addEventListener("touchstart", onPoseStart);
+
+card.maskLeft.addEventListener("click", toggleMaskSegment);
+card.maskRight.addEventListener("click", toggleMaskSegment);
+card.maskTop.addEventListener("click", toggleMaskSegment);
+card.maskBottom.addEventListener("click", toggleMaskSegment);
+
+for (var option in tier) {
+    tier[option].addEventListener("click", selectTier);
+}
+for (var option in element) {
+    element[option].addEventListener("click", selectElement);
+}
+for (var option in energy) {
+    energy[option].addEventListener("click", selectEnergy);
+}
+
+art.file.addEventListener("change", selectArt);
+art.over.addEventListener("click", selectOverlap);
+art.under.addEventListener("click", selectOverlap);
+art.move.addEventListener("click", selectPoser);
+art.x.addEventListener("input", setX);
+art.y.addEventListener("input", setY);
+art.scale.addEventListener("click", selectPoser);
+art.width.addEventListener("input", setWidth);
+art.rotate.addEventListener("click", selectPoser);
+art.angle.addEventListener("input", setAngle);
+
+for (var option in foreground) {
+    if (foreground[option].type == "radio") {
+        foreground[option].addEventListener("click", selectForeground);
+    }
+}
+foreground.input.addEventListener("change", selectTier);
+for (var option in background) {
+    if (background[option].type == "radio") {
+        background[option].addEventListener("click", selectBackground);
+    }
+}
+background.input.addEventListener("change", selectElement);
+
+render.create.addEventListener("click", createCard);
+
+/* Initialize */
+
+window.addEventListener("load", function () {
+    tier.none.checked = true;
+    element.none.checked = true;
+    energy.none.click();
+    art.under.click();
+    art.move.click();
+    foreground.default.click();
+    background.default.click();
+});
 
 function holup(e) {
     e.preventDefault();
@@ -1266,5 +1270,6 @@ function holup(e) {
     return e.returnValue;
 }
 
-window.addEventListener("DOMContentLoaded", init);
 window.addEventListener("beforeunload", holup);
+
+});
