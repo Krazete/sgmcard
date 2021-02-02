@@ -351,7 +351,7 @@ function setCircle(x, y, r, t) {
         circle.style.borderWidth = "0 5px 0 1px";
         circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
     }
-    document.body.className = "editing-art";
+    document.body.className = "posing";
 }
 
 function removeCircle() {

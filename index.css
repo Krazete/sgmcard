@@ -382,7 +382,7 @@ input[type='button'].loading {
     font-size: 38px;
 }
 
-/* CARD ART TOOLS */
+/* PREVIEW TOOLS */
 
 #card-mask-tool {
     left: 0;
@@ -431,16 +431,14 @@ input[type='button'].loading {
     background: var(--fg);
 }
 
-.editing-art {
+.posing {
     cursor: move;
 }
-.editing-art * {
+.posing * {
+    cursor: move !important;
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
-}
-.editing-art #card-pose-tool {
-    pointer-events: auto;
 }
 
 #card-pose-tool {
@@ -462,11 +460,11 @@ input[type='button'].loading {
     transform: translate(-50%, -50%);
     border: 3px solid white;
     border-radius: 50%;
-    box-shadow: 0 0 3px black, inset 0 0 3px black;
+    box-shadow: 0 0 2px 1px black, inset 0 0 2px 1px black;
     display: none;
     pointer-events: none;
 }
-.editing-art #circle {
+.posing #circle {
     display: block;
 }
 
@@ -534,9 +532,16 @@ input[type='button'].loading {
     cursor: crosshair;
 }
 
+.disabled {
+    pointer-events: none;
+}
+
+.dim {
+    opacity: 0.5;
+}
+
 .band {
     position: absolute;
-    width: 0.5%; /* unused because nonconstant */
     width: 4px;
     top: -4px;
     bottom: -4px;
@@ -546,15 +551,6 @@ input[type='button'].loading {
 }
 .band:hover {
     outline-color: var(--bg);
-}
-
-.disabled {
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
-.dim {
-    opacity: 0.5;
 }
 
 #swatch {
