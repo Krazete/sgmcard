@@ -22,6 +22,24 @@ body {
     background: var(--bg);
 }
 
+/* TEXT */
+
+h1, h2, h3, label {
+    font-family: 'Cinema';
+    text-transform: uppercase;
+    text-shadow: 0.1em 0.1em black;
+    letter-spacing: 0.1em;
+    margin: 4px 4px 0 4px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    color: var(--bg);
+}
+
 a {
     color: skyblue;
     text-decoration: inherit;
@@ -29,6 +47,133 @@ a {
 }
 a:hover {
     text-decoration: underline;
+}
+
+/* INPUT */
+
+input[type='radio'] {
+    display: none;
+}
+
+input[type='radio'] + label,
+input[type='file'],
+input[type='number'],
+input[type='text'],
+input[type='button'],
+#outlink a {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Cinema';
+    font-size: 18px;
+    text-transform: uppercase;
+    padding: 8px;
+    border: 3px double var(--fg);
+    border-radius: 8px;
+    outline: none;
+    margin: 4px;
+}
+input[type='radio'] + label {
+    height: 32px;
+    min-width: 32px;
+    background: var(--fg);
+    text-align: center;
+    vertical-align: top;
+    border-color: var(--bg);
+    display: inline-block;
+    cursor: pointer;
+}
+input[type='file'],
+input[type='text'] {
+    width: 90%;
+    width: calc(100% - 30px);
+}
+input[type='number'] {
+    width: 3em;
+}
+input[type='button'] {
+    width: 33%;
+    margin: 8px auto;
+    display: block;
+    cursor: pointer;
+}
+
+input[type='radio'] + label:hover,
+input[type='file']:hover,
+input[type='number']:hover,
+input[type='text']:hover,
+input[type='button']:hover,
+#outlink a:hover {
+    color: white;
+    border-color: white;
+}
+
+input[type='radio']:checked + label,
+input[type='file']:focus,
+input[type='number']:focus,
+input[type='text']:focus,
+input[type='button'],
+#outlink a {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--bg);
+}
+input[type='radio']:checked + label {
+    background: var(--bg);
+    border-color: var(--fg);
+}
+
+input[type='radio'] + label img,
+#outlink img {
+    max-height: 32px;
+    max-width: 32px;
+    vertical-align: bottom;
+}
+
+input[type='button'].loading {
+    background-image: linear-gradient(to right, var(--bg), var(--fg) 50%);
+    background-size: 16px;
+    animation: 1s loading linear infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 0px 0;
+    }
+    100% {
+        background-position: 16px 0;
+    }
+}
+
+#outlink {
+    text-align: right;
+    padding-top: 8px;
+}
+
+#outlink a {
+    line-height: 32px;
+    cursor: pointer;
+}
+
+/* MENU */
+
+#menu {
+    position: relative;
+    width: max-content;
+    background: var(--fg);
+    color: white;
+    padding: 8px;
+    border: 3px double var(--bg);
+    border-radius: 16px;
+    margin: auto;
+}
+
+#kofi img {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px;
+    margin: 6px;
+    display: block;
 }
 
 .flexbox {
@@ -41,7 +186,7 @@ a:hover {
     flex: none;
 }
 
-/* CARD PREVIEW */
+/* PREVIEW */
 
 #preview {
     position: relative;
@@ -167,6 +312,7 @@ a:hover {
 #card-bottom {
     bottom: 3px;
 }
+
 .bronze #card-bottom,
 .silver #card-bottom {
     left: 17px;
@@ -247,10 +393,6 @@ a:hover {
     pointer-events: auto;
 }
 
-#mask-top {
-    width: 100%;
-    height: 50px;
-}
 #mask-left {
     width: 50px;
     height: 100%;
@@ -260,27 +402,31 @@ a:hover {
     width: 50px;
     height: 100%;
 }
+#mask-top {
+    width: 100%;
+    height: 50px;
+}
 #mask-bottom {
     bottom: 0;
     width: 100%;
     height: 159px;
 }
-#mask-top,
 #mask-left,
 #mask-right,
+#mask-top,
 #mask-bottom {
     box-sizing: border-box;
     position: absolute;
 }
-#mask-top:hover,
 #mask-left:hover,
 #mask-right:hover,
+#mask-top:hover,
 #mask-bottom:hover {
     border: 3px dashed red;
 }
-#mask-top.active,
 #mask-left.active,
 #mask-right.active,
+#mask-top.active,
 #mask-bottom.active {
     background: var(--fg);
 }
@@ -324,220 +470,7 @@ a:hover {
     display: block;
 }
 
-/* MENU */
-
-#menu {
-    position: relative;
-    width: max-content;
-    min-height: 609px;
-    background: var(--fg);
-    color: white;
-    padding: 8px;
-    border: 3px double var(--bg);
-    border-radius: 16px;
-    margin: auto;
-}
-
-#kofi img {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 24px;
-    margin: 6px;
-    display: block;
-}
-
-h1, h2, h3, label {
-    font-family: 'Cinema';
-    text-transform: uppercase;
-    text-shadow: 0.1em 0.1em black;
-    letter-spacing: 0.1em;
-    margin: 4px 4px 0 4px;
-}
-
-h1 {
-    text-align: center;
-}
-h3 {
-    color: var(--bg);
-}
-
-/* MENU INPUTS */
-
-#outlink {
-    text-align: right;
-    padding-top: 8px;
-}
-
-#outlink a {
-    background: var(--fg);
-    color: var(--bg);
-    font-family: 'Cinema';
-    font-size: 18px;
-    text-transform: uppercase;
-    line-height: 32px;
-    padding: 8px;
-    border: 3px double var(--bg);
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-input[type='radio'] + label,
-input[type='file'],
-input[type='text'],
-input[type='number'],
-input[type='button'] {
-    background: var(--bg);
-    color: var(--fg);
-    padding: 8px;
-    border: 3px double var(--fg);
-    border-radius: 8px;
-    outline: none;
-    margin: 4px;
-}
-
-input[type='radio'] + label:hover,
-input[type='file']:hover,
-input[type='text']:hover,
-input[type='number']:hover,
-input[type='button']:hover,
-#outlink a:hover {
-    color: white;
-    border-color: white;
-}
-
-input[type='radio']:checked + label,
-input[type='file']:focus,
-input[type='text']:focus,
-input[type='number']:focus,
-input[type='button'] {
-    background: var(--fg);
-    color: var(--bg);
-    border-color: var(--bg);
-}
-
-input[type='radio'] {
-    display: none;
-}
-
-input[type='radio'] + label {
-    height: 32px;
-    min-width: 32px;
-    background: var(--fg);
-    border-color: var(--bg);
-    text-align: center;
-    vertical-align: top;
-    display: inline-block;
-    cursor: pointer;
-}
-input[type='radio']:checked + label {
-    background: var(--bg);
-    border-color: var(--fg);
-}
-
-input[type='radio'] + label img,
-#outlink img {
-    max-height: 32px;
-    max-width: 32px;
-    vertical-align: bottom;
-}
-
-input[type='file'],
-input[type='text'],
-input[type='number'],
-input[type='button'] {
-    font-family: 'Cinema';
-    font-size: 18px;
-    text-transform: uppercase;
-}
-
-input[type='file'],
-input[type='text'] {
-    width: 90%;
-    width: calc(100% - 30px);
-}
-
-input[type='number'] {
-    width: 3em;
-}
-
-input[type='button'] {
-    width: 33%;
-    margin: 8px auto;
-    display: block;
-    cursor: pointer;
-}
-
-#fg-preview, #bg-preview {
-    background-size: 100% 100%;
-    background-origin: border-box;
-    position: relative;
-    padding: 8px;
-    border: 3px double var(--fg);
-    border-radius: 4px;
-    margin: 4px;
-    cursor: crosshair;
-}
-
-.band {
-    position: absolute;
-    width: 0.5%; /* unused because nonconstant */
-    width: 4px;
-    top: -4px;
-    bottom: -4px;
-    background: black;
-    outline: 1px solid white;
-    cursor: default;
-}
-.band:hover {
-    outline-color: var(--bg);
-}
-
-.disabled {
-    pointer-events: none;
-}
-
-.dim {
-    opacity: 0.5;
-}
-
-input[type='button'].loading {
-    background-image: linear-gradient(to right, var(--bg), var(--fg) 50%);
-    background-size: 16px;
-    animation: 1s loading linear infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 0px 0;
-    }
-    100% {
-        background-position: 16px 0;
-    }
-}
-
-/* COLOR PICKER */
-
-#swatch {
-    background: var(--bg);
-    box-shadow: 0 0 8px 8px var(--fg);
-    position: absolute;
-    top: -100%;
-    left: 100%;
-    padding: 6px;
-    border: 3px double var(--fg);
-    border-radius: 16px;
-}
-
-#hex {
-    width: 6em;
-}
-
-#percent {
-    width: 3em;
-}
-
-/* SPECIAL MENU BUTTONS */
+/* ART POSITION BUTTONS */
 
 #option-move + label,
 #option-scale + label,
@@ -588,7 +521,62 @@ input[type='button'].loading {
     100% {transform: rotateZ(-360deg);}
 }
 
-/* RENDERED CARD */
+/* CUSTOM GRADIENT MAP */
+
+#fg-preview, #bg-preview {
+    background-size: 100% 100%;
+    background-origin: border-box;
+    position: relative;
+    padding: 8px;
+    border: 3px double var(--fg);
+    border-radius: 4px;
+    margin: 4px;
+    cursor: crosshair;
+}
+
+.band {
+    position: absolute;
+    width: 0.5%; /* unused because nonconstant */
+    width: 4px;
+    top: -4px;
+    bottom: -4px;
+    background: black;
+    outline: 1px solid white;
+    cursor: default;
+}
+.band:hover {
+    outline-color: var(--bg);
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.dim {
+    opacity: 0.5;
+}
+
+#swatch {
+    background: var(--bg);
+    box-shadow: 0 0 8px 8px var(--fg);
+    position: absolute;
+    top: -100%;
+    left: 100%;
+    padding: 6px;
+    border: 3px double var(--fg);
+    border-radius: 16px;
+}
+
+#hex {
+    width: 6em;
+}
+
+#percent {
+    width: 3em;
+}
+
+/* RENDER */
 
 #render-image {
     text-align: center;
@@ -598,7 +586,6 @@ input[type='button'].loading {
     width: 200px;
     border: 1px dashed var(--bg);
     border-radius: 4px;
-    /* cursor: pointer; */
 }
 
 #render-disclaimer {
