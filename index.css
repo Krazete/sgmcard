@@ -76,9 +76,9 @@ a:hover {
 }
 
 #card-top,
-#card-element-left,
-#card-element-center,
-#card-element-right {
+#card-score-left,
+#card-score-center,
+#card-score-right {
     position: absolute;
     top: 3px;
 }
@@ -96,75 +96,75 @@ a:hover {
     left: 23px;
 }
 
-#card-element-icon {
+#card-element {
     top: 15px;
     left: 37px;
     width: 56px;
 }
 
-#card-element-left,
-#card-element-center,
-#card-element-right {
+#card-score-left,
+#card-score-center,
+#card-score-right {
     left: 25px;
 }
-#card-element-left {
+#card-score-left {
     -webkit-clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
     clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
 }
-#card-element-center {
+#card-score-center {
     transform: scaleX(70);
     transform-origin: 80px;
     -webkit-clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
     clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
 }
-#card-element-right {
+#card-score-right {
     left: 94px;
     -webkit-clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
     clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
 }
 
-.gold #card-element-left,
-.gold #card-element-center,
-.gold #card-element-right {
+.gold #card-score-left,
+.gold #card-score-center,
+.gold #card-score-right {
     left: 18px;
 }
-.gold #card-element-left {
+.gold #card-score-left {
     -webkit-clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
     clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
 }
-.gold #card-element-center {
+.gold #card-score-center {
     transform-origin: 87px;
     -webkit-clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
     clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
 }
-.gold #card-element-right {
+.gold #card-score-right {
     left: 87px;
     -webkit-clip-path: polygon(88px 0, 100% 0, 100% 100%, 88px 100%);
     clip-path: polygon(88px 0, 100% 0, 100% 100%, 88px 100%);
 }
 
-.diamond #card-element-left,
-.diamond #card-element-center,
-.diamond #card-element-right {
+.diamond #card-score-left,
+.diamond #card-score-center,
+.diamond #card-score-right {
     top: 2px;
     left: 24px;
 }
-.diamond #card-element-right {
+.diamond #card-score-right {
     left: 93px;
 }
 
-.bronze #card-level {
+.bronze #card-badge {
     top: 4px;
     left: 295px;
     width: 64px;
 }
-.silver #card-level,
-.gold #card-level {
+.silver #card-badge,
+.gold #card-badge {
     top: 5px;
     left: 296px;
     width: 62px;
 }
-.diamond #card-level {
+.diamond #card-badge {
     top: 3px;
     left: 295px;
     width: 64px;
@@ -211,18 +211,18 @@ a:hover {
     margin: 0;
     pointer-events: auto;
 }
-#card-element-text,
-#card-level-text {
+#card-score,
+#card-level {
     font-size: 31px;
     line-height: 60px;
 }
-#preview #card-element-text {
+#preview #card-score {
     top: 10px;
     left: 109px;
     width: 150px;
     text-align: left;
 }
-#card-level-text {
+#card-level {
     top: 6px;
     left: 297px;
     width: 60px;

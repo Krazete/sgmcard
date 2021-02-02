@@ -1,4 +1,106 @@
 window.addEventListener("DOMContentLoaded", function () {
+
+/* Elements */
+
+var card = {
+    "back": document.getElementById("card-back"),
+    "maskLeft": document.getElementById("mask-left"),
+    "maskRight": document.getElementById("mask-right"),
+    "maskTop": document.getElementById("mask-top"),
+    "maskBottom": document.getElementById("mask-bottom"),
+    "overlapper": document.getElementById("card-overlapper"),
+    "artMask": document.getElementById("art-mask"),
+    "art": document.getElementById("art"),
+    "top": document.getElementById("card-top"),
+    "bottom": document.getElementById("card-bottom"),
+    "element": document.getElementById("card-element"),
+    "scoreLeft": document.getElementById("card-score-left"),
+    "scoreCenter": document.getElementById("card-score-center"),
+    "scoreRight": document.getElementById("card-score-right"),
+    "badge": document.getElementById("card-badge"),
+    "energy": document.getElementById("card-energy"),
+    "artPositionTool": document.getElementById("card-art-position-tool"),
+    "circle": document.getElementById("circle"),
+    "score": document.getElementById("card-score"),
+    "level": document.getElementById("card-level"),
+    "variant": document.getElementById("card-variant"),
+    "fighter": document.getElementById("card-fighter")
+};
+
+var tier = {
+    "none": document.getElementById("option-no-tier"),
+    "bronze": document.getElementById("option-bronze"),
+    "silver": document.getElementById("option-silver"),
+    "gold": document.getElementById("option-gold"),
+    "diamond": document.getElementById("option-diamond")
+};
+
+var element = {
+    "none": document.getElementById("option-no-element"),
+    "fire": document.getElementById("option-fire"),
+    "water": document.getElementById("option-water"),
+    "wind": document.getElementById("option-wind"),
+    "light": document.getElementById("option-light"),
+    "dark": document.getElementById("option-dark"),
+    "neutral": document.getElementById("option-neutral")
+};
+
+var energy = {
+    "none": document.getElementById("option-no-energy"),
+    "yellow": document.getElementById("option-yellow"),
+    "blue": document.getElementById("option-blue"),
+    "blank": document.getElementById("option-blank")
+};
+
+var art = {
+    "file": document.getElementById("option-art"),
+    "move": document.getElementById("option-move"),
+    "x": document.getElementById("option-x"),
+    "y": document.getElementById("option-y"),
+    "scale": document.getElementById("option-scale"),
+    "width": document.getElementById("option-width"),
+    "rotate": document.getElementById("option-rotate"),
+    "angle": document.getElementById("option-angle"),
+    "under": document.getElementById("option-under"),
+    "over": document.getElementById("option-over")
+};
+
+var foreground = {
+    "default": document.getElementById("option-fg-default"),
+    "custom": document.getElementById("option-fg-custom"),
+    "bronze": document.getElementById("option-fg-bronze"),
+    "silver": document.getElementById("option-fg-silver"),
+    "gold": document.getElementById("option-fg-gold"),
+    "fire": document.getElementById("option-fg-fire"),
+    "water": document.getElementById("option-fg-water"),
+    "wind": document.getElementById("option-fg-wind"),
+    "light": document.getElementById("option-fg-light"),
+    "dark": document.getElementById("option-fg-dark"),
+    "neutral": document.getElementById("option-fg-neutral"),
+    "preview": document.getElementById("fg-preview"),
+    "input": document.getElementById("option-fg")
+};
+
+var background = {
+    "default": document.getElementById("option-bg-default"),
+    "custom": document.getElementById("option-bg-custom"),
+    "fire": document.getElementById("option-bg-fire"),
+    "water": document.getElementById("option-bg-water"),
+    "wind": document.getElementById("option-bg-wind"),
+    "light": document.getElementById("option-bg-light"),
+    "dark": document.getElementById("option-bg-dark"),
+    "neutral": document.getElementById("option-bg-neutral"),
+    "preview": document.getElementById("bg-preview"),
+    "input": document.getElementById("option-bg")
+};
+
+var render = {
+    "create": document.getElementById("option-render"),
+    "imageContainer": document.getElementById("render-image"),
+    "disclaimer": document.getElementById("render-disclaimer"),
+    "zipContainer": document.getElementById("render-zip"),
+};
+
 /* Image Processing */
 
 function loadImage(src) {
@@ -139,107 +241,6 @@ function loadColorizedImageURL(imageURL, gradientURLOrText) {
     }
 }
 
-/* Elements */
-
-var card = {
-    "back": document.getElementById("card-back"),
-    "maskLeft": document.getElementById("mask-left"),
-    "maskRight": document.getElementById("mask-right"),
-    "maskTop": document.getElementById("mask-top"),
-    "maskBottom": document.getElementById("mask-bottom"),
-    "overlapper": document.getElementById("card-overlapper"),
-    "artMask": document.getElementById("card-art-mask"),
-    "art": document.getElementById("art"),
-    "top": document.getElementById("card-top"),
-    "bottom": document.getElementById("card-bottom"),
-    "elementIcon": document.getElementById("card-element-icon"),
-    "elementLeft": document.getElementById("card-element-left"),
-    "elementCenter": document.getElementById("card-element-center"),
-    "elementRight": document.getElementById("card-element-right"),
-    "level": document.getElementById("card-level"),
-    "energy": document.getElementById("card-energy"),
-    "artPositionTool": document.getElementById("card-art-position-tool"),
-    "circle": document.getElementById("circle"),
-    "elementText": document.getElementById("card-element-text"),
-    "levelText": document.getElementById("card-level-text"),
-    "variant": document.getElementById("card-variant"),
-    "fighter": document.getElementById("card-fighter")
-};
-
-var tier = {
-    "none": document.getElementById("option-no-tier"),
-    "bronze": document.getElementById("option-bronze"),
-    "silver": document.getElementById("option-silver"),
-    "gold": document.getElementById("option-gold"),
-    "diamond": document.getElementById("option-diamond")
-};
-
-var element = {
-    "none": document.getElementById("option-no-element"),
-    "fire": document.getElementById("option-fire"),
-    "water": document.getElementById("option-water"),
-    "wind": document.getElementById("option-wind"),
-    "light": document.getElementById("option-light"),
-    "dark": document.getElementById("option-dark"),
-    "neutral": document.getElementById("option-neutral")
-};
-
-var energy = {
-    "none": document.getElementById("option-no-energy"),
-    "yellow": document.getElementById("option-yellow"),
-    "blue": document.getElementById("option-blue"),
-    "blank": document.getElementById("option-blank")
-};
-
-var art = {
-    "file": document.getElementById("option-art"),
-    "move": document.getElementById("option-move"),
-    "x": document.getElementById("option-x"),
-    "y": document.getElementById("option-y"),
-    "scale": document.getElementById("option-scale"),
-    "width": document.getElementById("option-width"),
-    "rotate": document.getElementById("option-rotate"),
-    "angle": document.getElementById("option-angle"),
-    "under": document.getElementById("option-under"),
-    "over": document.getElementById("option-over")
-};
-
-var foreground = {
-    "default": document.getElementById("option-fg-default"),
-    "custom": document.getElementById("option-fg-custom"),
-    "bronze": document.getElementById("option-fg-bronze"),
-    "silver": document.getElementById("option-fg-silver"),
-    "gold": document.getElementById("option-fg-gold"),
-    "fire": document.getElementById("option-fg-fire"),
-    "water": document.getElementById("option-fg-water"),
-    "wind": document.getElementById("option-fg-wind"),
-    "light": document.getElementById("option-fg-light"),
-    "dark": document.getElementById("option-fg-dark"),
-    "neutral": document.getElementById("option-fg-neutral"),
-    "preview": document.getElementById("fg-preview"),
-    "input": document.getElementById("option-fg")
-};
-
-var background = {
-    "default": document.getElementById("option-bg-default"),
-    "custom": document.getElementById("option-bg-custom"),
-    "fire": document.getElementById("option-bg-fire"),
-    "water": document.getElementById("option-bg-water"),
-    "wind": document.getElementById("option-bg-wind"),
-    "light": document.getElementById("option-bg-light"),
-    "dark": document.getElementById("option-bg-dark"),
-    "neutral": document.getElementById("option-bg-neutral"),
-    "preview": document.getElementById("bg-preview"),
-    "input": document.getElementById("option-bg")
-};
-
-var render = {
-    "create": document.getElementById("option-render"),
-    "imageContainer": document.getElementById("render-image"),
-    "disclaimer": document.getElementById("render-disclaimer"),
-    "zipContainer": document.getElementById("render-zip"),
-};
-
 /* Data */
 
 var ruler = document.createElement("canvas").getContext("2d");
@@ -272,9 +273,9 @@ function autofit(input, maxSize, maxWidth) {
 }
 
 function fitCardElement() {
-    var width = parseInt(autofit(card.elementText, 31, 150)) || 65;
+    var width = parseInt(autofit(card.score, 31, 150)) || 65;
     var pad = 5;
-    card.elementCenter.style.transform = "scaleX(" + (width + pad) + ")";
+    card.scoreCenter.style.transform = "scaleX(" + (width + pad) + ")";
     var offset = 29;
     if (preview.className == "gold") {
         offset = 22;
@@ -282,11 +283,11 @@ function fitCardElement() {
     else if (preview.className == "diamond") {
         offset = 28;
     }
-    card.elementRight.style.left = offset + width + "px";
+    card.scoreRight.style.left = offset + width + "px";
 }
 
 function fitCardLevel() {
-    autofit(card.levelText, 31, 40);
+    autofit(card.level, 31, 40);
 }
 
 function fitCardVariant() {
@@ -365,6 +366,7 @@ function bound(input, n) {
 }
 
 function updateBounds() {
+    console.log(card.artPositionTool);
     var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
     var artRect1 = card.art.getBoundingClientRect();
     art.x.min = 50 + Math.floor(-artRect1.width / 2);
@@ -460,7 +462,6 @@ function onPoseEnd(e) {
     window.removeEventListener("mouseup", onPoseEnd);
     window.removeEventListener("touchend", onPoseEnd);
 }
-updateBounds();
 
 /* Art Mask Tool */
 
@@ -530,7 +531,7 @@ function selectTier() {
     var cardTopURL = "";
     var cardBottomURL = "";
     var cardElementURL = "";
-    var cardLevelURL = "";
+    var cardBadgeURL = "";
     if (tier.none.checked) {
         preview.className = "";
     }
@@ -539,28 +540,28 @@ function selectTier() {
         cardTopURL = "fragment/BronzeTop.png";
         cardBottomURL = "fragment/BronzeBottom.png";
         cardElementURL = "fragment/BronzeElement.png";
-        cardLevelURL = "fragment/BronzeLevel.png";
+        cardBadgeURL = "fragment/BronzeLevel.png";
     }
     else if (tier.silver.checked) {
         preview.className = "silver";
         cardTopURL = "fragment/SilverTop.png";
         cardBottomURL = "fragment/SilverBottom.png";
         cardElementURL = "fragment/SilverElement.png";
-        cardLevelURL = "fragment/SilverLevel.png";
+        cardBadgeURL = "fragment/SilverLevel.png";
     }
     else if (tier.gold.checked) {
         preview.className = "gold";
         cardTopURL = "fragment/GoldTop.png";
         cardBottomURL = "fragment/GoldBottom.png";
         cardElementURL = "fragment/GoldElement.png";
-        cardLevelURL = "fragment/GoldLevel.png";
+        cardBadgeURL = "fragment/GoldLevel.png";
     }
     else if (tier.diamond.checked) {
         preview.className = "diamond";
         cardTopURL = "fragment/DiamondTop.png";
         cardBottomURL = "fragment/DiamondBottom.png";
         cardElementURL = "fragment/DiamondElement.png";
-        cardLevelURL = "fragment/DiamondLevel.png";
+        cardBadgeURL = "fragment/DiamondLevel.png";
     }
 
     var gradientURLOrText = gradientMapImage.error;
@@ -617,23 +618,23 @@ function selectTier() {
             loadColorizedImageURL(cardTopURL, gradientURLOrText),
             loadColorizedImageURL(cardBottomURL, gradientURLOrText),
             loadColorizedImageURL(cardElementURL, gradientURLOrText),
-            loadColorizedImageURL(cardLevelURL, gradientURLOrText)
+            loadColorizedImageURL(cardBadgeURL, gradientURLOrText)
         ]).then(function (response) {
             card.top.src = response[0];
             card.bottom.src = response[1];
-            card.elementLeft.src = response[2];
-            card.elementCenter.src = response[2];
-            card.elementRight.src = response[2];
-            card.level.src = response[3];
+            card.scoreLeft.src = response[2];
+            card.scoreCenter.src = response[2];
+            card.scoreRight.src = response[2];
+            card.badge.src = response[3];
         });
     }
     else {
         card.top.src = cardTopURL;
         card.bottom.src = cardBottomURL;
-        card.elementLeft.src = cardElementURL;
-        card.elementCenter.src = cardElementURL;
-        card.elementRight.src = cardElementURL;
-        card.level.src = cardLevelURL;
+        card.scoreLeft.src = cardElementURL;
+        card.scoreCenter.src = cardElementURL;
+        card.scoreRight.src = cardElementURL;
+        card.badge.src = cardBadgeURL;
     }
 
     fitCardElement();
@@ -654,30 +655,30 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrText = gradientMapImage.error;
     if (element.none.checked) {
-        card.elementIcon.src = "";
+        card.element.src = "";
     }
     else if (element.fire.checked) {
-        card.elementIcon.src = "fragment/ElementalIconFire.png";
+        card.element.src = "fragment/ElementalIconFire.png";
         gradientURLOrText = gradientMapImage.bg.fire;
     }
     else if (element.water.checked) {
-        card.elementIcon.src = "fragment/ElementalIconWater.png";
+        card.element.src = "fragment/ElementalIconWater.png";
         gradientURLOrText = gradientMapImage.bg.water;
     }
     else if (element.wind.checked) {
-        card.elementIcon.src = "fragment/ElementalIconWind.png";
+        card.element.src = "fragment/ElementalIconWind.png";
         gradientURLOrText = gradientMapImage.bg.wind;
     }
     else if (element.light.checked) {
-        card.elementIcon.src = "fragment/ElementalIconLight.png";
+        card.element.src = "fragment/ElementalIconLight.png";
         gradientURLOrText = gradientMapImage.bg.light;
     }
     else if (element.dark.checked) {
-        card.elementIcon.src = "fragment/ElementalIconDark.png";
+        card.element.src = "fragment/ElementalIconDark.png";
         gradientURLOrText = gradientMapImage.bg.dark;
     }
     else if (element.neutral.checked) {
-        card.elementIcon.src = "fragment/ElementalIconNeutral.png";
+        card.element.src = "fragment/ElementalIconNeutral.png";
         gradientURLOrText = gradientMapImage.bg.neutral;
     }
     if (background.custom.checked) {
@@ -1203,8 +1204,8 @@ background.preview.addEventListener("touchstart", onStartBand);
 
 /* Event Listeners */
 
-card.elementText.addEventListener("input", fitCardElement);
-card.levelText.addEventListener("input", fitCardLevel);
+card.score.addEventListener("input", fitCardElement);
+card.level.addEventListener("input", fitCardLevel);
 card.variant.addEventListener("input", fitCardVariant);
 card.fighter.addEventListener("input", fitCardFighter);
 
@@ -1255,6 +1256,7 @@ render.create.addEventListener("click", createCard);
 /* Initialize */
 
 window.addEventListener("load", function () {
+    updateBounds();
     tier.none.checked = true;
     element.none.checked = true;
     energy.none.click();
