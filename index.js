@@ -8,10 +8,12 @@ var card = {
     "maskRight": document.getElementById("mask-right"),
     "maskTop": document.getElementById("mask-top"),
     "maskBottom": document.getElementById("mask-bottom"),
-    "overlapper": document.getElementById("card-overlapper"),
-    "artMask": document.getElementById("art-mask"),
+    "overlapTool": document.getElementById("card-overlap-tool"),
+    "mask": document.getElementById("mask"),
     "art": document.getElementById("art"),
     "top": document.getElementById("card-top"),
+    "poseTool": document.getElementById("card-pose-tool"),
+    "circle": document.getElementById("circle"),
     "bottom": document.getElementById("card-bottom"),
     "element": document.getElementById("card-element"),
     "scoreLeft": document.getElementById("card-score-left"),
@@ -19,8 +21,6 @@ var card = {
     "scoreRight": document.getElementById("card-score-right"),
     "badge": document.getElementById("card-badge"),
     "energy": document.getElementById("card-energy"),
-    "artPositionTool": document.getElementById("card-art-position-tool"),
-    "circle": document.getElementById("circle"),
     "score": document.getElementById("card-score"),
     "level": document.getElementById("card-level"),
     "variant": document.getElementById("card-variant"),
@@ -58,9 +58,9 @@ var art = {
     "x": document.getElementById("option-x"),
     "y": document.getElementById("option-y"),
     "scale": document.getElementById("option-scale"),
-    "width": document.getElementById("option-width"),
+    "w": document.getElementById("option-w"),
     "rotate": document.getElementById("option-rotate"),
-    "angle": document.getElementById("option-angle"),
+    "a": document.getElementById("option-a"),
     "under": document.getElementById("option-under"),
     "over": document.getElementById("option-over")
 };
@@ -95,7 +95,7 @@ var background = {
 };
 
 var render = {
-    "create": document.getElementById("option-render"),
+    "button": document.getElementById("option-render"),
     "imageContainer": document.getElementById("render-image"),
     "disclaimer": document.getElementById("render-disclaimer"),
     "zipContainer": document.getElementById("render-zip"),
@@ -325,8 +325,8 @@ function setArt0() {
     art0 = {
         "x": (artBox.left + artBox.right) / 2,
         "y": (artBox.top + artBox.bottom) / 2,
-        "width": artBox.width,
-        "angle": -art.angle.value || 0
+        "w": artBox.width,
+        "a": -art.a.value || 0
     };
     card.art.style.transform = savedRotation;
 }
@@ -340,9 +340,9 @@ function angleFromArt0(x, y) {
 }
 
 function setCircle(x, y, r, t) {
-    var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
-    circle.style.left = x - artPositionToolBox.left + "px";
-    circle.style.top = y - artPositionToolBox.top + "px";
+    var poseToolBox = card.poseTool.getBoundingClientRect();
+    circle.style.left = x - poseToolBox.left + "px";
+    circle.style.top = y - poseToolBox.top + "px";
     if (r) {
         circle.style.width = 2 * r + "px";
         circle.style.height = 2 * r + "px";
@@ -366,13 +366,13 @@ function bound(input, n) {
 }
 
 function updateBounds() {
-    console.log(card.artPositionTool);
-    var artPositionToolBox = card.artPositionTool.getBoundingClientRect();
+    console.log(card.poseTool);
+    var poseToolBox = card.poseTool.getBoundingClientRect();
     var artRect1 = card.art.getBoundingClientRect();
     art.x.min = 50 + Math.floor(-artRect1.width / 2);
-    art.x.max = 50 + Math.ceil(artPositionToolBox.width + artRect1.width / 2);
+    art.x.max = 50 + Math.ceil(poseToolBox.width + artRect1.width / 2);
     art.y.min = 50 + Math.floor(-artRect1.height / 2);
-    art.y.max = 50 + Math.ceil(artPositionToolBox.height + artRect1.height / 2);
+    art.y.max = 50 + Math.ceil(poseToolBox.height + artRect1.height / 2);
 
     art.x.dispatchEvent(new InputEvent("input"));
     art.y.dispatchEvent(new InputEvent("input"));
@@ -391,14 +391,14 @@ function setY() {
 /* Art Scale Tool */
 
 function setWidth() {
-    card.art.style.width = art.width.value + "px";
+    card.art.style.width = art.w.value + "px";
     updateBounds();
 }
 
 /* Art Rotate Tool */
 
 function setAngle() {
-    card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.angle.value + "deg)";
+    card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.a.value + "deg)";
     updateBounds();
 }
 
@@ -441,14 +441,14 @@ function onPoseMove(e) {
     else if (mode == "option-scale") {
         var r0 = distanceFromArt0(e0.x, e0.y);
         var r = distanceFromArt0(e.x, e.y);
-        art.width.value = art0.width * r / r0 || 1;
+        art.w.value = art0.w * r / r0 || 1;
         setWidth();
         setCircle(art0.x, art0.y, r);
     }
     else if (mode == "option-rotate") {
         var t0 = angleFromArt0(e0.x, e0.y);
         var t = angleFromArt0(e.x, e.y);
-        art.angle.value = (720 - (art0.angle + t - t0)) % 360;
+        art.a.value = (720 - (art0.a + t - t0)) % 360;
         setAngle();
         var r = distanceFromArt0(e.x, e.y);
         setCircle(art0.x, art0.y, r, t);
@@ -465,21 +465,21 @@ function onPoseEnd(e) {
 
 /* Art Mask Tool */
 
-var artMaskPath = [0, 0, 395, 504];
+var maskPath = [0, 0, 395, 504];
 
 function setArtMaskPath() {
-    artMaskPath = [0, 0, 395, 504];
+    maskPath = [0, 0, 395, 504];
     if (card.maskLeft.className == "active") {
-        artMaskPath[0] = 50;
+        maskPath[0] = 50;
     }
     if (card.maskRight.className == "active") {
-        artMaskPath[2] = 345;
+        maskPath[2] = 345;
     }
     if (card.maskTop.className == "active") {
-        artMaskPath[1] = 50;
+        maskPath[1] = 50;
     }
     if (card.maskBottom.className == "active") {
-        artMaskPath[3] = 345;
+        maskPath[3] = 345;
     }
 }
 
@@ -492,13 +492,13 @@ function toggleMaskSegment() {
     }
     setArtMaskPath();
     var polygon = "polygon(" +
-        artMaskPath[0] + "px " + artMaskPath[1] + "px," +
-        artMaskPath[2] + "px " + artMaskPath[1] + "px," +
-        artMaskPath[2] + "px " + artMaskPath[3] + "px," +
-        artMaskPath[0] + "px " + artMaskPath[3] + "px" +
+        maskPath[0] + "px " + maskPath[1] + "px," +
+        maskPath[2] + "px " + maskPath[1] + "px," +
+        maskPath[2] + "px " + maskPath[3] + "px," +
+        maskPath[0] + "px " + maskPath[3] + "px" +
     ")";
-    card.artMask.style.clipPath = polygon;
-    card.artMask.style.webkitClipPath = polygon;
+    card.mask.style.clipPath = polygon;
+    card.mask.style.webkitClipPath = polygon;
     clipPaths.art = polygon;
 }
 
@@ -771,8 +771,8 @@ function selectArt() {
                     if (imageData.width == 360 && imageData.height == 340) {
                         art.x.value = 198;
                         art.y.value = 174;
-                        art.width.value = 362;
-                        art.angle.value = 0;
+                        art.w.value = 362;
+                        art.a.value = 0;
                         setX();
                         setY();
                         setWidth();
@@ -788,10 +788,10 @@ function selectArt() {
 
 function selectOverlap() {
     if (art.under.checked) {
-        card.overlapper.appendChild(card.top);
+        card.overlapTool.appendChild(card.top);
     }
     else if (art.over.checked) {
-        card.overlapper.appendChild(card.artMask);
+        card.overlapTool.appendChild(card.mask);
     }
 }
 
@@ -860,10 +860,10 @@ function renderCard(opaque) {
         context.save();
 
         if (image == card.art) {
-            context.moveTo(artMaskPath[0], artMaskPath[1]);
-            context.lineTo(artMaskPath[2], artMaskPath[1]);
-            context.lineTo(artMaskPath[2], artMaskPath[3]);
-            context.lineTo(artMaskPath[0], artMaskPath[3]);
+            context.moveTo(maskPath[0], maskPath[1]);
+            context.lineTo(maskPath[2], maskPath[1]);
+            context.lineTo(maskPath[2], maskPath[3]);
+            context.lineTo(maskPath[0], maskPath[3]);
             context.clip();
         }
 
@@ -1019,7 +1019,7 @@ function createCardZip(blob) {
 
 function createAnimatedCard() {
     document.body.classList.add("disabled");
-    render.create.classList.add("loading");
+    render.button.classList.add("loading");
 
     var artGIF = new Image();
     artGIF.className = "pre-jsgif";
@@ -1028,7 +1028,7 @@ function createAnimatedCard() {
 
     var artSuperGIF = new SuperGif({
     	"gif": artGIF,
-    	"max_width": art.width.value
+    	"max_width": art.w.value
     });
     window.scrollTo(0, innerHeight);
     artSuperGIF.load(function () {
@@ -1077,11 +1077,11 @@ function createAnimatedCard() {
                     createCardImage(this.result);
                     artSuperGIF.get_canvas().parentElement.remove();
                     document.body.classList.remove("disabled");
-                    render.create.classList.remove("loading");
+                    render.button.classList.remove("loading");
                 });
                 reader.addEventListener("error", function () {
                     document.body.classList.remove("disabled");
-                    render.create.classList.remove("loading");
+                    render.button.classList.remove("loading");
                 });
                 reader.readAsDataURL(blob);
             });
@@ -1091,11 +1091,11 @@ function createAnimatedCard() {
 }
 
 function createStaticCard() {
-    render.create.classList.add("loading");
+    render.button.classList.add("loading");
     var canvas = renderCard();
     createCardImage(canvas.toDataURL());
     render.disclaimer.className = "hidden";
-    render.create.classList.remove("loading");
+    render.button.classList.remove("loading");
 }
 
 function createCard() {
@@ -1209,8 +1209,8 @@ card.level.addEventListener("input", fitCardLevel);
 card.variant.addEventListener("input", fitCardVariant);
 card.fighter.addEventListener("input", fitCardFighter);
 
-card.artPositionTool.addEventListener("mousedown", onPoseStart);
-card.artPositionTool.addEventListener("touchstart", onPoseStart);
+card.poseTool.addEventListener("mousedown", onPoseStart);
+card.poseTool.addEventListener("touchstart", onPoseStart);
 
 card.maskLeft.addEventListener("click", toggleMaskSegment);
 card.maskRight.addEventListener("click", toggleMaskSegment);
@@ -1234,9 +1234,9 @@ art.move.addEventListener("click", selectPoser);
 art.x.addEventListener("input", setX);
 art.y.addEventListener("input", setY);
 art.scale.addEventListener("click", selectPoser);
-art.width.addEventListener("input", setWidth);
+art.w.addEventListener("input", setWidth);
 art.rotate.addEventListener("click", selectPoser);
-art.angle.addEventListener("input", setAngle);
+art.a.addEventListener("input", setAngle);
 
 for (var option in foreground) {
     if (foreground[option].type == "radio") {
@@ -1251,7 +1251,7 @@ for (var option in background) {
 }
 background.input.addEventListener("change", selectElement);
 
-render.create.addEventListener("click", createCard);
+render.button.addEventListener("click", createCard);
 
 /* Initialize */
 
@@ -1272,6 +1272,6 @@ function holup(e) {
     return e.returnValue;
 }
 
-window.addEventListener("beforeunload", holup);
+// window.addEventListener("beforeunload", holup);
 
 });

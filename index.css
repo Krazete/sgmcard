@@ -62,15 +62,15 @@ a:hover {
 }
 
 #card-back {
-    top: 50px;
     left: 50px;
+    top: 50px;
     width: 295px;
 }
 
 #art {
     position: absolute;
-    top: 198px;
     left: 198px;
+    top: 198px;
     width: 295px;
     transform: translate(-50%, -50%);
 }
@@ -97,21 +97,18 @@ a:hover {
 }
 
 #card-element {
-    top: 15px;
     left: 37px;
+    top: 15px;
     width: 56px;
 }
 
-#card-score-left,
-#card-score-center,
-#card-score-right {
-    left: 25px;
-}
 #card-score-left {
+    left: 25px;
     -webkit-clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
     clip-path: polygon(0 0, 80px 0, 80px 100%, 0 100%);
 }
 #card-score-center {
+    left: 25px;
     transform: scaleX(70);
     transform-origin: 80px;
     -webkit-clip-path: polygon(80px 0, 81px 0, 81px 100%, 80px 100%);
@@ -123,16 +120,13 @@ a:hover {
     clip-path: polygon(81px 0, 100% 0, 100% 100%, 81px 100%);
 }
 
-.gold #card-score-left,
-.gold #card-score-center,
-.gold #card-score-right {
-    left: 18px;
-}
 .gold #card-score-left {
+    left: 18px;
     -webkit-clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
     clip-path: polygon(0 0, 87px 0, 87px 100%, 0 100%);
 }
 .gold #card-score-center {
+    left: 18px;
     transform-origin: 87px;
     -webkit-clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
     clip-path: polygon(87px 0, 88px 0, 88px 100%, 87px 100%);
@@ -144,38 +138,36 @@ a:hover {
 }
 
 .diamond #card-score-left,
-.diamond #card-score-center,
-.diamond #card-score-right {
-    top: 2px;
+.diamond #card-score-center {
     left: 24px;
+    top: 2px;
 }
 .diamond #card-score-right {
     left: 93px;
+    top: 2px;
 }
 
 .bronze #card-badge {
-    top: 4px;
     left: 295px;
+    top: 4px;
     width: 64px;
 }
 .silver #card-badge,
 .gold #card-badge {
-    top: 5px;
     left: 296px;
+    top: 5px;
     width: 62px;
 }
 .diamond #card-badge {
-    top: 3px;
     left: 295px;
+    top: 3px;
     width: 64px;
 }
 
 #card-bottom {
     bottom: 3px;
 }
-.bronze #card-bottom {
-    left: 17px;
-}
+.bronze #card-bottom,
 .silver #card-bottom {
     left: 17px;
 }
@@ -187,8 +179,8 @@ a:hover {
 }
 
 #card-energy {
-    bottom: 11px;
     left: 50px;
+    bottom: 11px;
     width: 295px;
     text-align: center;
 }
@@ -198,7 +190,10 @@ a:hover {
     margin: 0 2px;
 }
 
-#preview > input[type='text'] {
+#card-score,
+#card-level,
+#card-variant,
+#card-fighter {
     background: none;
     color: white;
     font-family: 'Washington', 'Cinema', 'Dodam';
@@ -211,26 +206,20 @@ a:hover {
     margin: 0;
     pointer-events: auto;
 }
-#card-score,
-#card-level {
-    font-size: 31px;
-    line-height: 60px;
-}
-#preview #card-score {
-    top: 10px;
+#card-score {
     left: 109px;
+    top: 10px;
     width: 150px;
+    line-height: 60px;
+    font-size: 31px;
     text-align: left;
 }
 #card-level {
-    top: 6px;
     left: 297px;
+    top: 6px;
     width: 60px;
-}
-
-#card-variant,
-#card-fighter {
-    width: 100%;
+    line-height: 60px;
+    font-size: 31px;
 }
 #card-variant {
     left: 30px;
@@ -249,50 +238,33 @@ a:hover {
 
 /* CARD ART TOOLS */
 
-.editing-art * {
-    pointer-events: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-.editing-art #card-art-position-tool {
-    pointer-events: auto;
-}
-
-#card-art-position-tool {
-    top: 50px;
-    left: 50px;
-    width: 295px;
-    height: 295px;
-    cursor: move;
-    pointer-events: auto;
-}
-#card-art-position-tool:hover {
-    outline: 3px dashed white;
-}
-
-#circle {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    transform: translate(-50%, -50%);
-    border: 3px dashed white;
-    border-radius: 50%;
-    display: none;
-    pointer-events: none;
-}
-.editing-art #circle {
-    display: block;
-}
-
-#card-art-mask-tool {
-    top: 0;
+#card-mask-tool {
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
     cursor: not-allowed;
     pointer-events: auto;
 }
 
+#mask-top {
+    width: 100%;
+    height: 50px;
+}
+#mask-left {
+    width: 50px;
+    height: 100%;
+}
+#mask-right {
+    right: 0;
+    width: 50px;
+    height: 100%;
+}
+#mask-bottom {
+    bottom: 0;
+    width: 100%;
+    height: 159px;
+}
 #mask-top,
 #mask-left,
 #mask-right,
@@ -312,31 +284,52 @@ a:hover {
 #mask-bottom.active {
     background: var(--fg);
 }
-#mask-top {
-    width: 100%;
-    height: 50px;
+
+.editing-art {
+    cursor: move;
 }
-#mask-left {
-    width: 50px;
-    height: 100%;
+.editing-art * {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
-#mask-right {
-    right: 0;
-    width: 50px;
-    height: 100%;
+.editing-art #card-pose-tool {
+    pointer-events: auto;
 }
-#mask-bottom {
-    bottom: 0;
-    width: 100%;
-    height: 159px;
+
+#card-pose-tool {
+    left: 50px;
+    top: 50px;
+    width: 295px;
+    height: 295px;
+    cursor: move;
+    pointer-events: auto;
+}
+#card-pose-tool:hover {
+    outline: 3px dashed white;
+}
+
+#circle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, -50%);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 3px black, inset 0 0 3px black;
+    display: none;
+    pointer-events: none;
+}
+.editing-art #circle {
+    display: block;
 }
 
 /* MENU */
 
 #menu {
     position: relative;
-    min-height: 609px;
     width: max-content;
+    min-height: 609px;
     background: var(--fg);
     color: white;
     padding: 8px;

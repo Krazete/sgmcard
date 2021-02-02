@@ -28,20 +28,19 @@
                 <div>
                     <h2>Preview</h2>
                     <div id="preview">
-                        <div id="mask-left"></div>
-                        <div id="mask-right"></div>
-                        <div id="mask-top"></div>
-                        <div id="mask-bottom"></div>
-
                         <img id="card-back">
-
-                        <div id="card-overlapper">
-                            <div id="art-mask">
+                        <div id="card-mask-tool">
+                            <div id="mask-left"></div>
+                            <div id="mask-right"></div>
+                            <div id="mask-top"></div>
+                            <div id="mask-bottom"></div>
+                        </div>
+                        <div id="card-overlap-tool">
+                            <div id="mask">
                                 <img id="art">
                             </div>
                             <img id="card-top">
                         </div>
-
                         <img id="card-bottom">
                         <img id="card-element">
                         <img id="card-score-left">
@@ -49,11 +48,9 @@
                         <img id="card-score-right">
                         <img id="card-badge">
                         <div id="card-energy"></div>
-
-                        <div id="card-art-position-tool">
+                        <div id="card-pose-tool">
                             <div id="circle"></div>
                         </div>
-                        
                         <input type="text" placeholder="99.9k" id="card-score">
                         <input type="text" placeholder="99" id="card-level">
                         <input type="text" placeholder="Variant Name" id="card-variant">
@@ -120,14 +117,14 @@
                                 <div>
                                     <input type="radio" name="position" id="option-scale">
                                     <label for="option-scale"><img src="menu/Drag1F.png"> <img src="menu/Drag1F.png"></label>
-                                    <label for="option-width">Width:</label>
-                                    <input type="number" min="0" placeholder="295" value="295" class="jsscrub" id="option-width">
+                                    <label for="option-w">Width:</label>
+                                    <input type="number" min="0" placeholder="295" value="295" class="jsscrub" id="option-w">
                                 </div>
                                 <div>
                                     <input type="radio" name="position" id="option-rotate">
                                     <label for="option-rotate"><img src="menu/Drag1F.png"></label>
-                                    <label for="option-angle">Angle:</label>
-                                    <input type="number" min="0" max="360" placeholder="0" value="0" class="jsscrub" data-jsscrub="continuous" id="option-angle">
+                                    <label for="option-a">Angle:</label>
+                                    <input type="number" min="0" max="360" placeholder="0" value="0" class="jsscrub" data-jsscrub="continuous" id="option-a">
                                 </div>
                             </div>
                             <div>
