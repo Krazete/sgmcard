@@ -101,6 +101,100 @@ var render = {
     "zipContainer": document.getElementById("render-zip"),
 };
 
+/* Preview Text */
+
+var ruler = document.createElement("canvas").getContext("2d");
+
+function autofit(input, maxSize, maxWidth) {
+    var style = getComputedStyle(input);
+    var value = input.value.toUpperCase();
+    var width;
+    for (var i = maxSize; i > 0; i--) {
+        ruler.font = i + "px " + style.fontFamily;
+        width = ruler.measureText(value).width;
+        if (width < maxWidth) {
+            break;
+        }
+    }
+    input.style.fontSize = i + "px";
+    return width;
+}
+
+function fitCardScore() {
+    var width = parseInt(autofit(card.score, 31, 150)) || 65;
+    var pad = 5;
+    card.scoreCenter.style.transform = "scaleX(" + (width + pad) + ")";
+    var offset = 29;
+    if (preview.className == "gold") {
+        offset = 22;
+    }
+    else if (preview.className == "diamond") {
+        offset = 28;
+    }
+    card.scoreRight.style.left = offset + width + "px";
+}
+
+function fitCardLevel() {
+    autofit(card.level, 31, 40);
+}
+
+function fitCardVariant() {
+    autofit(card.variant, 58, 320);
+}
+
+function fitCardFighter() {
+    autofit(card.fighter, 38, 250);
+}
+
+/* Mask Tool */
+
+var clipPaths = { /* backup for firefox <54 */
+    "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
+    "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
+    "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
+    "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
+    "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
+    "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
+    "art": "none"
+};
+
+var maskPath = [0, 0, 395, 504];
+
+function setMaskPath() {
+    maskPath = [0, 0, 395, 504];
+    if (card.maskLeft.className == "active") {
+        maskPath[0] = 50;
+    }
+    if (card.maskRight.className == "active") {
+        maskPath[2] = 345;
+    }
+    if (card.maskTop.className == "active") {
+        maskPath[1] = 50;
+    }
+    if (card.maskBottom.className == "active") {
+        maskPath[3] = 345;
+    }
+}
+
+function toggleMaskSegment() {
+    if (this.className == "active") {
+        this.className = "";
+    }
+    else {
+        this.className = "active";
+    }
+    setMaskPath();
+    var polygon = "polygon(" +
+        maskPath[0] + "px " + maskPath[1] + "px," +
+        maskPath[2] + "px " + maskPath[1] + "px," +
+        maskPath[2] + "px " + maskPath[3] + "px," +
+        maskPath[0] + "px " + maskPath[3] + "px" +
+    ")";
+    card.mask.style.clipPath = polygon;
+    card.mask.style.webkitClipPath = polygon;
+    clipPaths.art = polygon;
+}
+
 /* Image Processing */
 
 function loadImage(src) {
@@ -241,64 +335,7 @@ function loadColorizedImageURL(imageURL, gradientURLOrText) {
     }
 }
 
-/* Data */
-
-var ruler = document.createElement("canvas").getContext("2d");
-
-var clipPaths = { /* backup for firefox <54 */
-    "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
-    "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
-    "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
-    "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
-    "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
-    "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
-    "art": "none"
-};
-
-/* Preview Inputs */
-
-function autofit(input, maxSize, maxWidth) {
-    var style = getComputedStyle(input);
-    var value = input.value.toUpperCase();
-    var width;
-    for (var i = maxSize; i > 0; i--) {
-        ruler.font = i + "px " + style.fontFamily;
-        width = ruler.measureText(value).width;
-        if (width < maxWidth) {
-            break;
-        }
-    }
-    input.style.fontSize = i + "px";
-    return width;
-}
-
-function fitCardElement() {
-    var width = parseInt(autofit(card.score, 31, 150)) || 65;
-    var pad = 5;
-    card.scoreCenter.style.transform = "scaleX(" + (width + pad) + ")";
-    var offset = 29;
-    if (preview.className == "gold") {
-        offset = 22;
-    }
-    else if (preview.className == "diamond") {
-        offset = 28;
-    }
-    card.scoreRight.style.left = offset + width + "px";
-}
-
-function fitCardLevel() {
-    autofit(card.level, 31, 40);
-}
-
-function fitCardVariant() {
-    autofit(card.variant, 58, 320);
-}
-
-function fitCardFighter() {
-    autofit(card.fighter, 38, 250);
-}
-
-/* Art Position Tools */
+/* Pose Tool */
 
 var e0, art0, circle = document.getElementById("circle");
 
@@ -463,46 +500,7 @@ function onPoseEnd(e) {
     window.removeEventListener("touchend", onPoseEnd);
 }
 
-/* Art Mask Tool */
-
-var maskPath = [0, 0, 395, 504];
-
-function setArtMaskPath() {
-    maskPath = [0, 0, 395, 504];
-    if (card.maskLeft.className == "active") {
-        maskPath[0] = 50;
-    }
-    if (card.maskRight.className == "active") {
-        maskPath[2] = 345;
-    }
-    if (card.maskTop.className == "active") {
-        maskPath[1] = 50;
-    }
-    if (card.maskBottom.className == "active") {
-        maskPath[3] = 345;
-    }
-}
-
-function toggleMaskSegment() {
-    if (this.className == "active") {
-        this.className = "";
-    }
-    else {
-        this.className = "active";
-    }
-    setArtMaskPath();
-    var polygon = "polygon(" +
-        maskPath[0] + "px " + maskPath[1] + "px," +
-        maskPath[2] + "px " + maskPath[1] + "px," +
-        maskPath[2] + "px " + maskPath[3] + "px," +
-        maskPath[0] + "px " + maskPath[3] + "px" +
-    ")";
-    card.mask.style.clipPath = polygon;
-    card.mask.style.webkitClipPath = polygon;
-    clipPaths.art = polygon;
-}
-
-/* Menu Options */
+/* idk data */
 
 var gradientMapImage = {
     "error": "gradient/36.png",
@@ -526,6 +524,12 @@ var gradientMapImage = {
         "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
     }
 };
+
+var artType = "";
+var artURL = "";
+var mode;
+
+/* Menu Options */
 
 function selectTier() {
     var cardTopURL = "";
@@ -637,7 +641,7 @@ function selectTier() {
         card.badge.src = cardBadgeURL;
     }
 
-    fitCardElement();
+    fitCardScore();
     fitCardLevel();
 
     if (foreground.default.checked) {
@@ -745,15 +749,6 @@ function selectEnergy() {
     }
 }
 
-var mode;
-
-function selectPoser() {
-    mode = this.id;
-}
-
-var artType = "";
-var artURL = "";
-
 function selectArt() {
     var file = this.files[0];
     if (/image\//.test(file.type)) {
@@ -782,9 +777,15 @@ function selectArt() {
                 card.art.src = artURL;
             });
         });
-        reader.readAsDataURL(this.files[0]);
+        reader.readAsDataURL(this.file);
     }
 }
+
+function selectPoseTool() {
+    mode = this.id;
+}
+
+/* idk */
 
 function selectOverlap() {
     if (art.under.checked) {
@@ -835,7 +836,98 @@ function selectBackground() {
     selectElement();
 }
 
-/* Card Renderer */
+/* Gradient Picker */
+
+var swatch = document.getElementById("swatch");
+var picker;
+var hex = document.getElementById("hex");
+var percent = document.getElementById("percent");
+function initIro() {
+    picker = new iro.ColorPicker("#iro", {
+        "width": 192,
+        "borderWidth": 1,
+        "borderColor": "var(--fg)",
+        "sliderMargin": 3,
+        "layoutDirection": "horizontal",
+        "layout": [
+            {
+                "component": iro.ui.Box,
+            },
+            {
+                "component": iro.ui.Slider,
+                "options": {
+                    "sliderType": "hue"
+                }
+            },
+            {
+                "component": iro.ui.Slider,
+                "options": {
+                    "sliderType": "alpha",
+                    "padding": 0,
+                }
+            }
+        ]
+    });
+    picker.on("color:change", function () {
+        hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+    })
+}
+initIro();
+console.log(picker.props);
+
+function onCancelPreview(e) {
+    console.log(9);
+    if (e.target != swatch) {
+        swatch.style = "";
+        window.removeEventListener("click", onCancelPreview);
+        foreground.preview.addEventListener("click", onClickPreview);
+    }
+}
+
+var activeBand, previewRect;
+function onEndBand(e) {
+    document.body.style = "none";
+    window.removeEventListener("mousemove", onMoveBand);
+    window.removeEventListener("touchmove", onMoveBand);
+    window.removeEventListener("mouseup", onEndBand);
+    window.removeEventListener("touchend", onEndBand);
+}
+function onMoveBand(e) {
+    e = getPointer(e);
+    var swatchRect = swatch.getBoundingClientRect();
+    var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
+    activeBand.style.left = i + "%";
+    activeBand.style.transform = "translate(-50%)";
+    swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
+    percent.value = i;
+}
+function onStartBand(e) {
+    e = getPointer(e);
+    var swatchRect = swatch.getBoundingClientRect();
+    if (e.target.classList.contains("band")) {
+        activeBand = e.target;
+        previewRect = e.target.parentElement.getBoundingClientRect();
+    }
+    else {
+        activeBand = document.createElement("div");
+        activeBand.className = "band";
+        this.appendChild(activeBand);
+        previewRect = e.target.getBoundingClientRect();
+    }
+    swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
+    onMoveBand(e);
+
+    document.body.style.webkitUserSelect = "none";
+    document.body.style.userSelect = "none";
+    document.body.style.pointerEvents = "none";
+    window.addEventListener("mousemove", onMoveBand);
+    window.addEventListener("touchmove", onMoveBand);
+    window.addEventListener("mouseup", onEndBand);
+    window.addEventListener("touchend", onEndBand);
+
+}
+
+/* Render */
 
 function renderCard(opaque) {
     var singlePattern = /-?\d+(\.\d+)?(e-?\d+)?(px|%)?/g;
@@ -974,7 +1066,7 @@ function renderCard(opaque) {
     context.textAlign = "left";
     context.textBaseline = "bottom";
     context.rotate(Math.PI * -90 / 180);
-    context.fillText("SGMCARD.NETLIFY.COM", -504, 395);
+    context.fillText("SGMCARD.NETLIFY.APP", -504, 395);
     context.restore();
 
     return canvas;
@@ -999,9 +1091,6 @@ function renderNextFrame(artSuperGIF, cardArt, i) {
 function createCardImage(dataURL) {
     var image = new Image();
     image.src = dataURL;
-    // image.addEventListener("click", function () {
-    //     saveAs(dataURL, "card");
-    // });
     render.imageContainer.innerHTML = "";
     render.imageContainer.appendChild(image);
 }
@@ -1107,115 +1196,20 @@ function createCard() {
     }
 }
 
-/* Gradient Picker */
-
-var swatch = document.getElementById("swatch");
-var picker;
-var hex = document.getElementById("hex");
-var percent = document.getElementById("percent");
-function initIro() {
-    picker = new iro.ColorPicker("#iro", {
-        "width": 192,
-        "borderWidth": 1,
-        "borderColor": "var(--fg)",
-        "sliderMargin": 3,
-        "layoutDirection": "horizontal",
-        "layout": [
-            {
-                "component": iro.ui.Box,
-            },
-            {
-                "component": iro.ui.Slider,
-                "options": {
-                    "sliderType": "hue"
-                }
-            },
-            {
-                "component": iro.ui.Slider,
-                "options": {
-                    "sliderType": "alpha",
-                    "padding": 0,
-                }
-            }
-        ]
-    });
-    picker.on("color:change", function () {
-        hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-    })
-}
-initIro();
-console.log(picker.props);
-
-function onCancelPreview(e) {
-    console.log(9);
-    if (e.target != swatch) {
-        swatch.style = "";
-        window.removeEventListener("click", onCancelPreview);
-        foreground.preview.addEventListener("click", onClickPreview);
-    }
-}
-
-var activeBand, previewRect;
-function onEndBand(e) {
-    document.body.style = "none";
-    window.removeEventListener("mousemove", onMoveBand);
-    window.removeEventListener("touchmove", onMoveBand);
-    window.removeEventListener("mouseup", onEndBand);
-    window.removeEventListener("touchend", onEndBand);
-}
-function onMoveBand(e) {
-    e = getPointer(e);
-    var swatchRect = swatch.getBoundingClientRect();
-    var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
-    activeBand.style.left = i + "%";
-    activeBand.style.transform = "translate(-50%)";
-    swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
-    percent.value = i;
-}
-function onStartBand(e) {
-    e = getPointer(e);
-    var swatchRect = swatch.getBoundingClientRect();
-    if (e.target.classList.contains("band")) {
-        activeBand = e.target;
-        previewRect = e.target.parentElement.getBoundingClientRect();
-    }
-    else {
-        activeBand = document.createElement("div");
-        activeBand.className = "band";
-        this.appendChild(activeBand);
-        previewRect = e.target.getBoundingClientRect();
-    }
-    swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
-    onMoveBand(e);
-
-    document.body.style.webkitUserSelect = "none";
-    document.body.style.userSelect = "none";
-    document.body.style.pointerEvents = "none";
-    window.addEventListener("mousemove", onMoveBand);
-    window.addEventListener("touchmove", onMoveBand);
-    window.addEventListener("mouseup", onEndBand);
-    window.addEventListener("touchend", onEndBand);
-
-}
-foreground.preview.addEventListener("mousedown", onStartBand);
-foreground.preview.addEventListener("touchstart", onStartBand);
-background.preview.addEventListener("mousedown", onStartBand);
-background.preview.addEventListener("touchstart", onStartBand);
-
 /* Event Listeners */
 
-card.score.addEventListener("input", fitCardElement);
+card.score.addEventListener("input", fitCardScore);
 card.level.addEventListener("input", fitCardLevel);
 card.variant.addEventListener("input", fitCardVariant);
 card.fighter.addEventListener("input", fitCardFighter);
-
-card.poseTool.addEventListener("mousedown", onPoseStart);
-card.poseTool.addEventListener("touchstart", onPoseStart);
 
 card.maskLeft.addEventListener("click", toggleMaskSegment);
 card.maskRight.addEventListener("click", toggleMaskSegment);
 card.maskTop.addEventListener("click", toggleMaskSegment);
 card.maskBottom.addEventListener("click", toggleMaskSegment);
+
+card.poseTool.addEventListener("mousedown", onPoseStart);
+card.poseTool.addEventListener("touchstart", onPoseStart);
 
 for (var option in tier) {
     tier[option].addEventListener("click", selectTier);
@@ -1228,32 +1222,37 @@ for (var option in energy) {
 }
 
 art.file.addEventListener("change", selectArt);
-art.over.addEventListener("click", selectOverlap);
-art.under.addEventListener("click", selectOverlap);
-art.move.addEventListener("click", selectPoser);
+art.move.addEventListener("click", selectPoseTool);
 art.x.addEventListener("input", setX);
 art.y.addEventListener("input", setY);
-art.scale.addEventListener("click", selectPoser);
+art.scale.addEventListener("click", selectPoseTool);
 art.w.addEventListener("input", setWidth);
-art.rotate.addEventListener("click", selectPoser);
+art.rotate.addEventListener("click", selectPoseTool);
 art.a.addEventListener("input", setAngle);
+art.over.addEventListener("click", selectOverlap);
+art.under.addEventListener("click", selectOverlap);
 
 for (var option in foreground) {
     if (foreground[option].type == "radio") {
         foreground[option].addEventListener("click", selectForeground);
     }
 }
+foreground.preview.addEventListener("mousedown", onStartBand);
+foreground.preview.addEventListener("touchstart", onStartBand);
 foreground.input.addEventListener("change", selectTier);
+
 for (var option in background) {
     if (background[option].type == "radio") {
         background[option].addEventListener("click", selectBackground);
     }
 }
+background.preview.addEventListener("mousedown", onStartBand);
+background.preview.addEventListener("touchstart", onStartBand);
 background.input.addEventListener("change", selectElement);
 
 render.button.addEventListener("click", createCard);
 
-/* Initialize */
+/* Initialize Options */
 
 window.addEventListener("load", function () {
     updateBounds();
@@ -1266,12 +1265,14 @@ window.addEventListener("load", function () {
     background.default.click();
 });
 
+/* Unload Warning */
+
 function holup(e) {
     e.preventDefault();
     e.returnValue = "Changes you made may not be saved.";
     return e.returnValue;
 }
 
-// window.addEventListener("beforeunload", holup);
+window.addEventListener("beforeunload", holup);
 
 });
