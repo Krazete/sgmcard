@@ -146,7 +146,7 @@ function fitCardFighter() {
     autofit(card.fighter, 38, 250);
 }
 
-/* Mask Tool */
+/* Card Mask Tool */
 
 var clipPaths = { /* backup for firefox <54 */
     "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
@@ -194,6 +194,159 @@ function toggleMaskSegment() {
     card.mask.style.webkitClipPath = polygon;
     clipPaths.art = polygon;
 }
+
+/* Card Pose Tool */
+
+var e0, art0;
+
+function getPointer(e) {
+    e.preventDefault();
+    if (e.touches) {
+        return {
+            "x": e.touches[0].clientX,
+            "y": e.touches[0].clientY,
+            "target": e.touches[0].target
+        };
+    }
+    return {
+        "x": e.clientX,
+        "y": e.clientY,
+        "target": e.target
+    };
+}
+
+function setArt0() {
+    var savedRotation = card.art.style.transform;
+    card.art.style.transform = "";
+    var artBox = card.art.getBoundingClientRect();
+    art0 = {
+        "x": (artBox.left + artBox.right) / 2,
+        "y": (artBox.top + artBox.bottom) / 2,
+        "w": artBox.width,
+        "a": -art.a.value || 0
+    };
+    card.art.style.transform = savedRotation;
+}
+
+function distanceFromArt0(x, y) {
+    return Math.sqrt(Math.pow(x - art0.x, 2) + Math.pow(y - art0.y, 2));
+}
+
+function angleFromArt0(x, y) {
+    return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
+}
+
+function setCircle(x, y, r, t) {
+    var poseToolBox = card.poseTool.getBoundingClientRect();
+    card.circle.style.left = x - poseToolBox.left + "px";
+    card.circle.style.top = y - poseToolBox.top + "px";
+    if (r) {
+        card.circle.style.width = 2 * r + "px";
+        card.circle.style.height = 2 * r + "px";
+    }
+    if (t) {
+        card.circle.style.borderWidth = "0 5px 0 1px";
+        card.circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
+    }
+    document.body.className = "posing";
+}
+
+function removeCircle() {
+    card.circle.style = "";
+    document.body.className = "";
+}
+
+/* Art Move Tool */
+
+function onPoseStart(e) {
+    e = getPointer(e);
+    e0 = e;
+    setArt0();
+    var r = distanceFromArt0(e.x, e.y);
+    if (mode == "option-move") {
+        setCircle(art0.x, art0.y, r / 2);
+    }
+    else if (mode == "option-scale") {
+        setCircle(art0.x, art0.y, r);
+    }
+    else if (mode == "option-rotate") {
+        var t = angleFromArt0(e.x, e.y);
+        setCircle(art0.x, art0.y, r, t);
+    }
+    updateBounds();
+    window.addEventListener("mousemove", onPoseMove);
+    window.addEventListener("touchmove", onPoseMove);
+    window.addEventListener("mouseup", onPoseEnd);
+    window.addEventListener("touchend", onPoseEnd);
+}
+
+function onPoseMove(e) {
+    e = getPointer(e);
+    if (mode == "option-move") {
+        var previewBox = preview.getBoundingClientRect();
+        var x0 = Math.floor(art0.x - previewBox.left);
+        var y0 = Math.floor(art0.y - previewBox.top);
+        var dx = e.x - e0.x;
+        var dy = e.y - e0.y;
+        art.x.value = x0 + dx + 1;
+        art.y.value = y0 + dy + 1;
+        setX();
+        setY();
+        setCircle(art0.x + dx, art0.y + dy);
+    }
+    else if (mode == "option-scale") {
+        var r0 = distanceFromArt0(e0.x, e0.y);
+        var r = distanceFromArt0(e.x, e.y);
+        art.w.value = art0.w * r / r0 || 1;
+        setW();
+        setCircle(art0.x, art0.y, r);
+    }
+    else if (mode == "option-rotate") {
+        var t0 = angleFromArt0(e0.x, e0.y);
+        var t = angleFromArt0(e.x, e.y);
+        art.a.value = (720 - (art0.a + t - t0)) % 360;
+        setA();
+        var r = distanceFromArt0(e.x, e.y);
+        setCircle(art0.x, art0.y, r, t);
+    }
+}
+
+function onPoseEnd(e) {
+    removeCircle();
+    window.removeEventListener("mousemove", onPoseMove);
+    window.removeEventListener("touchmove", onPoseMove);
+    window.removeEventListener("mouseup", onPoseEnd);
+    window.removeEventListener("touchend", onPoseEnd);
+}
+
+/* idk data */
+
+var gradientMapImage = {
+    "error": "gradient/36.png",
+    "bronze": "gradient/BronzeGradient.png",
+    "silver": "gradient/SilverGradient.png",
+    "gold": "gradient/GoldGradient.png",
+    "fg": {
+        "fire": "gradient/DiamondGradientMapFire.png",
+        "water": "gradient/DiamondGradientWater.png",
+        "wind": "gradient/DiamondGradientMapWind.png",
+        "light": "gradient/DiamondGradientLight.png",
+        "dark": "gradient/DiamondGradientDark.png",
+        "neutral": "gradient/DiamondGradientMapNeutralB.png"
+    },
+    "bg": {
+        "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
+        "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
+        "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
+        "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
+        "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
+        "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
+    }
+};
+
+var artType = "";
+var artURL = "";
+var mode;
 
 /* Image Processing */
 
@@ -334,200 +487,6 @@ function loadColorizedImageURL(imageURL, gradientURLOrText) {
         });
     }
 }
-
-/* Pose Tool */
-
-var e0, art0, circle = document.getElementById("circle");
-
-function getPointer(e) {
-    e.preventDefault();
-    if (e.touches) {
-        return {
-            "x": e.touches[0].clientX,
-            "y": e.touches[0].clientY,
-            "target": e.touches[0].target
-        };
-    }
-    return {
-        "x": e.clientX,
-        "y": e.clientY,
-        "target": e.target
-    };
-}
-
-function setArt0() {
-    var savedRotation = card.art.style.transform;
-    card.art.style.transform = "";
-    var artBox = card.art.getBoundingClientRect();
-    art0 = {
-        "x": (artBox.left + artBox.right) / 2,
-        "y": (artBox.top + artBox.bottom) / 2,
-        "w": artBox.width,
-        "a": -art.a.value || 0
-    };
-    card.art.style.transform = savedRotation;
-}
-
-function distanceFromArt0(x, y) {
-    return Math.sqrt(Math.pow(x - art0.x, 2) + Math.pow(y - art0.y, 2));
-}
-
-function angleFromArt0(x, y) {
-    return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
-}
-
-function setCircle(x, y, r, t) {
-    var poseToolBox = card.poseTool.getBoundingClientRect();
-    circle.style.left = x - poseToolBox.left + "px";
-    circle.style.top = y - poseToolBox.top + "px";
-    if (r) {
-        circle.style.width = 2 * r + "px";
-        circle.style.height = 2 * r + "px";
-    }
-    if (t) {
-        circle.style.borderWidth = "0 5px 0 1px";
-        circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
-    }
-    document.body.className = "posing";
-}
-
-function removeCircle() {
-    circle.style = "";
-    document.body.className = "";
-}
-
-/* Art Move Tool */
-
-function bound(input, n) {
-    return Math.max(input.min, Math.min(n, input.max));
-}
-
-function updateBounds() {
-    console.log(card.poseTool);
-    var poseToolBox = card.poseTool.getBoundingClientRect();
-    var artRect1 = card.art.getBoundingClientRect();
-    art.x.min = 50 + Math.floor(-artRect1.width / 2);
-    art.x.max = 50 + Math.ceil(poseToolBox.width + artRect1.width / 2);
-    art.y.min = 50 + Math.floor(-artRect1.height / 2);
-    art.y.max = 50 + Math.ceil(poseToolBox.height + artRect1.height / 2);
-
-    art.x.dispatchEvent(new InputEvent("input"));
-    art.y.dispatchEvent(new InputEvent("input"));
-}
-
-function setX() {
-    art.x.value = bound(art.x, art.x.value);
-    card.art.style.left = art.x.value + "px";
-}
-
-function setY() {
-    art.y.value = bound(art.y, art.y.value);
-    card.art.style.top = art.y.value + "px";
-}
-
-/* Art Scale Tool */
-
-function setWidth() {
-    card.art.style.width = art.w.value + "px";
-    updateBounds();
-}
-
-/* Art Rotate Tool */
-
-function setAngle() {
-    card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.a.value + "deg)";
-    updateBounds();
-}
-
-function onPoseStart(e) {
-    e = getPointer(e);
-    e0 = e;
-    setArt0();
-    var r = distanceFromArt0(e.x, e.y);
-    if (mode == "option-move") {
-        setCircle(art0.x, art0.y, r / 2);
-    }
-    else if (mode == "option-scale") {
-        setCircle(art0.x, art0.y, r);
-    }
-    else if (mode == "option-rotate") {
-        var t = angleFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r, t);
-    }
-    updateBounds();
-    window.addEventListener("mousemove", onPoseMove);
-    window.addEventListener("touchmove", onPoseMove);
-    window.addEventListener("mouseup", onPoseEnd);
-    window.addEventListener("touchend", onPoseEnd);
-}
-
-function onPoseMove(e) {
-    e = getPointer(e);
-    if (mode == "option-move") {
-        var previewBox = preview.getBoundingClientRect();
-        var x0 = Math.floor(art0.x - previewBox.left);
-        var y0 = Math.floor(art0.y - previewBox.top);
-        var dx = e.x - e0.x;
-        var dy = e.y - e0.y;
-        art.x.value = x0 + dx + 1;
-        art.y.value = y0 + dy + 1;
-        setX();
-        setY();
-        setCircle(art0.x + dx, art0.y + dy);
-    }
-    else if (mode == "option-scale") {
-        var r0 = distanceFromArt0(e0.x, e0.y);
-        var r = distanceFromArt0(e.x, e.y);
-        art.w.value = art0.w * r / r0 || 1;
-        setWidth();
-        setCircle(art0.x, art0.y, r);
-    }
-    else if (mode == "option-rotate") {
-        var t0 = angleFromArt0(e0.x, e0.y);
-        var t = angleFromArt0(e.x, e.y);
-        art.a.value = (720 - (art0.a + t - t0)) % 360;
-        setAngle();
-        var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r, t);
-    }
-}
-
-function onPoseEnd(e) {
-    removeCircle();
-    window.removeEventListener("mousemove", onPoseMove);
-    window.removeEventListener("touchmove", onPoseMove);
-    window.removeEventListener("mouseup", onPoseEnd);
-    window.removeEventListener("touchend", onPoseEnd);
-}
-
-/* idk data */
-
-var gradientMapImage = {
-    "error": "gradient/36.png",
-    "bronze": "gradient/BronzeGradient.png",
-    "silver": "gradient/SilverGradient.png",
-    "gold": "gradient/GoldGradient.png",
-    "fg": {
-        "fire": "gradient/DiamondGradientMapFire.png",
-        "water": "gradient/DiamondGradientWater.png",
-        "wind": "gradient/DiamondGradientMapWind.png",
-        "light": "gradient/DiamondGradientLight.png",
-        "dark": "gradient/DiamondGradientDark.png",
-        "neutral": "gradient/DiamondGradientMapNeutralB.png"
-    },
-    "bg": {
-        "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
-        "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
-        "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
-        "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
-        "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
-        "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
-    }
-};
-
-var artType = "";
-var artURL = "";
-var mode;
 
 /* Menu Options */
 
@@ -749,6 +708,21 @@ function selectEnergy() {
     }
 }
 
+function bound(input) {
+    input.value = Math.max(input.min, Math.min(input.value, input.max));
+}
+
+function updateBounds() {
+    var poseToolBox = card.poseTool.getBoundingClientRect();
+    var artBox = card.art.getBoundingClientRect();
+    art.x.min = 50 + Math.floor(-artBox.width / 2);
+    art.x.max = 50 + Math.ceil(poseToolBox.width + artBox.width / 2);
+    art.y.min = 50 + Math.floor(-artBox.height / 2);
+    art.y.max = 50 + Math.ceil(poseToolBox.height + artBox.height / 2);
+    setX();
+    setY();
+}
+
 function selectArt() {
     var file = this.files[0];
     if (/image\//.test(file.type)) {
@@ -768,10 +742,8 @@ function selectArt() {
                         art.y.value = 174;
                         art.w.value = 362;
                         art.a.value = 0;
-                        setX();
-                        setY();
-                        setWidth();
-                        setAngle();
+                        setW();
+                        setA();
                     }
                 }
                 card.art.src = artURL;
@@ -785,7 +757,25 @@ function selectPoseTool() {
     mode = this.id;
 }
 
-/* idk */
+function setX() {
+    bound(art.x);
+    card.art.style.left = art.x.value + "px";
+}
+
+function setY() {
+    bound(art.y);
+    card.art.style.top = art.y.value + "px";
+}
+
+function setW() {
+    card.art.style.width = art.w.value + "px";
+    updateBounds();
+}
+
+function setA() {
+    card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.a.value + "deg)";
+    updateBounds();
+}
 
 function selectOverlap() {
     if (art.under.checked) {
@@ -1208,6 +1198,8 @@ card.maskRight.addEventListener("click", toggleMaskSegment);
 card.maskTop.addEventListener("click", toggleMaskSegment);
 card.maskBottom.addEventListener("click", toggleMaskSegment);
 
+card.art.addEventListener("load", updateBounds);
+
 card.poseTool.addEventListener("mousedown", onPoseStart);
 card.poseTool.addEventListener("touchstart", onPoseStart);
 
@@ -1226,9 +1218,9 @@ art.move.addEventListener("click", selectPoseTool);
 art.x.addEventListener("input", setX);
 art.y.addEventListener("input", setY);
 art.scale.addEventListener("click", selectPoseTool);
-art.w.addEventListener("input", setWidth);
+art.w.addEventListener("input", setW);
 art.rotate.addEventListener("click", selectPoseTool);
-art.a.addEventListener("input", setAngle);
+art.a.addEventListener("input", setA);
 art.over.addEventListener("click", selectOverlap);
 art.under.addEventListener("click", selectOverlap);
 
@@ -1252,13 +1244,13 @@ background.input.addEventListener("change", selectElement);
 
 render.button.addEventListener("click", createCard);
 
-/* Initialize Options */
+/* (Re)Initialize Options */
 
 window.addEventListener("load", function () {
-    updateBounds();
     tier.none.checked = true;
     element.none.checked = true;
     energy.none.click();
+    updateBounds();
     art.under.click();
     art.move.click();
     foreground.default.click();
