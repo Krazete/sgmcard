@@ -521,6 +521,13 @@ input[type='button'].loading {
 
 /* CUSTOM GRADIENT MAP */
 
+.swatching * {
+    cursor: crosshair !important;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 #fg-preview, #bg-preview {
     background-size: 100% 100%;
     background-origin: border-box;

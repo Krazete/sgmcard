@@ -111,6 +111,38 @@ var render = {
     "zipContainer": document.getElementById("render-zip"),
 };
 
+var swatch = {
+    "window": document.getElementById("swatch"),
+    "hex": document.getElementById("hex"),
+    "percent": document.getElementById("percent"),
+}
+
+var picker = new iro.ColorPicker("#iro", {
+    "width": 192,
+    "borderWidth": 1,
+    "borderColor": "var(--fg)",
+    "sliderMargin": 3,
+    "layoutDirection": "horizontal",
+    "layout": [
+        {
+            "component": iro.ui.Box,
+        },
+        {
+            "component": iro.ui.Slider,
+            "options": {
+                "sliderType": "hue"
+            }
+        },
+        {
+            "component": iro.ui.Slider,
+            "options": {
+                "sliderType": "alpha",
+                "padding": 0,
+            }
+        }
+    ]
+});
+
 /* Preview Text */
 
 var ruler = document.createElement("canvas").getContext("2d");
@@ -343,7 +375,7 @@ var gradientMapImage = {
     }
 };
 
-/* Image Processing */
+/* Image Processing Functions */
 
 function loadImage(src) {
     function request(resolve, reject) {
@@ -826,93 +858,59 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var swatch = document.getElementById("swatch");
-var picker;
-var hex = document.getElementById("hex");
-var percent = document.getElementById("percent");
-function initIro() {
-    picker = new iro.ColorPicker("#iro", {
-        "width": 192,
-        "borderWidth": 1,
-        "borderColor": "var(--fg)",
-        "sliderMargin": 3,
-        "layoutDirection": "horizontal",
-        "layout": [
-            {
-                "component": iro.ui.Box,
-            },
-            {
-                "component": iro.ui.Slider,
-                "options": {
-                    "sliderType": "hue"
-                }
-            },
-            {
-                "component": iro.ui.Slider,
-                "options": {
-                    "sliderType": "alpha",
-                    "padding": 0,
-                }
-            }
-        ]
-    });
-    picker.on("color:change", function () {
-        hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-    })
-}
-initIro();
-console.log(picker.props);
+var activeGradient, activeBand;
 
-function onCancelPreview(e) {
-    console.log(9);
-    if (e.target != swatch) {
-        swatch.style = "";
-        window.removeEventListener("click", onCancelPreview);
-        foreground.preview.addEventListener("click", onClickPreview);
-    }
-}
-
-var activeBand, previewRect;
-function onEndBand(e) {
-    document.body.style = "none";
-    window.removeEventListener("mousemove", onMoveBand);
-    window.removeEventListener("touchmove", onMoveBand);
-    window.removeEventListener("mouseup", onEndBand);
-    window.removeEventListener("touchend", onEndBand);
-}
-function onMoveBand(e) {
-    e = getPointer(e);
-    var swatchRect = swatch.getBoundingClientRect();
-    var i = 1 * Math.round(100 * ((e.clientX - previewRect.left) / previewRect.width));
-    activeBand.style.left = i + "%";
-    activeBand.style.transform = "translate(-50%)";
-    swatch.style.left = previewRect.left + previewRect.width * i / 100 - swatchRect.width / 2 + "px";
-    percent.value = i;
-}
 function onStartBand(e) {
     e = getPointer(e);
-    var swatchRect = swatch.getBoundingClientRect();
+    var swatchBox = swatch.window.getBoundingClientRect();
     if (e.target.classList.contains("band")) {
         activeBand = e.target;
-        previewRect = e.target.parentElement.getBoundingClientRect();
     }
     else {
         activeBand = document.createElement("div");
         activeBand.className = "band";
         this.appendChild(activeBand);
-        previewRect = e.target.getBoundingClientRect();
+        previewBox = e.target.getBoundingClientRect();
     }
-    swatch.style.top = scrollY - 16 + previewRect.top - swatchRect.height + "px";
-    onMoveBand(e);
+    swatch.window.style.left = e.x + "px";
+    swatch.window.style.top = scrollY - swatchBox.height + "px";
 
-    document.body.style.webkitUserSelect = "none";
-    document.body.style.userSelect = "none";
-    document.body.style.pointerEvents = "none";
+    document.body.className = "swatching";
     window.addEventListener("mousemove", onMoveBand);
-    window.addEventListener("touchmove", onMoveBand);
+    window.addEventListener("touchmove", onMoveBand, {"passive": false});
     window.addEventListener("mouseup", onEndBand);
-    window.addEventListener("touchend", onEndBand);
+    window.addEventListener("touchend", onEndBand, {"passive": false});
+}
 
+function onMoveBand(e) {
+    e = getPointer(e);
+    var swatchBox = swatch.window.getBoundingClientRect();
+    var i = 1 * Math.round(100 * ((e.x - previewBox.left) / previewBox.width));
+    activeBand.style.left = i + "%";
+    activeBand.style.transform = "translate(-50%)";
+    swatch.window.style.left = e.x - swatchBox.width / 2 + "px";
+    percent.value = i;
+}
+
+function onEndBand(e) {
+    document.body.className = "";
+    window.removeEventListener("mousemove", onMoveBand);
+    window.removeEventListener("touchmove", onMoveBand);
+    window.removeEventListener("mouseup", onEndBand);
+    window.removeEventListener("touchend", onEndBand);
+}
+
+function onIroChange() {
+    hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+}
+
+function onCancelPreview(e) {
+    console.log(9);
+    if (e.target != swatch.window) {
+        swatch.window.style = "";
+        window.removeEventListener("click", onCancelPreview);
+        foreground.preview.addEventListener("click", onClickPreview);
+    }
 }
 
 /* Render */
@@ -1241,6 +1239,8 @@ background.preview.addEventListener("touchstart", onStartBand);
 background.input.addEventListener("change", selectElement);
 
 render.button.addEventListener("click", createCard);
+
+picker.on("color:change", onIroChange);
 
 /* (Re)Initialize Options */
 
