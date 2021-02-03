@@ -289,10 +289,9 @@ function removeCircle() {
 }
 
 function onPoseStart(e) {
-    e = getPointer(e);
-    e0 = e;
+    e0 = getPointer(e);
     setArt0();
-    var r = distanceFromArt0(e.x, e.y);
+    var r = distanceFromArt0(e0.x, e0.y);
     if (mode == "move") {
         setCircle(art0.x, art0.y, r / 2);
     }
@@ -300,7 +299,7 @@ function onPoseStart(e) {
         setCircle(art0.x, art0.y, r);
     }
     else if (mode == "rotate") {
-        var t = angleFromArt0(e.x, e.y);
+        var t = angleFromArt0(e0.x, e0.y);
         setCircle(art0.x, art0.y, r, t);
     }
     updateBounds();
@@ -311,14 +310,14 @@ function onPoseStart(e) {
 }
 
 function onPoseMove(e) {
-    e = getPointer(e);
+    var e1 = getPointer(e);
     if (mode == "move") {
         var preview = document.getElementById("preview");
         var previewBox = preview.getBoundingClientRect();
         var x0 = Math.floor(art0.x - previewBox.left);
         var y0 = Math.floor(art0.y - previewBox.top);
-        var dx = e.x - e0.x;
-        var dy = e.y - e0.y;
+        var dx = e1.x - e0.x;
+        var dy = e1.y - e0.y;
         art.x.value = x0 + dx;
         art.y.value = y0 + dy;
         setX();
@@ -327,18 +326,18 @@ function onPoseMove(e) {
     }
     else if (mode == "scale") {
         var r0 = distanceFromArt0(e0.x, e0.y);
-        var r = distanceFromArt0(e.x, e.y);
-        art.w.value = Math.max(1, art0.w * r / r0 || 1);
+        var r1 = distanceFromArt0(e1.x, e1.y);
+        art.w.value = Math.max(1, art0.w * r1 / r0 || 1);
         setW();
-        setCircle(art0.x, art0.y, r);
+        setCircle(art0.x, art0.y, r1);
     }
     else if (mode == "rotate") {
         var t0 = angleFromArt0(e0.x, e0.y);
-        var t = angleFromArt0(e.x, e.y);
-        art.a.value = (720 - (art0.a + t - t0)) % 360;
+        var t1 = angleFromArt0(e1.x, e1.y);
+        art.a.value = (720 - (art0.a + t1 - t0)) % 360;
         setA();
-        var r = distanceFromArt0(e.x, e.y);
-        setCircle(art0.x, art0.y, r, t);
+        var r = distanceFromArt0(e1.x, e1.y);
+        setCircle(art0.x, art0.y, r, t1);
     }
 }
 
@@ -858,22 +857,23 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var activeGradient, activeBand;
+var swatchBox, gradientBox, activeBand;
 
 function onStartBand(e) {
-    e = getPointer(e);
-    var swatchBox = swatch.window.getBoundingClientRect();
-    if (e.target.classList.contains("band")) {
-        activeBand = e.target;
+    var e0 = getPointer(e);
+    swatchBox = swatch.window.getBoundingClientRect();
+    if (e0.target.classList.contains("band")) {
+        activeBand = e0.target;
     }
     else {
         activeBand = document.createElement("div");
         activeBand.className = "band";
         this.appendChild(activeBand);
-        previewBox = e.target.getBoundingClientRect();
     }
-    swatch.window.style.left = e.x + "px";
-    swatch.window.style.top = scrollY - swatchBox.height + "px";
+    var gradient = activeBand.parentElement;
+    gradientBox = gradient.getBoundingClientRect();
+    swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 16 + "px";
+    onMoveBand(e);
 
     document.body.className = "swatching";
     window.addEventListener("mousemove", onMoveBand);
@@ -883,12 +883,11 @@ function onStartBand(e) {
 }
 
 function onMoveBand(e) {
-    e = getPointer(e);
-    var swatchBox = swatch.window.getBoundingClientRect();
-    var i = 1 * Math.round(100 * ((e.x - previewBox.left) / previewBox.width));
+    var e1 = getPointer(e);
+    var i = Math.round(100 * ((e1.x - gradientBox.left) / gradientBox.width));
     activeBand.style.left = i + "%";
     activeBand.style.transform = "translate(-50%)";
-    swatch.window.style.left = e.x - swatchBox.width / 2 + "px";
+    swatch.window.style.left = scrollX + e1.x - swatchBox.width / 2 + "px";
     percent.value = i;
 }
 
