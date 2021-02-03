@@ -552,6 +552,7 @@ input[type='button'].loading {
     width: 4px;
     top: -4px;
     bottom: -4px;
+    transform: translateX(-50%);
     background: black;
     outline: 1px solid white;
     cursor: default;

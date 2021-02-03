@@ -771,8 +771,8 @@ function selectPoseTool() {
     mode = this.id.split("-")[1];
 }
 
-function bound(input) {
-    input.value = Math.max(input.min, Math.min(input.value, input.max));
+function bound(n, min, max) {
+    return Math.max(min, Math.min(n, max));
 }
 
 function updateBounds() {
@@ -787,12 +787,12 @@ function updateBounds() {
 }
 
 function setX() {
-    bound(art.x);
+    art.x.value = bound(art.x.value, art.x.min, art.x.max);
     card.art.style.left = art.x.value + "px";
 }
 
 function setY() {
-    bound(art.y);
+    art.y.value = bound(art.y.value, art.y.min, art.y.max);
     card.art.style.top = art.y.value + "px";
 }
 
@@ -857,11 +857,10 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var swatchBox, gradientBox, activeBand;
+var activeBand, gradientBox, swatchBox;
 
 function onStartBand(e) {
     var e0 = getPointer(e);
-    swatchBox = swatch.window.getBoundingClientRect();
     if (e0.target.classList.contains("band")) {
         activeBand = e0.target;
     }
@@ -872,9 +871,9 @@ function onStartBand(e) {
     }
     var gradient = activeBand.parentElement;
     gradientBox = gradient.getBoundingClientRect();
+    swatchBox = swatch.window.getBoundingClientRect();
     swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 16 + "px";
     onMoveBand(e);
-
     document.body.className = "swatching";
     window.addEventListener("mousemove", onMoveBand);
     window.addEventListener("touchmove", onMoveBand, {"passive": false});
@@ -884,10 +883,17 @@ function onStartBand(e) {
 
 function onMoveBand(e) {
     var e1 = getPointer(e);
-    var i = Math.round(100 * ((e1.x - gradientBox.left) / gradientBox.width));
+    var hundredth = gradientBox.width / 100;
+    var i = bound(
+        Math.round((e1.x - gradientBox.left) / hundredth),
+        0, 100
+    );
+    activeBand.dataset.i = i;
     activeBand.style.left = i + "%";
-    activeBand.style.transform = "translate(-50%)";
-    swatch.window.style.left = scrollX + e1.x - swatchBox.width / 2 + "px";
+    swatch.window.style.left = bound(
+        scrollX + gradientBox.left - swatchBox.width / 2 + hundredth * i,
+        0, innerWidth - swatchBox.width
+    ) + "px";
     percent.value = i;
 }
 
