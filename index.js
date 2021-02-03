@@ -777,7 +777,7 @@ function selectArt() {
                 card.art.src = artURL;
             });
         });
-        reader.readAsDataURL(this.file);
+        reader.readAsDataURL(file);
     }
 }
 
