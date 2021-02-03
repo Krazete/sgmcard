@@ -775,6 +775,10 @@ function bound(n, min, max) {
     return Math.max(min, Math.min(n, max));
 }
 
+function boundInput(input) {
+    input.value = bound(input.value, input.min, input.max);
+}
+
 function updateBounds() {
     var poseToolBox = card.poseTool.getBoundingClientRect();
     var artBox = card.art.getBoundingClientRect();
@@ -787,21 +791,23 @@ function updateBounds() {
 }
 
 function setX() {
-    art.x.value = bound(art.x.value, art.x.min, art.x.max);
+    boundInput(art.x);
     card.art.style.left = art.x.value + "px";
 }
 
 function setY() {
-    art.y.value = bound(art.y.value, art.y.min, art.y.max);
+    boundInput(art.y);
     card.art.style.top = art.y.value + "px";
 }
 
 function setW() {
+    art.w.value = Math.max(art.w.min, art.w.value);
     card.art.style.width = art.w.value + "px";
     updateBounds();
 }
 
 function setA() {
+    boundInput(art.a);
     card.art.style.transform = "translate(-50%, -50%) rotateZ(" + -art.a.value + "deg)";
     updateBounds();
 }
@@ -881,6 +887,10 @@ function onBandStart(e) {
     window.addEventListener("touchend", onBandEnd, {"passive": false});
 }
 
+function moveToI() {
+    var i = bound(i, 0, 100);
+}
+
 function onBandMove(e) {
     var e1 = getPointer(e);
     var hundredth = gradientBox.width / 100;
@@ -915,6 +925,11 @@ function generateTextFromBands() {
 
 function onIroChange() {
     hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+}
+
+function setI() {
+    boundInput(swatch.percent);
+    moveToI();
 }
 
 function onCancelPreview(e) {
@@ -1254,6 +1269,8 @@ background.input.addEventListener("change", selectElement);
 render.button.addEventListener("click", createCard);
 
 picker.on("color:change", onIroChange);
+// swatch.hex.addEventListener("input", setH);
+swatch.percent.addEventListener("input", setI);
 
 /* (Re)Initialize Options */
 
