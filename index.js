@@ -200,8 +200,8 @@ function toggleMaskSegment() {
 var e0, art0;
 
 function getPointer(e) {
-    e.preventDefault();
     if (e.touches) {
+        e.preventDefault();
         return {
             "x": e.touches[0].clientX,
             "y": e.touches[0].clientY,
@@ -273,9 +273,9 @@ function onPoseStart(e) {
     }
     updateBounds();
     window.addEventListener("mousemove", onPoseMove);
-    window.addEventListener("touchmove", onPoseMove);
+    window.addEventListener("touchmove", onPoseMove, {"passive": false});
     window.addEventListener("mouseup", onPoseEnd);
-    window.addEventListener("touchend", onPoseEnd);
+    window.addEventListener("touchend", onPoseEnd, {"passive": false});
 }
 
 function onPoseMove(e) {
@@ -312,7 +312,7 @@ function onPoseMove(e) {
 
 function onPoseEnd(e) {
     removeCircle();
-    window.removeEventListener("mousemove", onPoseMove); /* idk */
+    window.removeEventListener("mousemove", onPoseMove);
     window.removeEventListener("touchmove", onPoseMove);
     window.removeEventListener("mouseup", onPoseEnd);
     window.removeEventListener("touchend", onPoseEnd);
