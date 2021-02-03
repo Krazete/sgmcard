@@ -87,7 +87,7 @@ var foreground = {
     "light": document.getElementById("option-fg-light"),
     "dark": document.getElementById("option-fg-dark"),
     "neutral": document.getElementById("option-fg-neutral"),
-    "preview": document.getElementById("fg-preview"),
+    "gradient": document.getElementById("fg-gradient"),
     "input": document.getElementById("option-fg")
 };
 
@@ -100,7 +100,7 @@ var background = {
     "light": document.getElementById("option-bg-light"),
     "dark": document.getElementById("option-bg-dark"),
     "neutral": document.getElementById("option-bg-neutral"),
-    "preview": document.getElementById("bg-preview"),
+    "gradient": document.getElementById("bg-gradient"),
     "input": document.getElementById("option-bg")
 };
 
@@ -630,13 +630,13 @@ function selectTier() {
     fitCardLevel();
 
     if (foreground.default.checked) {
-        foreground.preview.style.backgroundImage = getLinearGradientFromText("");
+        foreground.gradient.style.backgroundImage = getLinearGradientFromText("");
     }
     else if (gradientURLOrText.indexOf(".png") >= 0) {
-        foreground.preview.style.backgroundImage = "url('" + gradientURLOrText + "')";
+        foreground.gradient.style.backgroundImage = "url('" + gradientURLOrText + "')";
     }
     else {
-        foreground.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        foreground.gradient.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
     }
 }
 
@@ -706,10 +706,10 @@ function selectElement() {
     }
 
     if (background.default.checked) {
-        background.preview.style.backgroundImage = getLinearGradientFromText("");
+        background.gradient.style.backgroundImage = getLinearGradientFromText("");
     }
     else {
-        background.preview.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        background.gradient.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
     }
 }
 
@@ -817,18 +817,18 @@ function selectOverlap() {
 
 function selectForeground() {
     if (foreground.default.checked) {
-        foreground.preview.classList.add("dim");
+        foreground.gradient.classList.add("dim");
     }
     else {
-        foreground.preview.classList.remove("dim");
+        foreground.gradient.classList.remove("dim");
     }
     if (foreground.custom.checked) {
-        foreground.preview.classList.remove("disabled");
+        foreground.gradient.classList.remove("disabled");
         foreground.input.classList.remove("disabled");
         foreground.input.classList.remove("dim");
     }
     else {
-        foreground.preview.classList.add("disabled");
+        foreground.gradient.classList.add("disabled");
         foreground.input.classList.add("disabled");
         foreground.input.classList.add("dim");
     }
@@ -837,18 +837,18 @@ function selectForeground() {
 
 function selectBackground() {
     if (background.default.checked) {
-        background.preview.classList.add("dim");
+        background.gradient.classList.add("dim");
     }
     else {
-        background.preview.classList.remove("dim");
+        background.gradient.classList.remove("dim");
     }
     if (background.custom.checked) {
-        background.preview.classList.remove("disabled");
+        background.gradient.classList.remove("disabled");
         background.input.classList.remove("disabled");
         background.input.classList.remove("dim");
     }
     else {
-        background.preview.classList.add("disabled");
+        background.gradient.classList.add("disabled");
         background.input.classList.add("disabled");
         background.input.classList.add("dim");
     }
@@ -859,7 +859,7 @@ function selectBackground() {
 
 var activeBand, gradientBox, swatchBox;
 
-function onStartBand(e) {
+function onBandStart(e) {
     var e0 = getPointer(e);
     if (e0.target.classList.contains("band")) {
         activeBand = e0.target;
@@ -873,15 +873,15 @@ function onStartBand(e) {
     gradientBox = gradient.getBoundingClientRect();
     swatchBox = swatch.window.getBoundingClientRect();
     swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 16 + "px";
-    onMoveBand(e);
-    document.body.className = "swatching";
-    window.addEventListener("mousemove", onMoveBand);
-    window.addEventListener("touchmove", onMoveBand, {"passive": false});
-    window.addEventListener("mouseup", onEndBand);
-    window.addEventListener("touchend", onEndBand, {"passive": false});
+    onBandMove(e);
+    document.body.className = "posing";
+    window.addEventListener("mousemove", onBandMove);
+    window.addEventListener("touchmove", onBandMove, {"passive": false});
+    window.addEventListener("mouseup", onBandEnd);
+    window.addEventListener("touchend", onBandEnd, {"passive": false});
 }
 
-function onMoveBand(e) {
+function onBandMove(e) {
     var e1 = getPointer(e);
     var hundredth = gradientBox.width / 100;
     var i = bound(
@@ -897,12 +897,20 @@ function onMoveBand(e) {
     percent.value = i;
 }
 
-function onEndBand(e) {
+function onBandEnd(e) {
     document.body.className = "";
-    window.removeEventListener("mousemove", onMoveBand);
-    window.removeEventListener("touchmove", onMoveBand);
-    window.removeEventListener("mouseup", onEndBand);
-    window.removeEventListener("touchend", onEndBand);
+    window.removeEventListener("mousemove", onBandMove);
+    window.removeEventListener("touchmove", onBandMove);
+    window.removeEventListener("mouseup", onBandEnd);
+    window.removeEventListener("touchend", onBandEnd);
+}
+
+function generateBandsFromText() {
+}
+
+function generateTextFromBands() {
+    for (var i = 0; i < 0; i++) {
+    }
 }
 
 function onIroChange() {
@@ -914,7 +922,7 @@ function onCancelPreview(e) {
     if (e.target != swatch.window) {
         swatch.window.style = "";
         window.removeEventListener("click", onCancelPreview);
-        foreground.preview.addEventListener("click", onClickPreview);
+        foreground.gradient.addEventListener("click", onClickPreview);
     }
 }
 
@@ -1230,8 +1238,8 @@ for (var option in foreground) {
         foreground[option].addEventListener("click", selectForeground);
     }
 }
-foreground.preview.addEventListener("mousedown", onStartBand);
-foreground.preview.addEventListener("touchstart", onStartBand);
+foreground.gradient.addEventListener("mousedown", onBandStart);
+foreground.gradient.addEventListener("touchstart", onBandStart);
 foreground.input.addEventListener("change", selectTier);
 
 for (var option in background) {
@@ -1239,8 +1247,8 @@ for (var option in background) {
         background[option].addEventListener("click", selectBackground);
     }
 }
-background.preview.addEventListener("mousedown", onStartBand);
-background.preview.addEventListener("touchstart", onStartBand);
+background.gradient.addEventListener("mousedown", onBandStart);
+background.gradient.addEventListener("touchstart", onBandStart);
 background.input.addEventListener("change", selectElement);
 
 render.button.addEventListener("click", createCard);
