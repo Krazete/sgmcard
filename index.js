@@ -245,7 +245,7 @@ function setCircle(x, y, r, t) {
         card.circle.style.height = 2 * r + "px";
     }
     if (t) {
-        card.circle.style.borderWidth = "0 5px 0 1px";
+        card.circle.style.borderWidth = "1px 5px 1px 1px";
         card.circle.style.transform = "translate(-50%, -50%) rotate(" + t + "deg)";
     }
     document.body.className = "posing";
@@ -256,20 +256,18 @@ function removeCircle() {
     document.body.className = "";
 }
 
-/* Art Move Tool */
-
 function onPoseStart(e) {
     e = getPointer(e);
     e0 = e;
     setArt0();
     var r = distanceFromArt0(e.x, e.y);
-    if (mode == "option-move") {
+    if (mode == "move") {
         setCircle(art0.x, art0.y, r / 2);
     }
-    else if (mode == "option-scale") {
+    else if (mode == "scale") {
         setCircle(art0.x, art0.y, r);
     }
-    else if (mode == "option-rotate") {
+    else if (mode == "rotate") {
         var t = angleFromArt0(e.x, e.y);
         setCircle(art0.x, art0.y, r, t);
     }
@@ -282,26 +280,27 @@ function onPoseStart(e) {
 
 function onPoseMove(e) {
     e = getPointer(e);
-    if (mode == "option-move") {
+    if (mode == "move") {
+        var preview = document.getElementById("preview");
         var previewBox = preview.getBoundingClientRect();
         var x0 = Math.floor(art0.x - previewBox.left);
         var y0 = Math.floor(art0.y - previewBox.top);
         var dx = e.x - e0.x;
         var dy = e.y - e0.y;
-        art.x.value = x0 + dx + 1;
-        art.y.value = y0 + dy + 1;
+        art.x.value = x0 + dx;
+        art.y.value = y0 + dy;
         setX();
         setY();
         setCircle(art0.x + dx, art0.y + dy);
     }
-    else if (mode == "option-scale") {
+    else if (mode == "scale") {
         var r0 = distanceFromArt0(e0.x, e0.y);
         var r = distanceFromArt0(e.x, e.y);
-        art.w.value = art0.w * r / r0 || 1;
+        art.w.value = Math.max(1, art0.w * r / r0 || 1);
         setW();
         setCircle(art0.x, art0.y, r);
     }
-    else if (mode == "option-rotate") {
+    else if (mode == "rotate") {
         var t0 = angleFromArt0(e0.x, e0.y);
         var t = angleFromArt0(e.x, e.y);
         art.a.value = (720 - (art0.a + t - t0)) % 360;
@@ -313,7 +312,7 @@ function onPoseMove(e) {
 
 function onPoseEnd(e) {
     removeCircle();
-    window.removeEventListener("mousemove", onPoseMove);
+    window.removeEventListener("mousemove", onPoseMove); /* idk */
     window.removeEventListener("touchmove", onPoseMove);
     window.removeEventListener("mouseup", onPoseEnd);
     window.removeEventListener("touchend", onPoseEnd);
@@ -754,7 +753,7 @@ function selectArt() {
 }
 
 function selectPoseTool() {
-    mode = this.id;
+    mode = this.id.split("-")[1];
 }
 
 function setX() {
