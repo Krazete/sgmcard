@@ -27,6 +27,16 @@ var card = {
     "fighter": document.getElementById("card-fighter")
 };
 
+var clipPaths = { /* backup for firefox <54 */
+    "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
+    "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
+    "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
+    "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
+    "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
+    "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
+    "art": "none"
+};
+
 var tier = {
     "none": document.getElementById("option-no-tier"),
     "bronze": document.getElementById("option-bronze"),
@@ -148,16 +158,6 @@ function fitCardFighter() {
 
 /* Card Mask Tool */
 
-var clipPaths = { /* backup for firefox <54 */
-    "left": "polygon(0px 0px, 80px 0px, 80px 100%, 0px 100%)",
-    "center": "polygon(80px 0px, 81px 0px, 81px 100%, 80px 100%)",
-    "right": "polygon(81px 0px, 100% 0px, 100% 100%, 81px 100%)",
-    "leftGold": "polygon(0px 0px, 87px 0px, 87px 100%, 0px 100%)",
-    "centerGold": "polygon(87px 0px, 88px 0px, 88px 100%, 87px 100%)",
-    "rightGold": "polygon(88px 0px, 100% 0px, 100% 100%, 88px 100%)",
-    "art": "none"
-};
-
 var maskPath = [0, 0, 395, 504];
 
 function setMaskPath() {
@@ -197,7 +197,7 @@ function toggleMaskSegment() {
 
 /* Card Pose Tool */
 
-var e0, art0;
+var e0, art0, mode;
 
 function getPointer(e) {
     if (e.touches) {
@@ -342,10 +342,6 @@ var gradientMapImage = {
         "neutral": "#333 0%, #6b6b6b 20%, #aaa 50%, #eee 100%"
     }
 };
-
-var artType = "";
-var artURL = "";
-var mode;
 
 /* Image Processing */
 
@@ -707,20 +703,8 @@ function selectEnergy() {
     }
 }
 
-function bound(input) {
-    input.value = Math.max(input.min, Math.min(input.value, input.max));
-}
-
-function updateBounds() {
-    var poseToolBox = card.poseTool.getBoundingClientRect();
-    var artBox = card.art.getBoundingClientRect();
-    art.x.min = 50 + Math.floor(-artBox.width / 2);
-    art.x.max = 50 + Math.ceil(poseToolBox.width + artBox.width / 2);
-    art.y.min = 50 + Math.floor(-artBox.height / 2);
-    art.y.max = 50 + Math.ceil(poseToolBox.height + artBox.height / 2);
-    setX();
-    setY();
-}
+var artType = "";
+var artURL = "";
 
 function selectArt() {
     var file = this.files[0];
@@ -754,6 +738,21 @@ function selectArt() {
 
 function selectPoseTool() {
     mode = this.id.split("-")[1];
+}
+
+function bound(input) {
+    input.value = Math.max(input.min, Math.min(input.value, input.max));
+}
+
+function updateBounds() {
+    var poseToolBox = card.poseTool.getBoundingClientRect();
+    var artBox = card.art.getBoundingClientRect();
+    art.x.min = 50 + Math.floor(-artBox.width / 2);
+    art.x.max = 50 + Math.ceil(poseToolBox.width + artBox.width / 2);
+    art.y.min = 50 + Math.floor(-artBox.height / 2);
+    art.y.max = 50 + Math.ceil(poseToolBox.height + artBox.height / 2);
+    setX();
+    setY();
 }
 
 function setX() {
@@ -1264,6 +1263,6 @@ function holup(e) {
     return e.returnValue;
 }
 
-window.addEventListener("beforeunload", holup);
+// window.addEventListener("beforeunload", holup);
 
 });
