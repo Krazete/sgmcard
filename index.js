@@ -865,6 +865,26 @@ function selectBackground() {
 
 var activeBand, gradientBox, swatchBox;
 
+function getHexCodeFromSwatch() {
+    swatch.hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+}
+
+function setSwatchHex() {
+    picker.setColors([swatch.hex.value]);
+    getHexCodeFromSwatch();
+}
+
+function setSwatchPercent() {
+    boundInput(swatch.percent);
+    var i = swatch.percent.value;
+    activeBand.dataset.i = i;
+    activeBand.style.left = i + "%";
+    swatch.window.style.left = bound(
+        scrollX + gradientBox.left - swatchBox.width / 2 + i * gradientBox.width / 100,
+        0, innerWidth - swatchBox.width
+    ) + "px";
+}
+
 function onBandStart(e) {
     var e0 = getPointer(e);
     if (e0.target.classList.contains("band")) {
@@ -887,24 +907,10 @@ function onBandStart(e) {
     window.addEventListener("touchend", onBandEnd, {"passive": false});
 }
 
-function moveToI() {
-    var i = bound(i, 0, 100);
-}
-
 function onBandMove(e) {
     var e1 = getPointer(e);
-    var hundredth = gradientBox.width / 100;
-    var i = bound(
-        Math.round((e1.x - gradientBox.left) / hundredth),
-        0, 100
-    );
-    activeBand.dataset.i = i;
-    activeBand.style.left = i + "%";
-    swatch.window.style.left = bound(
-        scrollX + gradientBox.left - swatchBox.width / 2 + hundredth * i,
-        0, innerWidth - swatchBox.width
-    ) + "px";
-    percent.value = i;
+    swatch.percent.value = Math.round(100 * (e1.x - gradientBox.left) / gradientBox.width);
+    setSwatchPercent();
 }
 
 function onBandEnd(e) {
@@ -915,21 +921,8 @@ function onBandEnd(e) {
     window.removeEventListener("touchend", onBandEnd);
 }
 
-function generateBandsFromText() {
-}
-
-function generateTextFromBands() {
-    for (var i = 0; i < 0; i++) {
-    }
-}
-
 function onIroChange() {
-    hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-}
-
-function setI() {
-    boundInput(swatch.percent);
-    moveToI();
+    getHexCodeFromSwatch();
 }
 
 function onCancelPreview(e) {
@@ -1269,8 +1262,8 @@ background.input.addEventListener("change", selectElement);
 render.button.addEventListener("click", createCard);
 
 picker.on("color:change", onIroChange);
-// swatch.hex.addEventListener("input", setH);
-swatch.percent.addEventListener("input", setI);
+swatch.hex.addEventListener("change", setSwatchHex);
+swatch.percent.addEventListener("input", setSwatchPercent);
 
 /* (Re)Initialize Options */
 
