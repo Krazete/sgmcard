@@ -891,9 +891,9 @@ function closeSwatch(e) {
     var e0 = getPointer(e);
     if (!swatch.window.contains(e0.target)) {
         swatch.window.style = "";
+        window.removeEventListener("mousedown", closeSwatch);
+        window.removeEventListener("touchstart", closeSwatch);
     }
-    window.removeEventListener("mousedown", closeSwatch);
-    window.removeEventListener("touchstart", closeSwatch);
 }
 
 function onBandStart(e) {
