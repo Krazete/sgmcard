@@ -1310,6 +1310,25 @@ function holup(e) {
     return e.returnValue;
 }
 
-// window.addEventListener("beforeunload", holup);
+window.addEventListener("beforeunload", holup);
+
+/* Ko-fi Easter Egg */
+
+var kofi = document.getElementById("kofi");
+var rainbowTimer;
+
+function rainbow() {
+    var h = (Date.now() / 60) % 360;
+    document.body.style = "--bg: hsl(" + h + ", 50%, 75%); --fg: hsl(" + h + ", 50%, 25%);";
+    rainbowTimer = requestAnimationFrame(rainbow);
+}
+
+function stopRainbow() {
+    document.body.style = "";
+    cancelAnimationFrame(rainbowTimer);
+}
+
+kofi.addEventListener("mouseover", rainbow);
+kofi.addEventListener("mouseout", stopRainbow);
 
 });
