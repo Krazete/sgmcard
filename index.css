@@ -561,18 +561,29 @@ input[type='button'].loading {
 }
 
 #swatch {
-    background: var(--bg);
-    box-shadow: 0 0 8px 8px var(--fg);
+    background: var(--fg);
+    box-shadow: 0 0 4px 4px var(--bg);
     position: absolute;
-    top: -100%;
+    width: max-content;
+    top: 0%;
     left: 100%;
     padding: 6px;
-    border: 3px double var(--fg);
+    border: 3px double var(--bg);
     border-radius: 16px;
+}
+
+#iro {
+    margin: 4px;
 }
 
 #hex {
     width: 6em;
+}
+
+#delete {
+    height: 32px;
+    margin: auto;
+    cursor: pointer;
 }
 
 /* RENDER */
