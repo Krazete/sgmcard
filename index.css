@@ -562,13 +562,13 @@ input[type='button'].loading {
 
 #swatch {
     background: var(--fg);
-    box-shadow: 0 0 4px 4px var(--bg);
+    box-shadow: 0 0 8px white;
     position: absolute;
     width: max-content;
     top: 0%;
     left: 100%;
     padding: 6px;
-    border: 3px double var(--bg);
+    border: 3px double white;
     border-radius: 16px;
 }
 
