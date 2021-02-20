@@ -889,12 +889,12 @@ function setSwatchPercent() {
 
 function closeSwatch(e) {
     var e0 = getPointer(e);
-    console.log(e0.target, activeBand);
-    if (!swatch.window.contains(e.target) && e.target != activeBand) {
+    if (!swatch.window.contains(e0.target)) {
         swatch.window.style = "";
     }
+    window.removeEventListener("mousedown", closeSwatch);
+    window.removeEventListener("touchstart", closeSwatch);
 }
-// window.addEventListener("mouseup", closeSwatch);
 
 function onBandStart(e) {
     var e0 = getPointer(e);
@@ -912,7 +912,9 @@ function onBandStart(e) {
     swatchBox = swatch.window.getBoundingClientRect();
     swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 16 + "px";
     onBandMove(e);
-    document.body.className = "posing";
+    document.body.className = "banding";
+    window.removeEventListener("mousedown", closeSwatch);
+    window.removeEventListener("touchstart", closeSwatch);
     window.addEventListener("mousemove", onBandMove);
     window.addEventListener("touchmove", onBandMove, {"passive": false});
     window.addEventListener("mouseup", onBandEnd);
@@ -932,6 +934,8 @@ function onBandEnd(e) {
     window.removeEventListener("touchmove", onBandMove);
     window.removeEventListener("mouseup", onBandEnd);
     window.removeEventListener("touchend", onBandEnd);
+    window.addEventListener("mousedown", closeSwatch);
+    window.addEventListener("touchstart", closeSwatch);
 }
 
 function onIroChange() {

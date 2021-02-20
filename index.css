@@ -434,8 +434,11 @@ input[type='button'].loading {
 .posing {
     cursor: move;
 }
-.posing * {
-    cursor: move !important;
+.banding {
+    cursor: ew-resize;
+}
+.posing *, .banding * {
+    cursor: inherit !important;
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
