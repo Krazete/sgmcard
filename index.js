@@ -268,7 +268,7 @@ function angleFromArt0(x, y) {
     return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
 }
 
-function setCircle(x, y, r, t) {
+function setCircle(x, y, r, t) { /* displays results as if unaffected by updateBounds */
     var poseToolBox = card.poseTool.getBoundingClientRect();
     card.circle.style.left = x - poseToolBox.left + "px";
     card.circle.style.top = y - poseToolBox.top + "px";
