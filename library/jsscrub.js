@@ -34,11 +34,16 @@ function convertToScrubber(input) {
             dx *= nonNaN(input.step);
         }
         var i1 = i0 + dx;
-        if ("jsscrub" in input.dataset && input.dataset.jsscrub.includes("continuous")) {
-            var min = nonNaN(input.min);
-            var max = nonNaN(input.max);
-            var dm = max - min;
-            i1 = ((i1 - min) % dm + dm) % dm + min;
+        if ("jsscrub" in input.dataset) {
+            if (input.dataset.jsscrub.includes("integer")) {
+                i1 = Math.round(i1);
+            }
+            if (input.dataset.jsscrub.includes("continuous")) {
+                var min = nonNaN(input.min);
+                var max = nonNaN(input.max);
+                var dm = max - min;
+                i1 = ((i1 - min) % dm + dm) % dm + min;
+            }
         }
         if (input.min) {
             i1 = Math.max(i1, input.min);

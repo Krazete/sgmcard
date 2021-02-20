@@ -941,7 +941,7 @@ function onBandEnd(e) {
     window.removeEventListener("mouseup", onBandEnd);
     window.removeEventListener("touchend", onBandEnd);
     window.addEventListener("mousedown", closeSwatch);
-    window.addEventListener("touchstart", closeSwatch);
+    window.addEventListener("touchstart", closeSwatch, {"passive": false});
 }
 
 function onIroChange() {
