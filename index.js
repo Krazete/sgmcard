@@ -306,7 +306,7 @@ function onPoseStart(e) {
     window.addEventListener("mousemove", onPoseMove);
     window.addEventListener("touchmove", onPoseMove, {"passive": false});
     window.addEventListener("mouseup", onPoseEnd);
-    window.addEventListener("touchend", onPoseEnd, {"passive": false});
+    window.addEventListener("touchend", onPoseEnd);
 }
 
 function onPoseMove(e) {
@@ -863,10 +863,12 @@ function selectBackground() {
 
 /* Gradient Picker */
 
+var bands = [];
 var activeBand, gradientBox, swatchBox;
 
 function getHexCodeFromSwatch() {
     swatch.hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+    activeBand.style.background = swatch.hex.value;
 }
 
 function setSwatchHex() {
@@ -885,6 +887,15 @@ function setSwatchPercent() {
     ) + "px";
 }
 
+function closeSwatch(e) {
+    var e0 = getPointer(e);
+    console.log(e0.target, activeBand);
+    if (!swatch.window.contains(e.target) && e.target != activeBand) {
+        swatch.window.style = "";
+    }
+}
+// window.addEventListener("mouseup", closeSwatch);
+
 function onBandStart(e) {
     var e0 = getPointer(e);
     if (e0.target.classList.contains("band")) {
@@ -894,6 +905,7 @@ function onBandStart(e) {
         activeBand = document.createElement("div");
         activeBand.className = "band";
         this.appendChild(activeBand);
+        bands.push(activeBand);
     }
     var gradient = activeBand.parentElement;
     gradientBox = gradient.getBoundingClientRect();
@@ -904,13 +916,14 @@ function onBandStart(e) {
     window.addEventListener("mousemove", onBandMove);
     window.addEventListener("touchmove", onBandMove, {"passive": false});
     window.addEventListener("mouseup", onBandEnd);
-    window.addEventListener("touchend", onBandEnd, {"passive": false});
+    window.addEventListener("touchend", onBandEnd);
 }
 
 function onBandMove(e) {
     var e1 = getPointer(e);
     swatch.percent.value = Math.round(100 * (e1.x - gradientBox.left) / gradientBox.width);
     setSwatchPercent();
+    setSwatchHex();
 }
 
 function onBandEnd(e) {

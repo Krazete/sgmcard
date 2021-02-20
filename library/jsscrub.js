@@ -64,7 +64,7 @@ function convertToScrubber(input) {
         document.body.appendChild(style);
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
-        window.addEventListener("touchmove", onMouseMove);
+        window.addEventListener("touchmove", onMouseMove, {"passive": false});
         window.addEventListener("touchend", onMouseUp);
     }
 

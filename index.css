@@ -553,6 +553,9 @@ input[type='button'].loading {
 .band:hover {
     outline-color: var(--bg);
 }
+.disabled .band {
+    display: none;
+}
 
 #swatch {
     background: var(--bg);
@@ -567,10 +570,6 @@ input[type='button'].loading {
 
 #hex {
     width: 6em;
-}
-
-#percent {
-    width: 3em;
 }
 
 /* RENDER */
