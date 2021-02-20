@@ -108,13 +108,14 @@ var render = {
     "button": document.getElementById("option-render"),
     "imageContainer": document.getElementById("render-image"),
     "disclaimer": document.getElementById("render-disclaimer"),
-    "zipContainer": document.getElementById("render-zip"),
+    "zipContainer": document.getElementById("render-zip")
 };
 
 var swatch = {
     "window": document.getElementById("swatch"),
     "hex": document.getElementById("hex"),
     "percent": document.getElementById("percent"),
+    "delete": document.getElementById("delete")
 }
 
 var picker = new iro.ColorPicker("#iro", {
@@ -889,11 +890,16 @@ function setSwatchPercent() {
 
 function closeSwatch(e) {
     var e0 = getPointer(e);
-    if (!swatch.window.contains(e0.target)) {
+    if (e === true || !swatch.window.contains(e0.target)) {
         swatch.window.style = "";
         window.removeEventListener("mousedown", closeSwatch);
         window.removeEventListener("touchstart", closeSwatch);
     }
+}
+
+function deleteSwatch() {
+    closeSwatch(true);
+    activeBand.remove();
 }
 
 function onBandStart(e) {
@@ -1281,6 +1287,7 @@ render.button.addEventListener("click", createCard);
 picker.on("color:change", onIroChange);
 swatch.hex.addEventListener("change", setSwatchHex);
 swatch.percent.addEventListener("input", setSwatchPercent);
+swatch.delete.addEventListener("click", deleteSwatch);
 
 /* (Re)Initialize Options */
 
