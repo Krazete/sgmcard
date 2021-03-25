@@ -957,6 +957,14 @@ function onCancelPreview(e) {
     }
 }
 
+function onCustomForegroundChange() {
+    selectTier();
+}
+
+function onCustomBackgroundChange() {
+    selectElement();
+}
+
 /* Render */
 
 function renderCard(opaque) {
@@ -1271,7 +1279,7 @@ for (var option in foreground) {
 }
 foreground.gradient.addEventListener("mousedown", onBandStart);
 foreground.gradient.addEventListener("touchstart", onBandStart);
-foreground.input.addEventListener("change", selectTier);
+foreground.input.addEventListener("change", onCustomForegroundChange);
 
 for (var option in background) {
     if (background[option].type == "radio") {
@@ -1280,7 +1288,7 @@ for (var option in background) {
 }
 background.gradient.addEventListener("mousedown", onBandStart);
 background.gradient.addEventListener("touchstart", onBandStart);
-background.input.addEventListener("change", selectElement);
+background.input.addEventListener("change", onCustomBackgroundChange);
 
 render.button.addEventListener("click", createCard);
 
@@ -1319,7 +1327,7 @@ var rainbowTimer;
 
 function rainbow() {
     var h = (Date.now() / 60) % 360;
-    document.body.style = "--bg: hsl(" + h + ", 50%, 75%); --fg: hsl(" + h + ", 50%, 25%);";
+    document.body.style = "--bg: hsl(" + h + ", 50%, 70%); --fg: hsl(" + h + ", 50%, 30%);";
     rainbowTimer = requestAnimationFrame(rainbow);
 }
 
