@@ -162,7 +162,6 @@ function getPointer(e) {
     };
 }
 
-
 function loadImage(src) {
     function request(resolve, reject) {
         var image = new Image();
@@ -442,6 +441,30 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
     return imageData;
 }
 
+function loadColorizedImageURL(imageURL, gradientURLOrText) {
+    if (gradientURLOrText.indexOf(".png") >= 0) { /* if both arguments are URLs */
+        return Promise.all([
+            loadImage(imageURL),
+            loadImage(gradientURLOrText)
+        ]).then(function (response) {
+            var imageData = getImageDataFromImage(response[0]);
+            var gradientData = getImageDataFromImage(response[1], 256, 1);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
+            return getImageURLFromImageData(colorizedData);
+        });
+    }
+    else {
+        return Promise.all([
+            loadImage(imageURL)
+        ]).then(function (response) {
+            var imageData = getImageDataFromImage(response[0]);
+            var gradientData = getGradientDataFromText(gradientURLOrText);
+            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
+            return getImageURLFromImageData(colorizedData);
+        });
+    }
+}
+
 function getLinearGradientFromText(text) {
     var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
 
@@ -498,30 +521,6 @@ function getGradientDataFromText(text) {
     context.fillStyle = fillStyle;
     context.fillRect(0, 0, 256, 1);
     return context.getImageData(0, 0, canvas.width, canvas.height);
-}
-
-function loadColorizedImageURL(imageURL, gradientURLOrText) {
-    if (gradientURLOrText.indexOf(".png") >= 0) { /* if both arguments are URLs */
-        return Promise.all([
-            loadImage(imageURL),
-            loadImage(gradientURLOrText)
-        ]).then(function (response) {
-            var imageData = getImageDataFromImage(response[0]);
-            var gradientData = getImageDataFromImage(response[1], 256, 1);
-            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
-            return getImageURLFromImageData(colorizedData);
-        });
-    }
-    else {
-        return Promise.all([
-            loadImage(imageURL)
-        ]).then(function (response) {
-            var imageData = getImageDataFromImage(response[0]);
-            var gradientData = getGradientDataFromText(gradientURLOrText);
-            var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
-            return getImageURLFromImageData(colorizedData);
-        });
-    }
 }
 
 /* Menu Options */
