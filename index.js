@@ -144,6 +144,72 @@ var picker = new iro.ColorPicker("#iro", {
     ]
 });
 
+/* General Functions */
+
+function getPointer(e) {
+    if (e.touches) {
+        e.preventDefault();
+        return {
+            "x": e.touches[0].clientX,
+            "y": e.touches[0].clientY,
+            "target": e.touches[0].target
+        };
+    }
+    return {
+        "x": e.clientX,
+        "y": e.clientY,
+        "target": e.target
+    };
+}
+
+
+function loadImage(src) {
+    function request(resolve, reject) {
+        var image = new Image();
+        image.addEventListener("load", function () {
+            resolve(this);
+        });
+        image.addEventListener("error", function () {
+            reject(this);
+        });
+        image.src = src;
+    }
+    return new Promise(request);
+}
+
+function getImageDataFromImage(image, w, h) {
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    if (w && h) {
+        canvas.width = w;
+        canvas.height = h;
+        context.drawImage(image, 0, 0, w, h);
+    }
+    else {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+    }
+    return context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+function getImageURLFromImageData(imageData) {
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    context.putImageData(imageData, 0, 0);
+    return canvas.toDataURL();
+}
+
+function bound(n, min, max) {
+    return Math.max(min, Math.min(n, max));
+}
+
+function boundInput(input) {
+    input.value = bound(input.value, input.min, input.max);
+}
+
 /* Preview Text */
 
 var ruler = document.createElement("canvas").getContext("2d");
@@ -231,22 +297,6 @@ function toggleMaskSegment() {
 /* Card Pose Tool */
 
 var e0, art0, mode;
-
-function getPointer(e) {
-    if (e.touches) {
-        e.preventDefault();
-        return {
-            "x": e.touches[0].clientX,
-            "y": e.touches[0].clientY,
-            "target": e.touches[0].target
-        };
-    }
-    return {
-        "x": e.clientX,
-        "y": e.clientY,
-        "target": e.target
-    };
-}
 
 function setArt0() {
     var savedRotation = card.art.style.transform;
@@ -350,7 +400,7 @@ function onPoseEnd(e) {
     window.removeEventListener("touchend", onPoseEnd);
 }
 
-/* idk data */
+/* Image Processing */
 
 var gradientMapImage = {
     "error": "gradient/36.png",
@@ -375,38 +425,6 @@ var gradientMapImage = {
     }
 };
 
-/* Image Processing Functions */
-
-function loadImage(src) {
-    function request(resolve, reject) {
-        var image = new Image();
-        image.addEventListener("load", function () {
-            resolve(this);
-        });
-        image.addEventListener("error", function () {
-            reject(this);
-        });
-        image.src = src;
-    }
-    return new Promise(request);
-}
-
-function getImageDataFromImage(image, w, h) {
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    if (w && h) {
-        canvas.width = w;
-        canvas.height = h;
-        context.drawImage(image, 0, 0, w, h);
-    }
-    else {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0);
-    }
-    return context.getImageData(0, 0, canvas.width, canvas.height);
-}
-
 function colorizeImageDataWithGradientData(imageData, gradientData) {
     var colorizedData = new ImageData(imageData.width, imageData.height);
     var pixels = imageData.data.length / 4;
@@ -422,15 +440,6 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
         imageData.data[4 * i + 3] = Math.min(a, gradientData.data[4 * intensity + 3]);
     }
     return imageData;
-}
-
-function getImageURLFromImageData(imageData) {
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    context.putImageData(imageData, 0, 0);
-    return canvas.toDataURL();
 }
 
 function getLinearGradientFromText(text) {
@@ -770,14 +779,6 @@ function selectArt() {
 
 function selectPoseTool() {
     mode = this.id.split("-")[1];
-}
-
-function bound(n, min, max) {
-    return Math.max(min, Math.min(n, max));
-}
-
-function boundInput(input) {
-    input.value = bound(input.value, input.min, input.max);
 }
 
 function updateBounds() {
