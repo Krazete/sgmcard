@@ -401,29 +401,6 @@ function onPoseEnd(e) {
 
 /* Image Processing */
 
-var gradientMapImage = {
-    "error": "gradient/36.png",
-    "bronze": "gradient/BronzeGradient.png",
-    "silver": "gradient/SilverGradient.png",
-    "gold": "gradient/GoldGradient.png",
-    "fg": {
-        "fire": "gradient/DiamondGradientMapFire.png",
-        "water": "gradient/DiamondGradientWater.png",
-        "wind": "gradient/DiamondGradientMapWind.png",
-        "light": "gradient/DiamondGradientLight.png",
-        "dark": "gradient/DiamondGradientDark.png",
-        "neutral": "gradient/DiamondGradientMapNeutralB.png"
-    },
-    "bg": {
-        "fire": "#301 0%, #c40818 20%, #f54 50%, #fb7 100%",
-        "water": "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%",
-        "wind": "#010 0%, #208038 20%, #48c048 50%, #bf7 100%",
-        "light": "#950 0%, #db5 20%, #fea 50%, #fff 100%",
-        "dark": "#113 0%, #536 20%, #a464a4 50%, #ead 100%",
-        "neutral": "#333 0%, #6b6b6b 20%, #a0a0a0 50%, #eee 100%"
-    }
-};
-
 function colorizeImageDataWithGradientData(imageData, gradientData) {
     var colorizedData = new ImageData(imageData.width, imageData.height);
     var pixels = imageData.data.length / 4;
@@ -562,36 +539,36 @@ function selectTier() {
         cardBadgeURL = "fragment/DiamondLevel.png";
     }
 
-    var gradientURLOrText = gradientMapImage.error;
+    var gradientURLOrText = "gradient/36.png";
     if (foreground.custom.checked) {
         gradientURLOrText = foreground.input.value;
     }
     else if (foreground.bronze.checked) {
-        gradientURLOrText = gradientMapImage.bronze;
+        "gradient/BronzeGradient.png";
     }
     else if (foreground.silver.checked) {
-        gradientURLOrText = gradientMapImage.silver;
+        "gradient/SilverGradient.png";
     }
     else if (foreground.gold.checked) {
-        gradientURLOrText = gradientMapImage.gold;
+        "gradient/GoldGradient.png";
     }
     else if (element.fire.checked || foreground.fire.checked) {
-        gradientURLOrText = gradientMapImage.fg.fire;
+        gradientURLOrText = "gradient/DiamondGradientMapFire.png";
     }
     else if (element.water.checked || foreground.water.checked) {
-        gradientURLOrText = gradientMapImage.fg.water;
+        gradientURLOrText = "gradient/DiamondGradientWater.png";
     }
     else if (element.wind.checked || foreground.wind.checked) {
-        gradientURLOrText = gradientMapImage.fg.wind;
+        gradientURLOrText = "gradient/DiamondGradientMapWind.png";
     }
     else if (element.light.checked || foreground.light.checked) {
-        gradientURLOrText = gradientMapImage.fg.light;
+        gradientURLOrText = "gradient/DiamondGradientLight.png";
     }
     else if (element.dark.checked || foreground.dark.checked) {
-        gradientURLOrText = gradientMapImage.fg.dark;
+        gradientURLOrText = "gradient/DiamondGradientDark.png";
     }
     else if (element.neutral.checked || foreground.neutral.checked) {
-        gradientURLOrText = gradientMapImage.fg.neutral;
+        gradientURLOrText = "gradient/DiamondGradientMapNeutralB.png";
     }
 
     if (tier.diamond.checked && !element.none.checked || !tier.none.checked && !foreground.default.checked) {
@@ -656,27 +633,27 @@ function selectElement() {
     }
 
     var cardBackURL = "fragment/GreyBackground.png";
-    var gradientURLOrText = gradientMapImage.error;
+    var gradientURLOrText = "gradient/36.png";
     if (background.custom.checked) {
         gradientURLOrText = background.input.value;
     }
     else if (element.fire.checked || background.fire.checked) {
-        gradientURLOrText = gradientMapImage.bg.fire;
+        gradientURLOrText = "#301 0%, #c40818 20%, #f54 50%, #fb7 100%";
     }
     else if (element.water.checked || background.water.checked) {
-        gradientURLOrText = gradientMapImage.bg.water;
+        gradientURLOrText = "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%";
     }
     else if (element.wind.checked || background.wind.checked) {
-        gradientURLOrText = gradientMapImage.bg.wind;
+        gradientURLOrText = "#010 0%, #208038 20%, #48c048 50%, #bf7 100%";
     }
     else if (element.light.checked || background.light.checked) {
-        gradientURLOrText = gradientMapImage.bg.light;
+        gradientURLOrText = "#950 0%, #db5 20%, #fea 50%, #fff 100%";
     }
     else if (element.dark.checked || background.dark.checked) {
-        gradientURLOrText = gradientMapImage.bg.dark;
+        gradientURLOrText = "#113 0%, #536 20%, #a464a4 50%, #ead 100%";
     }
     else if (element.neutral.checked || background.neutral.checked) {
-        gradientURLOrText = gradientMapImage.bg.neutral;
+        gradientURLOrText = "#333 0%, #6b6b6b 20%, #a0a0a0 50%, #eee 100%";
     }
 
     if (!element.none.checked || !background.default.checked) {
