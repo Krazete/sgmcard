@@ -471,6 +471,9 @@ function getCSLFromText(text) {
                 "stop": bound(Number(split[1]), 0, 100)
             });
         }
+        colorStopList.sort(function (a, b) {
+            return a.stop - b.stop;
+        });
     }
     catch (e) {
         return specialCSL.error;
@@ -486,6 +489,9 @@ function getCSLFromBands(bands) {
             "stop": band.dataset.stop
         });
     }
+    colorStopList.sort(function (a, b) {
+        return a.stop - b.stop;
+    });
     return colorStopList;
 }
 
@@ -499,9 +505,6 @@ function getBandsFromCSL(csl) {
 
 function getLinearGradientFromCSL(csl) {
     var linearGradient = "linear-gradient(to right, black 0%, ";
-    csl.sort(function (a, b) {
-        return a.stop - b.stop;
-    });
     for (var cs of csl) {
         linearGradient += cs.color + " " + cs.stop + "%, ";
     }
