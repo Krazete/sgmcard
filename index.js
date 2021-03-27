@@ -587,22 +587,22 @@ function selectTier() {
     else if (foreground.gold.checked) {
         gradientURLOrCSL = "gradient/GoldGradient.png";
     }
-    else if (element.fire.checked || foreground.fire.checked) {
+    else if (foreground.fire.checked || foreground.default.checked && element.fire.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapFire.png";
     }
-    else if (element.water.checked || foreground.water.checked) {
+    else if (foreground.water.checked || foreground.default.checked && element.water.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientWater.png";
     }
-    else if (element.wind.checked || foreground.wind.checked) {
+    else if (foreground.wind.checked || foreground.default.checked && element.wind.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapWind.png";
     }
-    else if (element.light.checked || foreground.light.checked) {
+    else if (foreground.light.checked || foreground.default.checked && element.light.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientLight.png";
     }
-    else if (element.dark.checked || foreground.dark.checked) {
+    else if (foreground.dark.checked || foreground.default.checked && element.dark.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientDark.png";
     }
-    else if (element.neutral.checked || foreground.neutral.checked) {
+    else if (foreground.neutral.checked || foreground.default.checked && element.neutral.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapNeutralB.png";
     }
 
@@ -634,7 +634,7 @@ function selectTier() {
     fitCardLevel();
 
     if (foreground.default.checked) {
-        foreground.gradient.style.backgroundImage = getLinearGradientFromCSL("");
+        foreground.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
     }
     else if (gradientURLOrCSL.indexOf(".png") >= 0) {
         foreground.gradient.style.backgroundImage = "url('" + gradientURLOrCSL + "')";
@@ -672,7 +672,7 @@ function selectElement() {
     if (background.custom.checked) {
         gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : specialCSL.bg;
     }
-    else if (element.fire.checked || background.fire.checked) {
+    else if (background.fire.checked || background.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
             {"color": "#301", "stop": 0},
             {"color": "#c40818", "stop": 20},
@@ -680,7 +680,7 @@ function selectElement() {
             {"color": "#fb7", "stop": 100}
         ];
     }
-    else if (element.water.checked || background.water.checked) {
+    else if (background.water.checked || background.default.checked && element.water.checked) {
         gradientURLOrCSL = [
             {"color": "#013", "stop": 0},
             {"color": "#06b", "stop": 20},
@@ -689,7 +689,7 @@ function selectElement() {
             {"color": "#40f4ff", "stop": 100}
         ];
     }
-    else if (element.wind.checked || background.wind.checked) {
+    else if (background.wind.checked || background.default.checked && element.wind.checked) {
         gradientURLOrCSL = [
             {"color": "#010", "stop": 0},
             {"color": "#208038", "stop": 20},
@@ -697,7 +697,7 @@ function selectElement() {
             {"color": "#bf7", "stop": 100}
         ];
     }
-    else if (element.light.checked || background.light.checked) {
+    else if (background.light.checked || background.default.checked && element.light.checked) {
         gradientURLOrCSL = [
             {"color": "#950", "stop": 0},
             {"color": "#db5", "stop": 20},
@@ -705,7 +705,7 @@ function selectElement() {
             {"color": "#fff", "stop": 100}
         ];
     }
-    else if (element.dark.checked || background.dark.checked) {
+    else if (background.dark.checked || background.default.checked && element.dark.checked) {
         gradientURLOrCSL = [
             {"color": "#113", "stop": 0},
             {"color": "#536", "stop": 20},
@@ -713,7 +713,7 @@ function selectElement() {
             {"color": "#ead", "stop": 100}
         ];
     }
-    else if (element.neutral.checked || background.neutral.checked) {
+    else if (background.neutral.checked || background.default.checked && element.neutral.checked) {
         gradientURLOrCSL = [
             {"color": "#333", "stop": 0},
             {"color": "#6b6b6b", "stop": 20},
@@ -736,7 +736,7 @@ function selectElement() {
     }
 
     if (background.default.checked) {
-        background.gradient.style.backgroundImage = getLinearGradientFromCSL("");
+        background.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
     }
     else {
         background.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
