@@ -401,6 +401,24 @@ function onPoseEnd(e) {
 
 /* Image Processing */
 
+var specialCSL = {
+    "fg": [],
+    "bg": [],
+    "error": [
+        {"color": "white", "stop": 0},
+        {"color": "transparent", "stop": 10},
+        {"color": "white", "stop": 20},
+        {"color": "transparent", "stop": 30},
+        {"color": "white", "stop": 40},
+        {"color": "transparent", "stop": 50},
+        {"color": "white", "stop": 60},
+        {"color": "transparent", "stop": 70},
+        {"color": "white", "stop": 80},
+        {"color": "transparent", "stop": 90},
+        {"color": "white", "stop": 100}
+    ]
+}
+
 function colorizeImageDataWithGradientData(imageData, gradientData) {
     var colorizedData = new ImageData(imageData.width, imageData.height);
     var pixels = imageData.data.length / 4;
@@ -418,11 +436,11 @@ function colorizeImageDataWithGradientData(imageData, gradientData) {
     return imageData;
 }
 
-function loadColorizedImageURL(imageURL, gradientURLOrText) {
-    if (gradientURLOrText.indexOf(".png") >= 0) { /* if both arguments are URLs */
+function loadColorizedImageURL(imageURL, gradientURLOrCSL) {
+    if (gradientURLOrCSL.indexOf(".png") >= 0) { /* if both arguments are URLs */
         return Promise.all([
             loadImage(imageURL),
-            loadImage(gradientURLOrText)
+            loadImage(gradientURLOrCSL)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
             var gradientData = getImageDataFromImage(response[1], 256, 1);
@@ -435,58 +453,72 @@ function loadColorizedImageURL(imageURL, gradientURLOrText) {
             loadImage(imageURL)
         ]).then(function (response) {
             var imageData = getImageDataFromImage(response[0]);
-            var gradientData = getGradientDataFromText(gradientURLOrText);
+            var gradientData = getGradientDataFromCSL(gradientURLOrCSL);
             var colorizedData = colorizeImageDataWithGradientData(imageData, gradientData);
             return getImageURLFromImageData(colorizedData);
         });
     }
 }
 
-function getLinearGradientFromText(text) {
-    var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
-
-    var linearGradient = "linear-gradient(to right, black 0%, ";
-    var colorStops = text.match(colorStopPattern);
+function getCSLFromText(text) {
+    var colorStopList = [];
+    var matches = text.match(/#?\w+\s+-?\d+(\.\d+)?/gi);
     try {
-        var pairs = [];
-        for (var colorStop of colorStops) {
-            var colorStopSplit = colorStop.split(/\s+/);
-            var color = colorStopSplit[0];
-            var cstop = parseFloat(colorStopSplit[1]);
-            pairs.push([color, cstop]);
-        }
-        pairs.sort(function (a, b) {
-            return a[1] - b[1];
-        });
-        for (var pair of pairs) {
-            linearGradient += pair[0] + " " + pair[1] + "%, ";
+        for (var match of matches) {
+            var split = match.split(/\s+/);
+            colorStopList.push({
+                "color": split[0],
+                "stop": bound(Number(split[1]), 0, 100)
+            });
         }
     }
     catch (e) {
-        for (var i = 0; i < 16; i++) {
-            linearGradient += (i % 2 ? "transparent " : "white ") + i * 25 / 4 + "%, ";
-        }
+        return specialCSL.error;
+    }
+    return colorStopList;
+}
+
+function getCSLFromBands(bands) {
+    var colorStopList = [];
+    for (var band of bands) {
+        colorStopList.push({
+            "color": band.dataset.color,
+            "stop": band.dataset.stop
+        });
+    }
+    return colorStopList;
+}
+
+function getBandsFromCSL(csl) {
+    foreground.gradient.innerHTML = "";
+    for (var cs of csl) {
+        console.log(new Band(cs.color, cs.stop));
+        foreground.gradient.appendChild(new Band(cs.color, cs.stop));
+    }
+}
+
+function getLinearGradientFromCSL(csl) {
+    var linearGradient = "linear-gradient(to right, black 0%, ";
+    csl.sort(function (a, b) {
+        return a.stop - b.stop;
+    });
+    for (var cs of csl) {
+        linearGradient += cs.color + " " + cs.stop + "%, ";
     }
     linearGradient += "white 100%";
     return linearGradient;
 }
 
-function getGradientDataFromText(text) {
-    var colorStopPattern = /\S*?\s+\d+(\.\d+)?%?/g;
-
+function getGradientDataFromCSL(csl) {
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.height = 1;
     canvas.width = 256;
     var fillStyle = context.createLinearGradient(0, 0, 256, 0);
-    var colorStops = text.match(colorStopPattern);
     try {
         fillStyle.addColorStop(0, "black");
-        for (var colorStop of colorStops) {
-            var colorStopSplit = colorStop.split(/\s+/);
-            var color = colorStopSplit[0];
-            var cstop = parseFloat(colorStopSplit[1]) / 100;
-            fillStyle.addColorStop(cstop, color);
+        for (var cs of csl) {
+            fillStyle.addColorStop(cs.stop / 100, cs.color);
         }
         fillStyle.addColorStop(1, "white");
     }
@@ -539,44 +571,44 @@ function selectTier() {
         cardBadgeURL = "fragment/DiamondLevel.png";
     }
 
-    var gradientURLOrText = "gradient/36.png";
+    var gradientURLOrCSL = "gradient/36.png";
     if (foreground.custom.checked) {
-        gradientURLOrText = foreground.input.value;
+        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : specialCSL.fg;
     }
     else if (foreground.bronze.checked) {
-        "gradient/BronzeGradient.png";
+        gradientURLOrCSL = "gradient/BronzeGradient.png";
     }
     else if (foreground.silver.checked) {
-        "gradient/SilverGradient.png";
+        gradientURLOrCSL = "gradient/SilverGradient.png";
     }
     else if (foreground.gold.checked) {
-        "gradient/GoldGradient.png";
+        gradientURLOrCSL = "gradient/GoldGradient.png";
     }
     else if (element.fire.checked || foreground.fire.checked) {
-        gradientURLOrText = "gradient/DiamondGradientMapFire.png";
+        gradientURLOrCSL = "gradient/DiamondGradientMapFire.png";
     }
     else if (element.water.checked || foreground.water.checked) {
-        gradientURLOrText = "gradient/DiamondGradientWater.png";
+        gradientURLOrCSL = "gradient/DiamondGradientWater.png";
     }
     else if (element.wind.checked || foreground.wind.checked) {
-        gradientURLOrText = "gradient/DiamondGradientMapWind.png";
+        gradientURLOrCSL = "gradient/DiamondGradientMapWind.png";
     }
     else if (element.light.checked || foreground.light.checked) {
-        gradientURLOrText = "gradient/DiamondGradientLight.png";
+        gradientURLOrCSL = "gradient/DiamondGradientLight.png";
     }
     else if (element.dark.checked || foreground.dark.checked) {
-        gradientURLOrText = "gradient/DiamondGradientDark.png";
+        gradientURLOrCSL = "gradient/DiamondGradientDark.png";
     }
     else if (element.neutral.checked || foreground.neutral.checked) {
-        gradientURLOrText = "gradient/DiamondGradientMapNeutralB.png";
+        gradientURLOrCSL = "gradient/DiamondGradientMapNeutralB.png";
     }
 
     if (tier.diamond.checked && !element.none.checked || !tier.none.checked && !foreground.default.checked) {
         Promise.all([
-            loadColorizedImageURL(cardTopURL, gradientURLOrText),
-            loadColorizedImageURL(cardBottomURL, gradientURLOrText),
-            loadColorizedImageURL(cardScoreURL, gradientURLOrText),
-            loadColorizedImageURL(cardBadgeURL, gradientURLOrText)
+            loadColorizedImageURL(cardTopURL, gradientURLOrCSL),
+            loadColorizedImageURL(cardBottomURL, gradientURLOrCSL),
+            loadColorizedImageURL(cardScoreURL, gradientURLOrCSL),
+            loadColorizedImageURL(cardBadgeURL, gradientURLOrCSL)
         ]).then(function (response) {
             card.top.src = response[0];
             card.bottom.src = response[1];
@@ -599,13 +631,13 @@ function selectTier() {
     fitCardLevel();
 
     if (foreground.default.checked) {
-        foreground.gradient.style.backgroundImage = getLinearGradientFromText("");
+        foreground.gradient.style.backgroundImage = getLinearGradientFromCSL("");
     }
-    else if (gradientURLOrText.indexOf(".png") >= 0) {
-        foreground.gradient.style.backgroundImage = "url('" + gradientURLOrText + "')";
+    else if (gradientURLOrCSL.indexOf(".png") >= 0) {
+        foreground.gradient.style.backgroundImage = "url('" + gradientURLOrCSL + "')";
     }
     else {
-        foreground.gradient.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        foreground.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
     }
 }
 
@@ -633,31 +665,62 @@ function selectElement() {
     }
 
     var cardBackURL = "fragment/GreyBackground.png";
-    var gradientURLOrText = "gradient/36.png";
+    var gradientURLOrCSL = "gradient/36.png";
     if (background.custom.checked) {
-        gradientURLOrText = background.input.value;
+        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : specialCSL.bg;
     }
     else if (element.fire.checked || background.fire.checked) {
-        gradientURLOrText = "#301 0%, #c40818 20%, #f54 50%, #fb7 100%";
+        gradientURLOrCSL = [
+            {"color": "#301", "stop": 0},
+            {"color": "#c40818", "stop": 20},
+            {"color": "#f54", "stop": 50},
+            {"color": "#fb7", "stop": 100}
+        ];
     }
     else if (element.water.checked || background.water.checked) {
-        gradientURLOrText = "#013 0%, #06b 20%, #3be 50%, #40f4ff 80%, #40f4ff 100%";
+        gradientURLOrCSL = [
+            {"color": "#013", "stop": 0},
+            {"color": "#06b", "stop": 20},
+            {"color": "#3be", "stop": 50},
+            {"color": "#40f4ff", "stop": 80},
+            {"color": "#40f4ff", "stop": 100}
+        ];
     }
     else if (element.wind.checked || background.wind.checked) {
-        gradientURLOrText = "#010 0%, #208038 20%, #48c048 50%, #bf7 100%";
+        gradientURLOrCSL = [
+            {"color": "#010", "stop": 0},
+            {"color": "#208038", "stop": 20},
+            {"color": "#48c048", "stop": 50},
+            {"color": "#bf7", "stop": 100}
+        ];
     }
     else if (element.light.checked || background.light.checked) {
-        gradientURLOrText = "#950 0%, #db5 20%, #fea 50%, #fff 100%";
+        gradientURLOrCSL = [
+            {"color": "#950", "stop": 0},
+            {"color": "#db5", "stop": 20},
+            {"color": "#fea", "stop": 50},
+            {"color": "#fff", "stop": 100}
+        ];
     }
     else if (element.dark.checked || background.dark.checked) {
-        gradientURLOrText = "#113 0%, #536 20%, #a464a4 50%, #ead 100%";
+        gradientURLOrCSL = [
+            {"color": "#113", "stop": 0},
+            {"color": "#536", "stop": 20},
+            {"color": "#a464a4", "stop": 50},
+            {"color": "#ead", "stop": 100}
+        ];
     }
     else if (element.neutral.checked || background.neutral.checked) {
-        gradientURLOrText = "#333 0%, #6b6b6b 20%, #a0a0a0 50%, #eee 100%";
+        gradientURLOrCSL = [
+            {"color": "#333", "stop": 0},
+            {"color": "#6b6b6b", "stop": 20},
+            {"color": "#a0a0a0", "stop": 50},
+            {"color": "#eee", "stop": 100}
+        ];
     }
 
     if (!element.none.checked || !background.default.checked) {
-        loadColorizedImageURL(cardBackURL, gradientURLOrText).then(function (response) {
+        loadColorizedImageURL(cardBackURL, gradientURLOrCSL).then(function (response) {
             card.back.src = response;
         });
     }
@@ -670,10 +733,10 @@ function selectElement() {
     }
 
     if (background.default.checked) {
-        background.gradient.style.backgroundImage = getLinearGradientFromText("");
+        background.gradient.style.backgroundImage = getLinearGradientFromCSL("");
     }
     else {
-        background.gradient.style.backgroundImage = getLinearGradientFromText(gradientURLOrText);
+        background.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
     }
 }
 
@@ -835,7 +898,7 @@ function setSwatchHex() {
 function setSwatchPercent() {
     boundInput(swatch.percent);
     var i = swatch.percent.value;
-    activeBand.dataset.i = i;
+    activeBand.dataset.percent = i;
     activeBand.style.left = i + "%";
     swatch.window.style.left = bound(
         scrollX + gradientBox.left - swatchBox.width / 2 + i * gradientBox.width / 100,
