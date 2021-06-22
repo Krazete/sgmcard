@@ -339,7 +339,7 @@ input[type='button'].loading {
 #card-score,
 #card-level,
 #card-variant,
-#card-fighter {
+#card-character {
     background: none;
     color: white;
     font-family: 'Washington', 'Cinema', 'Dodam';
@@ -374,7 +374,7 @@ input[type='button'].loading {
     line-height: 60px;
     font-size: 58px;
 }
-#card-fighter {
+#card-character {
     left: 50px;
     bottom: 51px;
     width: 295px;

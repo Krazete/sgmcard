@@ -18,7 +18,7 @@ I do not plan on updating the look of the cards, partially because I prefer the 
 
 ### Preview
 
-In the card preview area, you can modify the card text (fighter score, level, variant name, and fighter name).
+In the card preview area, you can modify the card text (fighter score, level, variant name, and character name).
 The text will automatically reduce in font size to fit within its designated area.
 
 You can also move, scale, and rotate your uploaded image by interacting with the card background.

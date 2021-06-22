@@ -24,7 +24,7 @@ var card = {
     "score": document.getElementById("card-score"),
     "level": document.getElementById("card-level"),
     "variant": document.getElementById("card-variant"),
-    "fighter": document.getElementById("card-fighter")
+    "character": document.getElementById("card-character")
 };
 
 var clipPaths = { /* backup for firefox <54 */
@@ -250,8 +250,8 @@ function fitCardVariant() {
     autofit(card.variant, 58, 320);
 }
 
-function fitCardFighter() {
-    autofit(card.fighter, 38, 250);
+function fitCardCharacter() {
+    autofit(card.character, 38, 250);
 }
 
 /* Card Mask Tool */
@@ -1266,7 +1266,7 @@ function createCard() {
 card.score.addEventListener("input", fitCardScore);
 card.level.addEventListener("input", fitCardLevel);
 card.variant.addEventListener("input", fitCardVariant);
-card.fighter.addEventListener("input", fitCardFighter);
+card.character.addEventListener("input", fitCardCharacter);
 
 card.maskLeft.addEventListener("click", toggleMaskSegment);
 card.maskRight.addEventListener("click", toggleMaskSegment);
