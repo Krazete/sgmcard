@@ -119,7 +119,7 @@ var swatch = {
 }
 
 var picker = new iro.ColorPicker("#iro", {
-    "width": 192,
+    "width": 160,
     "borderWidth": 1,
     "borderColor": "var(--fg)",
     "sliderMargin": 3,
@@ -511,6 +511,9 @@ function getBandsFromCSL(csl) {
 
 function getLinearGradientFromCSL(csl) {
     var linearGradient = "linear-gradient(to right, black 0%, ";
+    if (csl.length <= 0) {
+        csl = specialCSL.error;
+    }
     for (var cs of csl) {
         linearGradient += cs.color + " " + cs.stop + "%, ";
     }
@@ -524,18 +527,14 @@ function getGradientDataFromCSL(csl) {
     canvas.height = 1;
     canvas.width = 256;
     var fillStyle = context.createLinearGradient(0, 0, 256, 0);
-    try {
-        fillStyle.addColorStop(0, "black");
-        for (var cs of csl) {
-            fillStyle.addColorStop(cs.stop / 100, cs.color);
-        }
-        fillStyle.addColorStop(1, "white");
+    fillStyle.addColorStop(0, "black");
+    if (csl.length <= 0) {
+        csl = specialCSL.error;
     }
-    catch (e) {
-        for (var i = 0; i < 16; i++) {
-            fillStyle.addColorStop(i / 16, i % 2 ? "transparent" : "white");
-        }
+    for (var cs of csl) {
+        fillStyle.addColorStop(cs.stop / 100, cs.color);
     }
+    fillStyle.addColorStop(1, "white");
     context.fillStyle = fillStyle;
     context.fillRect(0, 0, 256, 1);
     return context.getImageData(0, 0, canvas.width, canvas.height);
@@ -582,7 +581,7 @@ function selectTier() {
 
     var gradientURLOrCSL = "gradient/36.png";
     if (foreground.custom.checked) {
-        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : specialCSL.fg;
+        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : bands;
     }
     else if (foreground.bronze.checked) {
         gradientURLOrCSL = "gradient/BronzeGradient.png";
@@ -676,7 +675,7 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
     if (background.custom.checked) {
-        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : specialCSL.bg;
+        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : bands;
     }
     else if (background.fire.checked || background.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
@@ -894,27 +893,6 @@ function selectBackground() {
 var bands = [];
 var activeBand, gradientBox, swatchBox;
 
-function getHexCodeFromSwatch() {
-    swatch.hex.value = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-    activeBand.style.background = swatch.hex.value;
-}
-
-function setSwatchHex() {
-    picker.setColors([swatch.hex.value]);
-    getHexCodeFromSwatch();
-}
-
-function setSwatchPercent() {
-    boundInput(swatch.percent);
-    var i = swatch.percent.value;
-    activeBand.dataset.percent = i;
-    activeBand.style.left = i + "%";
-    swatch.window.style.left = bound(
-        scrollX + gradientBox.left - swatchBox.width / 2 + i * gradientBox.width / 100,
-        0, innerWidth - swatchBox.width
-    ) + "px";
-}
-
 function closeSwatch(e) {
     var e0 = getPointer(e);
     if (e === true || !swatch.window.contains(e0.target)) {
@@ -926,25 +904,114 @@ function closeSwatch(e) {
 
 function deleteSwatch() {
     closeSwatch(true);
-    activeBand.remove();
+    activeBand.element.remove();
+    var i = bands.indexOf(activeBand);
+    bands.splice(i, 1);
+    getTextFromBands();
 }
 
+function Band(color, percent) {
+    this.element = document.createElement("div");
+    this.element.className = "band";
+    this.setPercent(percent);
+    this.setColor(color);
+    // maybe add to bands list
+    return this;
+}
+
+Band.prototype.setPercent = function (percent) {
+    this.stop = percent || 0;
+    this.element.style.left = (percent || 0) + "%";
+}
+
+Band.prototype.setColor = function (color) {
+    this.color = color || "transparent";
+    this.element.style.background = color || "transparent";
+}
+
+Band.prototype.delete = function () {
+    closeSwatch(true);
+    this.element.remove();
+    // maybe delete from bands list
+}
+
+function setSwatchHex2(colorName) {
+    document.head.style.borderColor = "transparent";
+    document.head.style.borderColor = colorName;
+
+    var color = getComputedStyle(document.head).borderColor;
+    swatch.hex.value = color;
+    picker.setColors([color]);
+
+    document.head.removeAttribute("style");
+}
+
+function sortedBands() {
+    return bands.sort((a, b) => a.stop - b.stop);
+}
+
+function getTextFromBands() {
+    var pairs = [];
+    for (var band of sortedBands()) {
+        pairs.push(band.color + " " + band.stop + "%");
+    }
+    foreground.input.value = pairs.join(", "); // should be variable with background too
+    foreground.gradient.style.backgroundImage = getLinearGradientFromCSL(bands);
+    selectTier();
+}
+
+function getPercentFromPointer(pointer) {
+    return bound(Math.round(100 * (pointer.x - gradientBox.left) / gradientBox.width), 0, 100);
+}
+
+function getColorFromPercent(percent) {
+    return "transparent"; // temporary
+}
+
+function setSwatchPercent() {
+    boundInput(swatch.percent);
+    activeBand.setPercent(swatch.percent.value);
+    moveSwatch(); // unnecessarily sets swatch.percent.value
+    getTextFromBands();
+}
+
+function moveSwatch() {
+    swatch.percent.value = activeBand.stop;
+    swatch.window.style.left = bound(
+        scrollX + gradientBox.left - swatchBox.width / 2 + gradientBox.width * activeBand.stop / 100,
+        0, innerWidth - swatchBox.width
+    ) + "px";
+}
+
+var eggs;
+var bfds;
+
 function onBandStart(e) {
-    var e0 = getPointer(e);
-    if (e0.target.classList.contains("band")) {
-        activeBand = e0.target;
+    eggs = getPointer(e);
+    if (eggs.target.classList.contains("band")) {
+        gradientBox = eggs.target.parentElement.getBoundingClientRect();
+        for (var band of bands) {
+            if (band.element == eggs.target) {
+                activeBand = band;
+                break;
+            }
+        }
     }
     else {
-        activeBand = document.createElement("div");
-        activeBand.className = "band";
-        this.appendChild(activeBand);
+        gradientBox = eggs.target.getBoundingClientRect();
+        var percent = getPercentFromPointer(eggs);
+        var color = getColorFromPercent(percent);
+        activeBand = new Band(color, percent);
+        eggs.target.appendChild(activeBand.element);
         bands.push(activeBand);
+        getTextFromBands();
     }
-    var gradient = activeBand.parentElement;
-    gradientBox = gradient.getBoundingClientRect();
     swatchBox = swatch.window.getBoundingClientRect();
-    swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 16 + "px";
-    onBandMove(e);
+    swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 12 + "px";
+    picker.setColors([activeBand.color]);
+    swatch.hex.value = activeBand.color;
+    trackBand();
+
     document.body.className = "banding";
     window.removeEventListener("mousedown", closeSwatch);
     window.removeEventListener("touchstart", closeSwatch);
@@ -954,15 +1021,21 @@ function onBandStart(e) {
     window.addEventListener("touchend", onBandEnd);
 }
 
+function trackBand() {
+    bfds = requestAnimationFrame(trackBand);
+    activeBand.setPercent(getPercentFromPointer(eggs));
+    moveSwatch();
+    getTextFromBands();
+}
+
 function onBandMove(e) {
-    var e1 = getPointer(e);
-    swatch.percent.value = Math.round(100 * (e1.x - gradientBox.left) / gradientBox.width);
-    setSwatchPercent();
-    setSwatchHex();
+    eggs = getPointer(e);
 }
 
 function onBandEnd(e) {
+    cancelAnimationFrame(bfds);
     document.body.className = "";
+
     window.removeEventListener("mousemove", onBandMove);
     window.removeEventListener("touchmove", onBandMove);
     window.removeEventListener("mouseup", onBandEnd);
@@ -971,8 +1044,18 @@ function onBandEnd(e) {
     window.addEventListener("touchstart", closeSwatch, {"passive": false});
 }
 
+function onHexChange() {
+    var color = swatch.hex.value;
+    picker.setColors([color]);
+    activeBand.setColor(color);
+    getTextFromBands();
+}
+
 function onIroChange() {
-    getHexCodeFromSwatch();
+    var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+    swatch.hex.value = color;
+    activeBand.setColor(color);
+    getTextFromBands();
 }
 
 function onCancelPreview(e) {
@@ -985,11 +1068,15 @@ function onCancelPreview(e) {
 }
 
 function onCustomForegroundChange() {
-    selectTier();
+    var csl = this.tagName == "INPUT" ? getCSLFromText() : getCSLFromBands();
+    selectTier(csl);
+    getBandsFromCSL(csl);
 }
 
 function onCustomBackgroundChange() {
-    selectElement();
+    var csl = getCSLFromText();
+    selectElement(csl);
+    getBandsFromCSL(csl);
 }
 
 /* Render */
@@ -1320,7 +1407,7 @@ background.input.addEventListener("change", onCustomBackgroundChange);
 render.button.addEventListener("click", createCard);
 
 picker.on("color:change", onIroChange);
-swatch.hex.addEventListener("change", setSwatchHex);
+swatch.hex.addEventListener("change", onHexChange);
 swatch.percent.addEventListener("input", setSwatchPercent);
 swatch.delete.addEventListener("click", deleteSwatch);
 

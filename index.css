@@ -567,17 +567,21 @@ input[type='button'].loading {
     width: max-content;
     top: -100%;
     left: -100%;
-    padding: 6px;
+    padding: 2px;
     border: 3px double white;
     border-radius: 16px;
 }
 
+#swatch input {
+    padding: 2px;
+}
+
 #iro {
-    margin: 4px;
+    margin: 4px 4px -4px 4px;
 }
 
 #hex {
-    width: 6em;
+    width: 5em;
 }
 
 #delete {
