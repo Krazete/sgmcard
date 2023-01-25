@@ -39,9 +39,9 @@ The optimal position parameters will be automatically set.
 
 The custom gradients allow you to override the default colors specified by the tier and element options.
 
-You can select one of the familiar presets, or you can make your own gradient via text input or the interactive preview bar.
+You can select one of the familiar presets or you can make your own gradient by using the text input or the interactive preview bar.
 
-For text input, your gradient must be in the format of a list of paired values `COLOR BRIGHT%`, where `COLOR` is the color name or hex code and `BRIGHT` is the brightness value the color will be mapped to.
+For text input, your gradient must be formatted as a list of paired values `COLOR BRIGHT%`, where `COLOR` is the color name or hex code and `BRIGHT` is the brightness value onto which the color will be mapped.
 
 ### GIF Support
 
