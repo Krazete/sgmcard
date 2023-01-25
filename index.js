@@ -965,7 +965,9 @@ function getPercentFromPointer(pointer) {
 }
 
 function getColorFromPercent(percent) {
-    return "transparent"; // temporary
+    var i = 4 * Math.floor(256 * percent / 100);
+    var gradientData = getGradientDataFromCSL(bands);
+    return "#" + Array.from(gradientData.data.slice(i, i + 4)).map(e => e.toString(16).padStart(2, "0")).join(""); // temporary
 }
 
 function setSwatchPercent() {
@@ -983,26 +985,25 @@ function moveSwatch() {
     ) + "px";
 }
 
-var eggs;
-var bfds;
+var eb0, trackerId;
 
 function onBandStart(e) {
-    eggs = getPointer(e);
-    if (eggs.target.classList.contains("band")) {
-        gradientBox = eggs.target.parentElement.getBoundingClientRect();
+    eb0 = getPointer(e);
+    if (eb0.target.classList.contains("band")) {
+        gradientBox = eb0.target.parentElement.getBoundingClientRect();
         for (var band of bands) {
-            if (band.element == eggs.target) {
+            if (band.element == eb0.target) {
                 activeBand = band;
                 break;
             }
         }
     }
     else {
-        gradientBox = eggs.target.getBoundingClientRect();
-        var percent = getPercentFromPointer(eggs);
+        gradientBox = eb0.target.getBoundingClientRect();
+        var percent = getPercentFromPointer(eb0);
         var color = getColorFromPercent(percent);
         activeBand = new Band(color, percent);
-        eggs.target.appendChild(activeBand.element);
+        eb0.target.appendChild(activeBand.element);
         bands.push(activeBand);
         getTextFromBands();
     }
@@ -1022,20 +1023,19 @@ function onBandStart(e) {
 }
 
 function trackBand() {
-    bfds = requestAnimationFrame(trackBand);
-    activeBand.setPercent(getPercentFromPointer(eggs));
+    trackerId = requestAnimationFrame(trackBand);
+    activeBand.setPercent(getPercentFromPointer(eb0));
     moveSwatch();
     getTextFromBands();
 }
 
 function onBandMove(e) {
-    eggs = getPointer(e);
+    eb0 = getPointer(e);
 }
 
 function onBandEnd(e) {
-    cancelAnimationFrame(bfds);
+    cancelAnimationFrame(trackerId);
     document.body.className = "";
-
     window.removeEventListener("mousemove", onBandMove);
     window.removeEventListener("touchmove", onBandMove);
     window.removeEventListener("mouseup", onBandEnd);
@@ -1058,24 +1058,15 @@ function onIroChange() {
     getTextFromBands();
 }
 
-function onCancelPreview(e) {
-    console.log(9);
-    if (e.target != swatch.window) {
-        swatch.window.style = "";
-        window.removeEventListener("click", onCancelPreview);
-        foreground.gradient.addEventListener("click", onClickPreview);
-    }
-}
-
 function onCustomForegroundChange() {
-    var csl = this.tagName == "INPUT" ? getCSLFromText() : getCSLFromBands();
-    selectTier(csl);
+    var csl = getCSLFromText(this.value);
+    selectTier();
     getBandsFromCSL(csl);
 }
 
 function onCustomBackgroundChange() {
-    var csl = getCSLFromText();
-    selectElement(csl);
+    var csl = getCSLFromText(this.value);
+    selectElement();
     getBandsFromCSL(csl);
 }
 
@@ -1437,17 +1428,17 @@ window.addEventListener("beforeunload", holup);
 /* Ko-fi Easter Egg */
 
 var kofi = document.getElementById("kofi");
-var rainbowTimer;
+var rainbowId;
 
 function rainbow() {
     var h = (Date.now() / 60) % 360;
     document.body.style = "--bg: hsl(" + h + ", 50%, 70%); --fg: hsl(" + h + ", 50%, 30%);";
-    rainbowTimer = requestAnimationFrame(rainbow);
+    rainbowId = requestAnimationFrame(rainbow);
 }
 
 function stopRainbow() {
     document.body.style = "";
-    cancelAnimationFrame(rainbowTimer);
+    cancelAnimationFrame(rainbowId);
 }
 
 kofi.addEventListener("mouseover", rainbow);
