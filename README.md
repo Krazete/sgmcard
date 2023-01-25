@@ -39,8 +39,9 @@ The optimal position parameters will be automatically set.
 
 The custom gradients allow you to override the default colors specified by the tier and element options.
 
-You can select one of the familiar presets, or you can make your own gradient.
-Your own gradient must follow follow the format of a list of `(color name or color number) (brightness percentage)` separated by commas.
+You can select one of the familiar presets, or you can make your own gradient via text input or the interactive preview bar.
+
+For text input, your gradient must be in the format of a list of paired values `COLOR BRIGHT%`, where `COLOR` is the color name or hex code and `BRIGHT` is the brightness value the color will be mapped to.
 
 ### GIF Support
 
@@ -60,22 +61,24 @@ The frame rate, quality, and transparency are not adjustable because GIFs are a 
 
 ### Gradient Maps
 
-Gradient maps are applied to images after running them through a series of canvas-based operations.
+Gradient maps are applied after running them through a series of canvas-based operations.
 
 1. Load an image, draw it in a canvas, and average the color values of each pixel to get brightness values (this formula isn't quite right, but it's good enough).
 2. Load the gradient map and draw it stretched out on a 256px by 1px canvas.
 3. Map the image brightness values `i` to the `i`th gradient value to get the mapped color.
 4. Draw the new data to a canvas and take the `dataURL` from that canvas to use as an image `src`.
 
+Foreground gradients are loaded from images in the [gradient](gradient) folder.
+
 Background gradients are not loaded from images because I could not find these gradient maps in the APK.
-Instead, I repeatedly adjusted colors and percentages and compared with cropped in-game screenshots in real time to achieve an acceptable approximation.
+Instead, I loaded cropped in-game screenshots as card art and repeatedly adjusted colors and percentages of the background gradient until I achieved an acceptable approximation.
 
 ### Image Transformations
 
 The interactive image editing tools use basic distance and angle formulas to adjust the CSS properties of the uploaded image.
 
 These operations depend on the position of initial mouse click.
-To make it work on mobile devices, only the first touch input is used and is treated as a mouse input. Scrolling and zooming is disabled when the card preview area is in use.
+To make it work on mobile devices, only the first touch input is used and is treated as a mouse input. Page scrolling and zooming is disabled when the card preview area is in use.
 
 ### Rendering
 
