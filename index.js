@@ -965,9 +965,18 @@ function getPercentFromPointer(pointer) {
 }
 
 function getColorFromPercent(percent) {
-    var i = 4 * Math.floor(256 * percent / 100);
-    var gradientData = getGradientDataFromCSL(bands);
-    return "#" + Array.from(gradientData.data.slice(i, i + 4)).map(e => e.toString(16).padStart(2, "0")).join(""); // temporary
+    var p = Math.floor(255 * percent / 100);
+    var color = "#";
+    if (bands.length) {
+        var gradientData = getGradientDataFromCSL(bands);
+        for (var i = 4 * p; i < 4 * p + 4; i++) {
+            color += gradientData.data[i].toString(16).padStart(2, "0");
+        }
+    }
+    else {
+        color += p.toString(16).padStart(2, "0").repeat(3);
+    }
+    return color;
 }
 
 function setSwatchPercent() {
