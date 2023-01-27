@@ -501,11 +501,11 @@ function getCSLFromBands(bands) {
     return colorStopList;
 }
 
-function getBandsFromCSL(csl) {
-    foreground.gradient.innerHTML = "";
+function getBandsFromCSL(bar, csl) {
+    bar.innerHTML = "";
     for (var cs of csl) {
-        console.log(new Band(cs.color, cs.stop));
-        foreground.gradient.appendChild(new Band(cs.color, cs.stop));
+        console.log(new Band(bar, cs.color, cs.stop));
+        bar.appendChild(new Band(bar, cs.color, cs.stop));
     }
 }
 
@@ -581,7 +581,7 @@ function selectTier() {
 
     var gradientURLOrCSL = "gradient/36.png";
     if (foreground.custom.checked) {
-        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : bands;
+        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : bands.fg;
     }
     else if (foreground.bronze.checked) {
         gradientURLOrCSL = "gradient/BronzeGradient.png";
@@ -675,7 +675,7 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
     if (background.custom.checked) {
-        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : bands;
+        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : bands.bg;
     }
     else if (background.fire.checked || background.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
@@ -890,8 +890,7 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var bands = [];
-var activeBand, gradientBox, swatchBox;
+var activeBand, activeBarBox, swatchBox;
 
 function closeSwatch(e) {
     var e0 = getPointer(e);
@@ -905,63 +904,66 @@ function closeSwatch(e) {
 function deleteSwatch() {
     closeSwatch(true);
     activeBand.element.remove();
-    var i = bands.indexOf(activeBand);
-    bands.splice(i, 1);
-    getTextFromBands();
+    var i = bands[activeBand.id].indexOf(activeBand);
+    bands[activeBand.id].splice(i, 1);
+    getTextFromBands(activeBand.id);
 }
 
-function Band(color, percent) {
+var bands = {"fg": [], "bg": []};
+
+function Band(bar, color, percent) {
     this.element = document.createElement("div");
     this.element.className = "band";
-    this.setPercent(percent);
+
+    this.bar = bar;
     this.setColor(color);
-    // maybe add to bands list
+    this.setPercent(percent);
+
+    this.id = bar.id.split("-")[0];
+    bands[this.id].push(this);
+
+    this.bar.appendChild(this.element);
     return this;
 }
 
 Band.prototype.setPercent = function (percent) {
     this.stop = percent || 0;
-    this.element.style.left = (percent || 0) + "%";
+    this.element.style.left = this.stop + "%";
 }
 
 Band.prototype.setColor = function (color) {
     this.color = color || "transparent";
-    this.element.style.background = color || "transparent";
+    this.element.style.background = this.color;
 }
 
 Band.prototype.delete = function () {
     closeSwatch(true);
     this.element.remove();
-    // maybe delete from bands list
-}
-
-function setSwatchHex2(colorName) {
-    document.head.style.borderColor = "transparent";
-    document.head.style.borderColor = colorName;
-
-    var color = getComputedStyle(document.head).borderColor;
-    swatch.hex.value = color;
-    picker.setColors([color]);
-
-    document.head.removeAttribute("style");
+    var i = bands[this.id].indexOf(this);
+    bands[this.id].splice(i, 1);
 }
 
 function sortedBands() {
-    return bands.sort((a, b) => a.stop - b.stop);
+    return bands[activeBand.id].sort((a, b) => a.stop - b.stop);
 }
 
-function getTextFromBands() {
+function getTextFromBands(type) {
     var pairs = [];
     for (var band of sortedBands()) {
         pairs.push(band.color + " " + band.stop + "%");
     }
-    foreground.input.value = pairs.join(", "); // should be variable with background too
-    foreground.gradient.style.backgroundImage = getLinearGradientFromCSL(bands);
+    if (activeBand.id == "fg") {
+        foreground.input.value = pairs.join(", ");
+    }
+    else if (activeBand.id == "bg") {
+        background.input.value = pairs.join(", ");
+    }
+    activeBand.bar.style.backgroundImage = getLinearGradientFromCSL(bands[type]);
     selectTier();
 }
 
 function getPercentFromPointer(pointer) {
-    return bound(Math.round(100 * (pointer.x - gradientBox.left) / gradientBox.width), 0, 100);
+    return bound(Math.round(100 * (pointer.x - activeBarBox.left) / activeBarBox.width), 0, 100);
 }
 
 function getColorFromPercent(percent) {
@@ -983,13 +985,13 @@ function setSwatchPercent() {
     boundInput(swatch.percent);
     activeBand.setPercent(swatch.percent.value);
     moveSwatch(); // unnecessarily sets swatch.percent.value
-    getTextFromBands();
+    getTextFromBands(activeBand.id);
 }
 
 function moveSwatch() {
     swatch.percent.value = activeBand.stop;
     swatch.window.style.left = bound(
-        scrollX + gradientBox.left - swatchBox.width / 2 + gradientBox.width * activeBand.stop / 100,
+        scrollX + activeBarBox.left - swatchBox.width / 2 + activeBarBox.width * activeBand.stop / 100,
         0, innerWidth - swatchBox.width
     ) + "px";
 }
@@ -999,8 +1001,9 @@ var eb0, trackerId;
 function onBandStart(e) {
     eb0 = getPointer(e);
     if (eb0.target.classList.contains("band")) {
-        gradientBox = eb0.target.parentElement.getBoundingClientRect();
-        for (var band of bands) {
+        bar = eb0.target.parentElement;
+        var id = bar.id.split("-")[0];
+        for (var band of bands[id]) {
             if (band.element == eb0.target) {
                 activeBand = band;
                 break;
@@ -1008,16 +1011,15 @@ function onBandStart(e) {
         }
     }
     else {
-        gradientBox = eb0.target.getBoundingClientRect();
+        bar = eb0.target;
+        activeBarBox = bar.getBoundingClientRect();
         var percent = getPercentFromPointer(eb0);
         var color = getColorFromPercent(percent);
-        activeBand = new Band(color, percent);
-        eb0.target.appendChild(activeBand.element);
-        bands.push(activeBand);
-        getTextFromBands();
+        activeBand = new Band(bar, color, percent);
+        getTextFromBands(activeBand.id);
     }
     swatchBox = swatch.window.getBoundingClientRect();
-    swatch.window.style.top = scrollY + gradientBox.top - swatchBox.height - 12 + "px";
+    swatch.window.style.top = scrollY + activeBarBox.top - swatchBox.height - 12 + "px";
     picker.setColors([activeBand.color]);
     swatch.hex.value = activeBand.color;
     trackBand();
@@ -1035,7 +1037,7 @@ function trackBand() {
     trackerId = requestAnimationFrame(trackBand);
     activeBand.setPercent(getPercentFromPointer(eb0));
     moveSwatch();
-    getTextFromBands();
+    getTextFromBands(activeBand.id);
 }
 
 function onBandMove(e) {
@@ -1057,26 +1059,26 @@ function onHexChange() {
     var color = swatch.hex.value;
     picker.setColors([color]);
     activeBand.setColor(color);
-    getTextFromBands();
+    getTextFromBands(activeBand.id);
 }
 
 function onIroChange() {
     var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
     swatch.hex.value = color;
     activeBand.setColor(color);
-    getTextFromBands();
+    getTextFromBands(activeBand.id);
 }
 
 function onCustomForegroundChange() {
     var csl = getCSLFromText(this.value);
     selectTier();
-    getBandsFromCSL(csl);
+    getBandsFromCSL(foreground.gradient, csl);
 }
 
 function onCustomBackgroundChange() {
     var csl = getCSLFromText(this.value);
     selectElement();
-    getBandsFromCSL(csl);
+    getBandsFromCSL(background.gradient, csl);
 }
 
 /* Render */
