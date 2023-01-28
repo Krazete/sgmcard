@@ -581,7 +581,7 @@ function selectTier() {
 
     var gradientURLOrCSL = "gradient/36.png";
     if (foreground.custom.checked) {
-        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : bands.fg;
+        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : specialCSL.fg;
     }
     else if (foreground.bronze.checked) {
         gradientURLOrCSL = "gradient/BronzeGradient.png";
@@ -675,7 +675,7 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
     if (background.custom.checked) {
-        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : bands.bg;
+        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : specialCSL.bg;
     }
     else if (background.fire.checked || background.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
@@ -890,45 +890,31 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var activeBand, activeGround, activeBarBox, swatchBox;
+var eb0, activeGround, activeGradientBox, activeBand, swatchBox, trackerId;
 
 function closeSwatch(e) {
-    var e0 = getPointer(e);
-    if (e === true || !swatch.window.contains(e0.target)) {
+    if (e === true || !swatch.window.contains(getPointer(e).target)) {
         swatch.window.style = "";
         window.removeEventListener("mousedown", closeSwatch);
         window.removeEventListener("touchstart", closeSwatch);
     }
 }
 
-function deleteSwatch() {
-    closeSwatch(true);
-    activeBand.element.remove();
-    var i = bands[activeBand.id].indexOf(activeBand);
-    bands[activeBand.id].splice(i, 1);
-    getTextFromBands(activeBand.id);
-}
-
-var bands = {"fg": [], "bg": []};
-
-function Band(bar, color, percent) {
+function Band(ground, color, percent) {
     this.element = document.createElement("div");
     this.element.className = "band";
-
-    this.bar = bar;
+    this.ground = ground;
     this.setColor(color);
     this.setPercent(percent);
 
-    this.id = bar.id.split("-")[0];
-    bands[this.id].push(this);
-
-    this.bar.appendChild(this.element);
+    specialCSL[ground].push(this);
+    if (ground == "fg") {
+        foreground.gradient.appendChild(this.element);
+    }
+    else if (ground == "bg") {
+        background.gradient.appendChild(this.element);        
+    }
     return this;
-}
-
-Band.prototype.setPercent = function (percent) {
-    this.stop = percent || 0;
-    this.element.style.left = this.stop + "%";
 }
 
 Band.prototype.setColor = function (color) {
@@ -936,43 +922,32 @@ Band.prototype.setColor = function (color) {
     this.element.style.background = this.color;
 }
 
+Band.prototype.setPercent = function (percent) {
+    this.stop = percent || 0;
+    this.element.style.left = this.stop + "%";
+}
+
 Band.prototype.delete = function () {
     closeSwatch(true);
     this.element.remove();
-    var i = bands[this.id].indexOf(this);
-    bands[this.id].splice(i, 1);
+    var i = specialCSL[this.ground].indexOf(this);
+    specialCSL[this.ground].splice(i, 1);
 }
 
-function sortedBands() {
-    return bands[activeBand.id].sort((a, b) => a.stop - b.stop);
-}
-
-function getTextFromBands(type) {
-    var pairs = [];
-    for (var band of sortedBands()) {
-        pairs.push(band.color + " " + band.stop + "%");
-    }
-    if (activeBand.id == "fg") {
-        foreground.input.value = pairs.join(", ");
-    }
-    else if (activeBand.id == "bg") {
-        background.input.value = pairs.join(", ");
-    }
-    activeBand.bar.style.backgroundImage = getLinearGradientFromCSL(bands[type]);
-    selectTier();
-}
-
-function getPercentFromPointer(pointer) {
-    return bound(Math.round(100 * (pointer.x - activeBarBox.left) / activeBarBox.width), 0, 100);
+function getPercentFromPointer() {
+    return bound(Math.round(100 * (eb0.x - activeGradientBox.left) / activeGradientBox.width), 0, 100);
 }
 
 function getColorFromPercent(percent) {
     var p = Math.floor(255 * percent / 100);
     var color = "#";
-    if (bands[activeGround].length) {
-        var gradientData = getGradientDataFromCSL(bands[activeGround]);
-        for (var i = 4 * p; i < 4 * p + 4; i++) {
-            color += gradientData.data[i].toString(16).padStart(2, "0");
+    if (specialCSL[activeGround].length) {
+        var gradientData = getGradientDataFromCSL(specialCSL[activeGround]);
+        for (var i = 0; i < 4; i++) {
+            var c = gradientData.data[4 * p + i];
+            if (i < 3 || c < 255) {
+                color += c.toString(16).padStart(2, "0");
+            }
         }
     }
     else {
@@ -981,30 +956,64 @@ function getColorFromPercent(percent) {
     return color;
 }
 
-function setSwatchPercent() {
-    boundInput(swatch.percent);
-    activeBand.setPercent(swatch.percent.value);
-    moveSwatch(); // unnecessarily sets swatch.percent.value
-    getTextFromBands(activeBand.id);
-}
-
-function moveSwatch() {
-    swatch.percent.value = activeBand.stop;
+function updateSwatchPosition() {
     swatch.window.style.left = bound(
-        scrollX + activeBarBox.left - swatchBox.width / 2 + activeBarBox.width * activeBand.stop / 100,
+        scrollX + activeGradientBox.left - swatchBox.width / 2 + activeGradientBox.width * activeBand.stop / 100,
         0, innerWidth - swatchBox.width
     ) + "px";
 }
 
-var eb0, trackerId;
+function updateHexListInputTextThing() { /* TODO */
+    specialCSL[activeGround].sort((a, b) => a.stop - b.stop);
+
+    var pairs = [];
+    for (var band of specialCSL[activeGround]) {
+        pairs.push(band.color + " " + band.stop + "%");
+    }
+    if (activeGround == "fg") {
+        foreground.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL[activeGround]);
+        foreground.input.value = pairs.join(", ");
+        selectTier();
+    }
+    else if (activeGround == "bg") {
+        background.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL[activeGround]);
+        background.input.value = pairs.join(", ");
+        selectElement();
+    }
+}
+
+function updatePicker() {
+    var color = activeBand.color;
+    if (color.match("#?(\d{3}\d?|\d{6}\d{2}?)")) {
+        if (color[0] != "#") {
+            color = "#" + color;
+        }
+    }
+    else {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        context.fillStyle = color;
+        color = context.fillStyle;
+    }
+    picker.setColors([color]);
+}
+
+function trackBand() {
+    trackerId = requestAnimationFrame(trackBand);
+    var percent = getPercentFromPointer();
+    activeBand.setPercent(percent);
+    swatch.percent.value = percent;
+    updateSwatchPosition();
+    updateHexListInputTextThing();
+}
 
 function onBandStart(e) {
     eb0 = getPointer(e);
     if (eb0.target.classList.contains("band")) {
-        bar = eb0.target.parentElement;
-        activeGround = bar.id.split("-")[0];
-        activeBarBox = bar.getBoundingClientRect();
-        for (var band of bands[activeGround]) {
+        gradient = eb0.target.parentElement;
+        activeGround = gradient.id.split("-")[0];
+        activeGradientBox = gradient.getBoundingClientRect();
+        for (var band of specialCSL[activeGround]) {
             if (band.element == eb0.target) {
                 activeBand = band;
                 break;
@@ -1012,20 +1021,20 @@ function onBandStart(e) {
         }
     }
     else {
-        bar = eb0.target;
-        activeGround = bar.id.split("-")[0];
-        activeBarBox = bar.getBoundingClientRect();
-        var percent = getPercentFromPointer(eb0);
+        gradient = eb0.target;
+        activeGround = gradient.id.split("-")[0];
+        activeGradientBox = gradient.getBoundingClientRect();
+        var percent = getPercentFromPointer();
         var color = getColorFromPercent(percent);
-        activeBand = new Band(bar, color, percent);
-        getTextFromBands(activeBand.id);
+        activeBand = new Band(activeGround, color, percent);
+        updateHexListInputTextThing();
     }
     swatchBox = swatch.window.getBoundingClientRect();
-    swatch.window.style.top = scrollY + activeBarBox.top - swatchBox.height - 12 + "px";
-    picker.setColors([activeBand.color]);
+    swatch.window.style.top = scrollY + activeGradientBox.top - swatchBox.height - 12 + "px";
+    updatePicker();
     swatch.hex.value = activeBand.color;
-    trackBand();
 
+    trackBand();
     document.body.className = "banding";
     window.removeEventListener("mousedown", closeSwatch);
     window.removeEventListener("touchstart", closeSwatch);
@@ -1033,13 +1042,6 @@ function onBandStart(e) {
     window.addEventListener("touchmove", onBandMove, {"passive": false});
     window.addEventListener("mouseup", onBandEnd);
     window.addEventListener("touchend", onBandEnd);
-}
-
-function trackBand() {
-    trackerId = requestAnimationFrame(trackBand);
-    activeBand.setPercent(getPercentFromPointer(eb0));
-    moveSwatch();
-    getTextFromBands(activeBand.id);
 }
 
 function onBandMove(e) {
@@ -1057,30 +1059,43 @@ function onBandEnd(e) {
     window.addEventListener("touchstart", closeSwatch, {"passive": false});
 }
 
-function onHexChange() {
-    var color = swatch.hex.value;
-    picker.setColors([color]);
-    activeBand.setColor(color);
-    getTextFromBands(activeBand.id);
-}
-
-function onIroChange() {
-    var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-    swatch.hex.value = color;
-    activeBand.setColor(color);
-    getTextFromBands(activeBand.id);
-}
-
-function onCustomForegroundChange() {
+function onCustomForegroundChange() { /* TODO */
     var csl = getCSLFromText(this.value);
     selectTier();
     getBandsFromCSL(foreground.gradient, csl);
 }
 
-function onCustomBackgroundChange() {
+function onCustomBackgroundChange() { /* TODO */
     var csl = getCSLFromText(this.value);
     selectElement();
     getBandsFromCSL(background.gradient, csl);
+}
+
+function onPickerChange() {
+    var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
+    activeBand.setColor(color);
+    swatch.hex.value = color;
+    updateHexListInputTextThing();
+}
+
+function onHexChange() {
+    var color = swatch.hex.value;
+    activeBand.setColor(color);
+    updatePicker();
+    updateHexListInputTextThing();
+}
+
+function onPercentInput() {
+    boundInput(swatch.percent);
+    activeBand.setPercent(swatch.percent.value);
+    updateSwatchPosition();
+    updateHexListInputTextThing();
+}
+
+function onDeleteClick() {
+    closeSwatch(true);
+    activeBand.delete();
+    updateHexListInputTextThing();
 }
 
 /* Render */
@@ -1410,10 +1425,10 @@ background.input.addEventListener("change", onCustomBackgroundChange);
 
 render.button.addEventListener("click", createCard);
 
-picker.on("color:change", onIroChange);
+picker.on("color:change", onPickerChange);
 swatch.hex.addEventListener("change", onHexChange);
-swatch.percent.addEventListener("input", setSwatchPercent);
-swatch.delete.addEventListener("click", deleteSwatch);
+swatch.percent.addEventListener("input", onPercentInput);
+swatch.delete.addEventListener("click", onDeleteClick);
 
 /* (Re)Initialize Options */
 
