@@ -890,7 +890,7 @@ function selectBackground() {
 
 /* Gradient Picker */
 
-var activeBand, activeBarBox, swatchBox;
+var activeBand, activeGround, activeBarBox, swatchBox;
 
 function closeSwatch(e) {
     var e0 = getPointer(e);
@@ -969,8 +969,8 @@ function getPercentFromPointer(pointer) {
 function getColorFromPercent(percent) {
     var p = Math.floor(255 * percent / 100);
     var color = "#";
-    if (bands.length) {
-        var gradientData = getGradientDataFromCSL(bands);
+    if (bands[activeGround].length) {
+        var gradientData = getGradientDataFromCSL(bands[activeGround]);
         for (var i = 4 * p; i < 4 * p + 4; i++) {
             color += gradientData.data[i].toString(16).padStart(2, "0");
         }
@@ -1002,8 +1002,9 @@ function onBandStart(e) {
     eb0 = getPointer(e);
     if (eb0.target.classList.contains("band")) {
         bar = eb0.target.parentElement;
-        var id = bar.id.split("-")[0];
-        for (var band of bands[id]) {
+        activeGround = bar.id.split("-")[0];
+        activeBarBox = bar.getBoundingClientRect();
+        for (var band of bands[activeGround]) {
             if (band.element == eb0.target) {
                 activeBand = band;
                 break;
@@ -1012,6 +1013,7 @@ function onBandStart(e) {
     }
     else {
         bar = eb0.target;
+        activeGround = bar.id.split("-")[0];
         activeBarBox = bar.getBoundingClientRect();
         var percent = getPercentFromPointer(eb0);
         var color = getColorFromPercent(percent);
