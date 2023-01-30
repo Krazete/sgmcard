@@ -318,7 +318,7 @@ function distanceFromArt0(x, y) {
 }
 
 function angleFromArt0(x, y) {
-    return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI + 90 * (Math.sign(x - art0.x) - 1);
+    return 180 * Math.atan((y - art0.y) / (x - art0.x)) / Math.PI - (x - art0.x < 0 ? 180 : 0);
 }
 
 function setCircle(x, y, r, t) { /* displays results as if unaffected by updateBounds */
