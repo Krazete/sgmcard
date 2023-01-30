@@ -541,7 +541,7 @@ function selectTier() {
 
     var gradientURLOrCSL = "gradient/36.png";
     if (override.fg.custom.checked) {
-        var fg = specialCSL.fg.filter(e => e.hex);
+        var fg = filteredBands(specialCSL.fg);
         gradientURLOrCSL = fg.length ? fg : specialCSL.error;
     }
     else if (override.fg.bronze.checked) {
@@ -636,7 +636,7 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
     if (override.bg.custom.checked) {
-        var bg = specialCSL.bg.filter(e => e.hex);
+        var bg = filteredBands(specialCSL.bg);
         gradientURLOrCSL = bg.length ? bg : specialCSL.error;
     }
     else if (override.bg.fire.checked || override.bg.default.checked && element.fire.checked) {
@@ -928,8 +928,14 @@ function getPercentFromPointer() {
     return bound(Math.round(100 * (eb0.x - activeGradientBox.left) / activeGradientBox.width), 0, 100);
 }
 
+function filteredBands(bands) {
+    return bands.filter(function (e) {
+        return e.hex;
+    });
+}
+
 function getColorFromPercent(percent) {
-    var validBands = specialCSL[activeGround].filter(e => e.hex);
+    var validBands = filteredBands(specialCSL[activeGround]);
     var p = Math.floor(255 * percent / 100);
     var color = "#";
     if (validBands.length) {
@@ -955,7 +961,9 @@ function updateSwatchPosition() {
 }
 
 function sortGround() {
-    specialCSL[activeGround].sort((a, b) => a.stop - b.stop);
+    specialCSL[activeGround].sort(function (a, b) {
+        return a.stop - b.stop;
+    });
 }
 
 function updateEverything() { /* update text input, gradient bar, and card front or back */
