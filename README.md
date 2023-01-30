@@ -35,6 +35,8 @@ You can also specify whether the image should overlap the top border of the card
 If the dimensions of your image is 360x340px, it is assumed to be from the [SGM Palette Editor](https://github.com/Krazete/sgmpalette).
 The optimal position parameters will be automatically set.
 
+If your image's file name follows the Palette Editor naming scheme, the card character name will also be automatically set.
+
 ### Custom Gradients
 
 The custom gradients allow you to override the default colors specified by the tier and element options.

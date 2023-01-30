@@ -731,6 +731,27 @@ function selectEnergy() {
 
 var artType = "";
 var artURL = "";
+var knownNames = {
+    "Annie": "Annie",
+    "Beowulf": "Beowulf",
+    "BigBand": "Big Band",
+    "HeavyMetal": "Big Band",
+    "BlackDahlia": "Black Dahlia",
+    "Cerebella": "Cerebella",
+    "Double": "Double",
+    "Eliza": "Eliza",
+    "Filia": "Filia",
+    "Fukua": "Fukua",
+    "Marie": "Marie",
+    "MsFortune": "Ms. Fortune",
+    "Painwheel": "Painwheel",
+    "Parasoul": "Parasoul",
+    "Peacock": "Peacock",
+    "RoboFortune": "Robo-Fortune",
+    "Squigly": "Squigly",
+    "Umbrella": "Umbrella",
+    "Valentine": "Valentine"
+};
 
 function selectArt() {
     var file = this.files[0];
@@ -759,6 +780,11 @@ function selectArt() {
             });
         });
         reader.readAsDataURL(file);
+        var prefix = file.name.split(/_|\./)[0];
+        if (prefix in knownNames) {
+            card.character.value = knownNames[prefix];
+            fitCardCharacter();
+        }
     }
 }
 
