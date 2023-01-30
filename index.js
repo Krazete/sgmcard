@@ -486,7 +486,7 @@ function getGradientDataFromCSL(csl) {
     var context = canvas.getContext("2d");
     canvas.height = 1;
     canvas.width = 256;
-    var fillStyle = context.createLinearGradient(0, 0, 256, 0);
+    var fillStyle = context.createLinearGradient(0, 0, 255, 0);
     fillStyle.addColorStop(0, "black");
     if (csl.length <= 0) {
         csl = specialCSL.error;
