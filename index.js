@@ -75,7 +75,7 @@ var art = {
     "over": document.getElementById("option-over")
 };
 
-var fbg = {
+var override = {
     "fg": {
         "default": document.getElementById("option-fg-default"),
         "custom": document.getElementById("option-fg-custom"),
@@ -540,38 +540,38 @@ function selectTier() {
     }
 
     var gradientURLOrCSL = "gradient/36.png";
-    if (fbg.fg.custom.checked) {
-        gradientURLOrCSL = specialCSL.fg == [] ? specialCSL.error : specialCSL.fg;
+    if (override.fg.custom.checked) {
+        gradientURLOrCSL = specialCSL.fg.length ? specialCSL.fg : specialCSL.error;
     }
-    else if (fbg.fg.bronze.checked) {
+    else if (override.fg.bronze.checked) {
         gradientURLOrCSL = "gradient/BronzeGradient.png";
     }
-    else if (fbg.fg.silver.checked) {
+    else if (override.fg.silver.checked) {
         gradientURLOrCSL = "gradient/SilverGradient.png";
     }
-    else if (fbg.fg.gold.checked) {
+    else if (override.fg.gold.checked) {
         gradientURLOrCSL = "gradient/GoldGradient.png";
     }
-    else if (fbg.fg.fire.checked || fbg.fg.default.checked && element.fire.checked) {
+    else if (override.fg.fire.checked || override.fg.default.checked && element.fire.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapFire.png";
     }
-    else if (fbg.fg.water.checked || fbg.fg.default.checked && element.water.checked) {
+    else if (override.fg.water.checked || override.fg.default.checked && element.water.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientWater.png";
     }
-    else if (fbg.fg.wind.checked || fbg.fg.default.checked && element.wind.checked) {
+    else if (override.fg.wind.checked || override.fg.default.checked && element.wind.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapWind.png";
     }
-    else if (fbg.fg.light.checked || fbg.fg.default.checked && element.light.checked) {
+    else if (override.fg.light.checked || override.fg.default.checked && element.light.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientLight.png";
     }
-    else if (fbg.fg.dark.checked || fbg.fg.default.checked && element.dark.checked) {
+    else if (override.fg.dark.checked || override.fg.default.checked && element.dark.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientDark.png";
     }
-    else if (fbg.fg.neutral.checked || fbg.fg.default.checked && element.neutral.checked) {
+    else if (override.fg.neutral.checked || override.fg.default.checked && element.neutral.checked) {
         gradientURLOrCSL = "gradient/DiamondGradientMapNeutralB.png";
     }
 
-    if (tier.diamond.checked && !element.none.checked || !tier.none.checked && !fbg.fg.default.checked) {
+    if (tier.diamond.checked && !element.none.checked || !tier.none.checked && !override.fg.default.checked) {
         Promise.all([
             loadColorizedImageURL(cardTopURL, gradientURLOrCSL),
             loadColorizedImageURL(cardBottomURL, gradientURLOrCSL),
@@ -598,14 +598,14 @@ function selectTier() {
     fitCardScore();
     fitCardLevel();
 
-    if (fbg.fg.default.checked) {
-        fbg.fg.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
+    if (override.fg.default.checked) {
+        override.fg.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
     }
     else if (gradientURLOrCSL.indexOf(".png") >= 0) {
-        fbg.fg.gradient.style.backgroundImage = "url('" + gradientURLOrCSL + "')";
+        override.fg.gradient.style.backgroundImage = "url('" + gradientURLOrCSL + "')";
     }
     else {
-        fbg.fg.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
+        override.fg.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
     }
 }
 
@@ -634,10 +634,10 @@ function selectElement() {
 
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
-    if (fbg.bg.custom.checked) {
-        gradientURLOrCSL = specialCSL.bg == [] ? specialCSL.error : specialCSL.bg;
+    if (override.bg.custom.checked) {
+        gradientURLOrCSL = specialCSL.bg.length ? specialCSL.bg : specialCSL.error;
     }
-    else if (fbg.bg.fire.checked || fbg.bg.default.checked && element.fire.checked) {
+    else if (override.bg.fire.checked || override.bg.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
             {"color": "#301", "stop": 0},
             {"color": "#c40818", "stop": 20},
@@ -645,7 +645,7 @@ function selectElement() {
             {"color": "#fb7", "stop": 100}
         ];
     }
-    else if (fbg.bg.water.checked || fbg.bg.default.checked && element.water.checked) {
+    else if (override.bg.water.checked || override.bg.default.checked && element.water.checked) {
         gradientURLOrCSL = [
             {"color": "#013", "stop": 0},
             {"color": "#06b", "stop": 20},
@@ -654,7 +654,7 @@ function selectElement() {
             {"color": "#40f4ff", "stop": 100}
         ];
     }
-    else if (fbg.bg.wind.checked || fbg.bg.default.checked && element.wind.checked) {
+    else if (override.bg.wind.checked || override.bg.default.checked && element.wind.checked) {
         gradientURLOrCSL = [
             {"color": "#010", "stop": 0},
             {"color": "#208038", "stop": 20},
@@ -662,7 +662,7 @@ function selectElement() {
             {"color": "#bf7", "stop": 100}
         ];
     }
-    else if (fbg.bg.light.checked || fbg.bg.default.checked && element.light.checked) {
+    else if (override.bg.light.checked || override.bg.default.checked && element.light.checked) {
         gradientURLOrCSL = [
             {"color": "#950", "stop": 0},
             {"color": "#db5", "stop": 20},
@@ -670,7 +670,7 @@ function selectElement() {
             {"color": "#fff", "stop": 100}
         ];
     }
-    else if (fbg.bg.dark.checked || fbg.bg.default.checked && element.dark.checked) {
+    else if (override.bg.dark.checked || override.bg.default.checked && element.dark.checked) {
         gradientURLOrCSL = [
             {"color": "#113", "stop": 0},
             {"color": "#536", "stop": 20},
@@ -678,7 +678,7 @@ function selectElement() {
             {"color": "#ead", "stop": 100}
         ];
     }
-    else if (fbg.bg.neutral.checked || fbg.bg.default.checked && element.neutral.checked) {
+    else if (override.bg.neutral.checked || override.bg.default.checked && element.neutral.checked) {
         gradientURLOrCSL = [
             {"color": "#333", "stop": 0},
             {"color": "#6b6b6b", "stop": 20},
@@ -687,7 +687,7 @@ function selectElement() {
         ];
     }
 
-    if (!element.none.checked || !fbg.bg.default.checked) {
+    if (!element.none.checked || !override.bg.default.checked) {
         loadColorizedImageURL(cardBackURL, gradientURLOrCSL).then(function (response) {
             card.back.src = response;
         });
@@ -696,15 +696,15 @@ function selectElement() {
         card.back.src = cardBackURL;
     }
 
-    if (tier.diamond.checked && fbg.fg.default.checked) {
+    if (tier.diamond.checked && override.fg.default.checked) {
         selectTier();
     }
 
-    if (fbg.bg.default.checked) {
-        fbg.bg.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
+    if (override.bg.default.checked) {
+        override.bg.gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL.error);
     }
     else {
-        fbg.bg.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
+        override.bg.gradient.style.backgroundImage = getLinearGradientFromCSL(gradientURLOrCSL);
     }
 }
 
@@ -810,25 +810,25 @@ function selectOverlap() {
 
 /* Gradient Picker */
 
-function selectfbg() {
-    activeGround = this.id.split("-")[1];
-    if (fbg[activeGround].default.checked) {
-        fbg[activeGround].gradient.classList.add("dim");
+function selectOverride() {
+    var ground = this.id.split("-")[1];
+    if (override[ground].default.checked) {
+        override[ground].gradient.classList.add("dim");
     }
     else {
-        fbg[activeGround].gradient.classList.remove("dim");
+        override[ground].gradient.classList.remove("dim");
     }
-    if (fbg[activeGround].custom.checked) {
-        fbg[activeGround].gradient.classList.remove("disabled");
-        fbg[activeGround].input.classList.remove("disabled");
-        fbg[activeGround].input.classList.remove("dim");
+    if (override[ground].custom.checked) {
+        override[ground].gradient.classList.remove("disabled");
+        override[ground].input.classList.remove("disabled");
+        override[ground].input.classList.remove("dim");
     }
     else {
-        fbg[activeGround].gradient.classList.add("disabled");
-        fbg[activeGround].input.classList.add("disabled");
-        fbg[activeGround].input.classList.add("dim");
+        override[ground].gradient.classList.add("disabled");
+        override[ground].input.classList.add("disabled");
+        override[ground].input.classList.add("dim");
     }
-    fbg[activeGround].update();
+    override[ground].update();
 }
 
 var eb0, activeGround, activeGradientBox, activeBand, swatchBox, trackerId;
@@ -849,7 +849,7 @@ function Band(ground, color, percent) {
     this.setPercent(percent);
 
     specialCSL[ground].push(this);
-    fbg[ground].gradient.appendChild(this.element);
+    override[ground].gradient.appendChild(this.element);
     return this;
 }
 
@@ -903,15 +903,15 @@ function sortGround() {
     specialCSL[activeGround].sort((a, b) => a.stop - b.stop);
 }
 
-function updateHexListInputTextThing() { /* TODO */
+function updateGradientAndInput() {
     sortGround();
     var pairs = [];
     for (var band of specialCSL[activeGround]) {
         pairs.push(band.color + " " + band.stop + "%");
     }
-    fbg[activeGround].gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL[activeGround]);
-    fbg[activeGround].input.value = pairs.join(", ");
-    fbg[activeGround].update();
+    override[activeGround].gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL[activeGround]);
+    override[activeGround].input.value = pairs.join(", ");
+    override[activeGround].update();
 }
 
 function updatePicker() {
@@ -943,15 +943,14 @@ function trackBand() {
     activeBand.setPercent(percent);
     swatch.percent.value = percent;
     updateSwatchPosition();
-    updateHexListInputTextThing();
+    updateGradientAndInput();
 }
 
 function onBandStart(e) {
     eb0 = getPointer(e);
+    activeGround = this.id.split("-")[0]; /* this is always a gradient element */
+    activeGradientBox = this.getBoundingClientRect();
     if (eb0.target.classList.contains("band")) {
-        gradient = eb0.target.parentElement;
-        activeGround = gradient.id.split("-")[0];
-        activeGradientBox = gradient.getBoundingClientRect();
         for (var band of specialCSL[activeGround]) {
             if (band.element == eb0.target) {
                 activeBand = band;
@@ -960,13 +959,10 @@ function onBandStart(e) {
         }
     }
     else {
-        gradient = eb0.target;
-        activeGround = gradient.id.split("-")[0];
-        activeGradientBox = gradient.getBoundingClientRect();
         var percent = getPercentFromPointer();
         var color = getColorFromPercent(percent);
         activeBand = new Band(activeGround, color, percent);
-        updateHexListInputTextThing();
+        updateGradientAndInput();
     }
     swatchBox = swatch.window.getBoundingClientRect();
     swatch.window.style.top = scrollY + activeGradientBox.top - swatchBox.height - 12 + "px";
@@ -1002,7 +998,7 @@ function onPickerChange() {
     var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
     activeBand.setColor(color);
     swatch.hex.value = color;
-    updateHexListInputTextThing();
+    updateGradientAndInput();
 }
 
 function boundColor(color) {
@@ -1014,24 +1010,24 @@ function onHexChange() {
     var color = swatch.hex.value;
     activeBand.setColor(color);
     updatePicker();
-    updateHexListInputTextThing();
+    updateGradientAndInput();
 }
 
 function onPercentInput() {
     boundInput(swatch.percent);
     activeBand.setPercent(swatch.percent.value);
     updateSwatchPosition();
-    updateHexListInputTextThing();
+    updateGradientAndInput();
 }
 
 function onDeleteClick() {
     closeSwatch(true);
     activeBand.delete();
-    updateHexListInputTextThing();
+    updateGradientAndInput();
 }
 
 function getBandListFromText(text) {
-    fbg[activeGround].gradient.innerHTML = "";
+    override[activeGround].gradient.innerHTML = "";
     specialCSL[activeGround] = [];
 
     var matches = text.match(/#?\w+\s+-?\d+(\.\d+)?/g);
@@ -1045,7 +1041,7 @@ function getBandListFromText(text) {
 function onCustomInputChange() {
     activeGround = this.id.split("-")[1];
     getBandListFromText(this.value);
-    fbg[activeGround].update();
+    override[activeGround].update();
 }
 
 /* Render */
@@ -1355,15 +1351,15 @@ art.a.addEventListener("input", setA);
 art.over.addEventListener("click", selectOverlap);
 art.under.addEventListener("click", selectOverlap);
 
-for (var g in fbg) {
-    for (var option in fbg[g]) {
-        if (fbg[g][option].type == "radio") {
-            fbg[g][option].addEventListener("click", selectfbg);
+for (var ground in override) {
+    for (var option in override[ground]) {
+        if (override[ground][option].type == "radio") {
+            override[ground][option].addEventListener("click", selectOverride);
         }
     }
-    fbg[g].gradient.addEventListener("mousedown", onBandStart);
-    fbg[g].gradient.addEventListener("touchstart", onBandStart);
-    fbg[g].input.addEventListener("change", onCustomInputChange);
+    override[ground].gradient.addEventListener("mousedown", onBandStart);
+    override[ground].gradient.addEventListener("touchstart", onBandStart);
+    override[ground].input.addEventListener("change", onCustomInputChange);
 }
 
 render.button.addEventListener("click", createCard);
@@ -1382,8 +1378,8 @@ window.addEventListener("load", function () {
     updateBounds();
     art.under.click();
     art.move.click();
-    fbg.fg.default.click();
-    fbg.bg.default.click();
+    override.fg.default.click();
+    override.bg.default.click();
 });
 
 /* Unload Warning */
