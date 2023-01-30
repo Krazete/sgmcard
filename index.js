@@ -470,15 +470,20 @@ function loadColorizedImageURL(imageURL, gradientURLOrCSL) {
 }
 
 function getLinearGradientFromCSL(csl) {
-    var linearGradient = "linear-gradient(to right, black 0%, ";
+    var values = ["to right"];
     if (csl.length <= 0) {
         csl = specialCSL.error;
     }
-    for (var cs of csl) {
-        linearGradient += cs.color + " " + cs.stop + "%, ";
+    if (csl[0].stop > 0) {
+        values.push("black 0%");
     }
-    linearGradient += "white 100%";
-    return linearGradient;
+    for (var cs of csl) {
+        values.push(cs.color + " " + cs.stop + "%");
+    }
+    if (cs.stop < 100) {
+        values.push("white 100%");
+    }
+    return "linear-gradient(" + values.join(", ") + ")";
 }
 
 function getGradientDataFromCSL(csl) {
@@ -487,14 +492,18 @@ function getGradientDataFromCSL(csl) {
     canvas.height = 1;
     canvas.width = 256;
     var fillStyle = context.createLinearGradient(0, 0, 255, 0);
-    fillStyle.addColorStop(0, "black");
     if (csl.length <= 0) {
         csl = specialCSL.error;
+    }
+    if (csl[0].stop > 0) {
+        fillStyle.addColorStop(0, "black");
     }
     for (var cs of csl) {
         fillStyle.addColorStop(cs.stop / 100, cs.color);
     }
-    fillStyle.addColorStop(1, "white");
+    if (cs.stop < 100) {
+        fillStyle.addColorStop(1, "white");
+    }
     context.fillStyle = fillStyle;
     context.fillRect(0, 0, 256, 1);
     return context.getImageData(0, 0, canvas.width, canvas.height);
@@ -1082,11 +1091,13 @@ function generateBandsFromText(text) {
     
     var colorstopPattern = /#?\w+\s+-?\d+(\.\d+)?/g;
     var matches = text.match(colorstopPattern);
-    for (var match of matches) {
-        var colorstop = match.split(/\s+/);
-        new Band(activeGround, colorstop[0], colorstop[1]);
+    if (matches) {
+        for (var match of matches) {
+            var colorstop = match.split(/\s+/);
+            new Band(activeGround, colorstop[0], colorstop[1]);
+        }
+        sortGround();
     }
-    sortGround();
 }
 
 function onCustomInputChange() {
