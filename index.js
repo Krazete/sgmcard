@@ -754,36 +754,38 @@ var knownNames = {
 };
 
 function selectArt() {
-    var file = this.files[0];
-    if (/image\//.test(file.type)) {
-        var reader = new FileReader();
-        reader.addEventListener("load", function () {
-            /* fixes orientation rendering issue, but allows gifs to animate */
-            loadImage(this.result).then(function (image) {
-                artType = file.type;
-                if (artType == "image/gif") {
-                    artURL = image.src;
-                }
-                else {
-                    var imageData = getImageDataFromImage(image);
-                    artURL = getImageURLFromImageData(imageData);
-                    if (imageData.width == 360 && imageData.height == 340) {
-                        art.x.value = 198;
-                        art.y.value = 174;
-                        art.w.value = 362;
-                        art.a.value = 0;
-                        setW();
-                        setA();
+    if (this.files.length) {
+        var file = this.files[0];
+        if (file.type.includes("image/")) {
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                /* fixes orientation rendering issue, but allows gifs to animate */
+                loadImage(this.result).then(function (image) {
+                    artType = file.type;
+                    if (artType == "image/gif") {
+                        artURL = image.src;
                     }
-                }
-                card.art.src = artURL;
+                    else {
+                        var imageData = getImageDataFromImage(image);
+                        artURL = getImageURLFromImageData(imageData);
+                        if (imageData.width == 360 && imageData.height == 340) {
+                            art.x.value = 198;
+                            art.y.value = 174;
+                            art.w.value = 362;
+                            art.a.value = 0;
+                            setW();
+                            setA();
+                        }
+                    }
+                    card.art.src = artURL;
+                });
             });
-        });
-        reader.readAsDataURL(file);
-        var prefix = file.name.split(/_|\./)[0];
-        if (prefix in knownNames) {
-            card.character.value = knownNames[prefix];
-            fitCardCharacter();
+            reader.readAsDataURL(file);
+            var prefix = file.name.split(/_|\./)[0];
+            if (prefix in knownNames) {
+                card.character.value = knownNames[prefix];
+                fitCardCharacter();
+            }
         }
     }
 }
@@ -942,7 +944,7 @@ function updateGradientAndInput() {
 
 function updatePicker() {
     var color = activeBand.color;
-    if (color.match(/^#?(\d{3}\d?|\d{6}\d{2}?)$/g)) {
+    if (/^#?(\d{3}\d?|\d{6}\d{2}?)$/.test(color)) {
         if (color[0] != "#") {
             color = "#" + color;
         }
@@ -1149,10 +1151,10 @@ function renderCard(opaque) {
                 var clipPoint = clipPoints[i].match(singlePattern);
                 var x = parseFloat(clipPoint[0]);
                 var y = parseFloat(clipPoint[1]);
-                if (/%/.test(clipPoint[0])) {
+                if (clipPoint[0].includes("%")) {
                     x *= imageBox.width / 100;
                 }
-                if (/%/.test(clipPoint[1])) {
+                if (clipPoint[1].includes("%")) {
                     y *= imageBox.height / 100;
                 }
                 x += imageBox.left - previewBox.left;
