@@ -541,7 +541,8 @@ function selectTier() {
 
     var gradientURLOrCSL = "gradient/36.png";
     if (override.fg.custom.checked) {
-        gradientURLOrCSL = specialCSL.fg.length ? specialCSL.fg : specialCSL.error;
+        var fg = specialCSL.fg.filter(e => e.hex);
+        gradientURLOrCSL = fg.length ? fg : specialCSL.error;
     }
     else if (override.fg.bronze.checked) {
         gradientURLOrCSL = "gradient/BronzeGradient.png";
@@ -635,7 +636,8 @@ function selectElement() {
     var cardBackURL = "fragment/GreyBackground.png";
     var gradientURLOrCSL = "gradient/36.png";
     if (override.bg.custom.checked) {
-        gradientURLOrCSL = specialCSL.bg.length ? specialCSL.bg : specialCSL.error;
+        var bg = specialCSL.bg.filter(e => e.hex);
+        gradientURLOrCSL = bg.length ? bg : specialCSL.error;
     }
     else if (override.bg.fire.checked || override.bg.default.checked && element.fire.checked) {
         gradientURLOrCSL = [
@@ -861,6 +863,24 @@ function selectOverride() {
 
 var eb0, activeGround, activeGradientBox, activeBand, swatchBox, trackerId;
 
+function getHex(color) {
+    var validhexPattern = /^#([\da-f]{3}[\da-f]?|[\da-f]{6}([\da-f]{2})?)$/i;
+    if (validhexPattern.test(color)) {
+        return color;
+    }
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    try {
+        var linearGradient = context.createLinearGradient(0, 0, 0, 0);
+        linearGradient.addColorStop(0, color);
+    }
+    catch {
+        return false;
+    }
+    context.fillStyle = color;
+    return context.fillStyle;
+}
+
 function closeSwatch(e) {
     if (e === true || !swatch.window.contains(getPointer(e).target)) {
         swatch.window.style = "";
@@ -883,7 +903,13 @@ function Band(ground, color, percent) {
 
 Band.prototype.setColor = function (color) {
     this.color = color || "transparent";
-    this.element.style.background = this.color;
+    this.hex = getHex(color);
+    if (this.hex) {
+        this.element.style.background = this.color;
+    }
+    else {
+        this.element.style.background = "linear-gradient(black, red, white, red, black)";
+    }
 }
 
 Band.prototype.setPercent = function (percent) {
@@ -903,10 +929,11 @@ function getPercentFromPointer() {
 }
 
 function getColorFromPercent(percent) {
+    var validBands = specialCSL[activeGround].filter(e => e.hex);
     var p = Math.floor(255 * percent / 100);
     var color = "#";
-    if (specialCSL[activeGround].length) {
-        var gradientData = getGradientDataFromCSL(specialCSL[activeGround]);
+    if (validBands.length) {
+        var gradientData = getGradientDataFromCSL(validBands);
         for (var i = 0; i < 4; i++) {
             var c = gradientData.data[4 * p + i];
             if (i < 3 || c < 255) {
@@ -931,38 +958,28 @@ function sortGround() {
     specialCSL[activeGround].sort((a, b) => a.stop - b.stop);
 }
 
-function updateGradientAndInput() {
+function updateEverything() { /* update text input, gradient bar, and card front or back */
     sortGround();
     var pairs = [];
     for (var band of specialCSL[activeGround]) {
         pairs.push(band.color + " " + band.stop + "%");
     }
-    override[activeGround].gradient.style.backgroundImage = getLinearGradientFromCSL(specialCSL[activeGround]);
     override[activeGround].input.value = pairs.join(", ");
     override[activeGround].update();
 }
 
-function updatePicker() {
-    var color = activeBand.color;
-    if (/^#?(\d{3}\d?|\d{6}\d{2}?)$/.test(color)) {
-        if (color[0] != "#") {
-            color = "#" + color;
-        }
+function updateSwatch() {
+    if (activeBand.hex) {
+        swatch.window.classList.remove("invalid");
     }
     else {
-        var canvas = document.createElement("canvas");
-        var context = canvas.getContext("2d");
-        try {
-            var linearGradient = context.createLinearGradient(0, 0, 1, 1);
-            linearGradient.addColorStop(0, color);
-        }
-        catch {
-            color = "black";
-        }
-        context.fillStyle = color;
-        color = context.fillStyle;
+        swatch.window.classList.add("invalid");
     }
-    picker.setColors([color]);
+}
+
+function updatePicker() {
+    picker.setColors([activeBand.hex]);
+    updateSwatch();
 }
 
 function trackBand() {
@@ -971,7 +988,7 @@ function trackBand() {
     activeBand.setPercent(percent);
     swatch.percent.value = percent;
     updateSwatchPosition();
-    updateGradientAndInput();
+    updateEverything();
 }
 
 function onBandStart(e) {
@@ -990,7 +1007,7 @@ function onBandStart(e) {
         var percent = getPercentFromPointer();
         var color = getColorFromPercent(percent);
         activeBand = new Band(activeGround, color, percent);
-        updateGradientAndInput();
+        updateEverything();
     }
     swatchBox = swatch.window.getBoundingClientRect();
     swatch.window.style.top = scrollY + activeGradientBox.top - swatchBox.height - 12 + "px";
@@ -1026,11 +1043,8 @@ function onPickerChange() {
     var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
     activeBand.setColor(color);
     swatch.hex.value = color;
-    updateGradientAndInput();
-}
-
-function boundColor(color) {
-
+    updateSwatch();
+    updateEverything();
 }
 
 function onHexChange() {
@@ -1038,37 +1052,38 @@ function onHexChange() {
     var color = swatch.hex.value;
     activeBand.setColor(color);
     updatePicker();
-    updateGradientAndInput();
+    updateEverything();
 }
 
 function onPercentInput() {
     boundInput(swatch.percent);
     activeBand.setPercent(swatch.percent.value);
     updateSwatchPosition();
-    updateGradientAndInput();
+    updateEverything();
 }
 
 function onDeleteClick() {
     closeSwatch(true);
     activeBand.delete();
-    updateGradientAndInput();
+    updateEverything();
 }
 
-function getBandListFromText(text) {
+function generateBandsFromText(text) {
     override[activeGround].gradient.innerHTML = "";
     specialCSL[activeGround] = [];
-
-    var matches = text.match(/#?\w+\s+-?\d+(\.\d+)?/g);
+    
+    var colorstopPattern = /#?\w+\s+-?\d+(\.\d+)?/g;
+    var matches = text.match(colorstopPattern);
     for (var match of matches) {
-        var cspair = match.split(/\s+/);
-        new Band(activeGround, cspair[0], cspair[1]);
+        var colorstop = match.split(/\s+/);
+        new Band(activeGround, colorstop[0], colorstop[1]);
     }
     sortGround();
 }
 
 function onCustomInputChange() {
     activeGround = this.id.split("-")[1];
-    getBandListFromText(this.value);
+    generateBandsFromText(this.value);
     override[activeGround].update();
 }
 
