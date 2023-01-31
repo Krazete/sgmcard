@@ -58,7 +58,6 @@ function convertToScrubber(input) {
     function onMouseDown(e) {
         var ex = 0;
         if (e.touches) {
-            e.preventDefault();
             ex = e.touches[0].clientX;
         }
         else {

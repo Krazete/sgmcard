@@ -149,9 +149,11 @@ var picker = new iro.ColorPicker("#iro", {
 
 /* General Functions */
 
-function getPointer(e) {
+function getPointer(e, preventDefault) { /* preventDefault on touchmove, not on touchstart */
     if (e.touches) {
-        e.preventDefault();
+        if (preventDefault) {
+            e.preventDefault();
+        }
         return {
             "x": e.touches[0].clientX,
             "y": e.touches[0].clientY,
@@ -363,7 +365,7 @@ function onPoseStart(e) {
 }
 
 function onPoseMove(e) {
-    var e1 = getPointer(e);
+    var e1 = getPointer(e, true);
     if (mode == "move") {
         var preview = document.getElementById("preview");
         var previewBox = preview.getBoundingClientRect();
@@ -1042,7 +1044,7 @@ function onBandStart(e) {
 }
 
 function onBandMove(e) {
-    eb0 = getPointer(e);
+    eb0 = getPointer(e, true);
 }
 
 function onBandEnd(e) {
