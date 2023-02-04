@@ -5,17 +5,17 @@
 
 @font-face {
     font-family: 'Washington';
-    src: url(font/WashingtonBoldDynamic.otf);
+    src: url(./font/WashingtonBoldDynamic.otf);
 }
 
 @font-face {
     font-family: 'Cinema';
-    src: url(font/TBCinemaRGothic-M.ttf);
+    src: url(./font/TBCinemaRGothic-M.ttf);
 }
 
 @font-face {
     font-family: 'Dodam';
-    src: url(font/Typo_DodamM.ttf);
+    src: url(./font/Typo_DodamM.ttf);
 }
 
 body {

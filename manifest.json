@@ -1,0 +1,17 @@
+{
+    "lang": "en-us",
+    "name": "Skullgirls Mobile Card Creator",
+    "short_name": "SGM Card",
+    "description": "A simple tool for creating your own custom Skullgirls Mobile fighter cards.",
+    "start_url": "./",
+    "background_color": "#ccb55a",
+    "theme_color": "#314c73",
+    "orientation": "any",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "./fragment/SkullTier.png",
+            "sizes": "60x64"
+        }
+    ]
+}

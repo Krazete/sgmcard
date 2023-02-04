@@ -523,64 +523,64 @@ function selectTier() {
     }
     else if (tier.bronze.checked) {
         preview.className = "bronze";
-        cardTopURL = "fragment/BronzeTop.png";
-        cardBottomURL = "fragment/BronzeBottom.png";
-        cardScoreURL = "fragment/BronzeElement.png";
-        cardBadgeURL = "fragment/BronzeLevel.png";
+        cardTopURL = "./fragment/BronzeTop.png";
+        cardBottomURL = "./fragment/BronzeBottom.png";
+        cardScoreURL = "./fragment/BronzeElement.png";
+        cardBadgeURL = "./fragment/BronzeLevel.png";
     }
     else if (tier.silver.checked) {
         preview.className = "silver";
-        cardTopURL = "fragment/SilverTop.png";
-        cardBottomURL = "fragment/SilverBottom.png";
-        cardScoreURL = "fragment/SilverElement.png";
-        cardBadgeURL = "fragment/SilverLevel.png";
+        cardTopURL = "./fragment/SilverTop.png";
+        cardBottomURL = "./fragment/SilverBottom.png";
+        cardScoreURL = "./fragment/SilverElement.png";
+        cardBadgeURL = "./fragment/SilverLevel.png";
     }
     else if (tier.gold.checked) {
         preview.className = "gold";
-        cardTopURL = "fragment/GoldTop.png";
-        cardBottomURL = "fragment/GoldBottom.png";
-        cardScoreURL = "fragment/GoldElement.png";
-        cardBadgeURL = "fragment/GoldLevel.png";
+        cardTopURL = "./fragment/GoldTop.png";
+        cardBottomURL = "./fragment/GoldBottom.png";
+        cardScoreURL = "./fragment/GoldElement.png";
+        cardBadgeURL = "./fragment/GoldLevel.png";
     }
     else if (tier.diamond.checked) {
         preview.className = "diamond";
-        cardTopURL = "fragment/DiamondTop.png";
-        cardBottomURL = "fragment/DiamondBottom.png";
-        cardScoreURL = "fragment/DiamondElement.png";
-        cardBadgeURL = "fragment/DiamondLevel.png";
+        cardTopURL = "./fragment/DiamondTop.png";
+        cardBottomURL = "./fragment/DiamondBottom.png";
+        cardScoreURL = "./fragment/DiamondElement.png";
+        cardBadgeURL = "./fragment/DiamondLevel.png";
     }
 
-    var gradientURLOrCSL = "gradient/36.png";
+    var gradientURLOrCSL = "./gradient/36.png";
     if (override.fg.custom.checked) {
         var fg = filteredBands(specialCSL.fg);
         gradientURLOrCSL = fg.length ? fg : specialCSL.error;
     }
     else if (override.fg.bronze.checked) {
-        gradientURLOrCSL = "gradient/BronzeGradient.png";
+        gradientURLOrCSL = "./gradient/BronzeGradient.png";
     }
     else if (override.fg.silver.checked) {
-        gradientURLOrCSL = "gradient/SilverGradient.png";
+        gradientURLOrCSL = "./gradient/SilverGradient.png";
     }
     else if (override.fg.gold.checked) {
-        gradientURLOrCSL = "gradient/GoldGradient.png";
+        gradientURLOrCSL = "./gradient/GoldGradient.png";
     }
     else if (override.fg.fire.checked || override.fg.default.checked && element.fire.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientMapFire.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientMapFire.png";
     }
     else if (override.fg.water.checked || override.fg.default.checked && element.water.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientWater.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientWater.png";
     }
     else if (override.fg.wind.checked || override.fg.default.checked && element.wind.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientMapWind.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientMapWind.png";
     }
     else if (override.fg.light.checked || override.fg.default.checked && element.light.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientLight.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientLight.png";
     }
     else if (override.fg.dark.checked || override.fg.default.checked && element.dark.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientDark.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientDark.png";
     }
     else if (override.fg.neutral.checked || override.fg.default.checked && element.neutral.checked) {
-        gradientURLOrCSL = "gradient/DiamondGradientMapNeutralB.png";
+        gradientURLOrCSL = "./gradient/DiamondGradientMapNeutralB.png";
     }
 
     if (tier.diamond.checked && !element.none.checked || !tier.none.checked && !override.fg.default.checked) {
@@ -626,26 +626,26 @@ function selectElement() {
         card.element.src = "";
     }
     else if (element.fire.checked) {
-        card.element.src = "fragment/ElementalIconFire.png";
+        card.element.src = "./fragment/ElementalIconFire.png";
     }
     else if (element.water.checked) {
-        card.element.src = "fragment/ElementalIconWater.png";
+        card.element.src = "./fragment/ElementalIconWater.png";
     }
     else if (element.wind.checked) {
-        card.element.src = "fragment/ElementalIconWind.png";
+        card.element.src = "./fragment/ElementalIconWind.png";
     }
     else if (element.light.checked) {
-        card.element.src = "fragment/ElementalIconLight.png";
+        card.element.src = "./fragment/ElementalIconLight.png";
     }
     else if (element.dark.checked) {
-        card.element.src = "fragment/ElementalIconDark.png";
+        card.element.src = "./fragment/ElementalIconDark.png";
     }
     else if (element.neutral.checked) {
-        card.element.src = "fragment/ElementalIconNeutral.png";
+        card.element.src = "./fragment/ElementalIconNeutral.png";
     }
 
-    var cardBackURL = "fragment/GreyBackground.png";
-    var gradientURLOrCSL = "gradient/36.png";
+    var cardBackURL = "./fragment/GreyBackground.png";
+    var gradientURLOrCSL = "./gradient/36.png";
     if (override.bg.custom.checked) {
         var bg = filteredBands(specialCSL.bg);
         gradientURLOrCSL = bg.length ? bg : specialCSL.error;
@@ -724,13 +724,13 @@ function selectElement() {
 function selectEnergy() {
     var boltURL = "";
     if (energy.yellow.checked) {
-        boltURL = "fragment/EnergyIcon.png";
+        boltURL = "./fragment/EnergyIcon.png";
     }
     else if (energy.blue.checked) {
-        boltURL = "fragment/EnergyIcon-Blue.png";
+        boltURL = "./fragment/EnergyIcon-Blue.png";
     }
     else if (energy.blank.checked) {
-        boltURL = "fragment/EnergyBlank.png";
+        boltURL = "./fragment/EnergyBlank.png";
     }
     card.energy.innerHTML = "";
     if (!energy.none.checked) {
@@ -1332,7 +1332,7 @@ function createAnimatedCard() {
             var encoder = new GIF({
                 "quality": 64,
                 "workers": 8,
-                "workerScript": "library/gif-js/gif.worker.js"
+                "workerScript": "./library/gif-js/gif.worker.js"
             });
             for (var i in responses) {
                 encoder.addFrame(responses[i].opaque, {"delay": 1});
