@@ -1,7 +1,7 @@
 const VERSION = "3.0.0"; /* update whenever anything changes */
 
 self.addEventListener("install", event => {
-    console.log("PWA Install Version " + VERSION);
+    // console.log("PWA Install: " + VERSION);
     event.waitUntil((async () => {
         const assets = [
             "./",
@@ -77,12 +77,12 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-    console.log("PWA Activate Version" + VERSION);
+    // console.log("PWA Activate: " + VERSION);
     event.waitUntil((async () => {
         const keys = await caches.keys();
         keys.forEach(async (key) => {
             if (key !== VERSION) {
-                console.log("PWA Delete Version " + key);
+                // console.log("PWA Delete: " + key);
                 await caches.delete(key);
             }
         });
@@ -90,7 +90,7 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
-    console.log("PWA Fetch");
+    // console.log("PWA Fetch: " + VERSION);
     event.respondWith((async () => {
         const cache = await caches.open(VERSION);
         const cacheResponse = await cache.match(event.request);
