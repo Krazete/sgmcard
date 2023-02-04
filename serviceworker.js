@@ -104,7 +104,7 @@ self.addEventListener("fetch", event => {
                 return fetchResponse;
             }
             catch (e) {
-                console.warn(e);
+                // console.warn(e);
             }
         }
     })());
