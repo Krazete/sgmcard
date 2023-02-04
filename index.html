@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="description" content="A simple tool for creating your own custom Skullgirls Mobile fighter cards.">
         <title>Skullgirls Mobile Card Creator</title>
-        <link rel="shortcut icon" type="image/png" href="./fragment/SkullTier.png">
-        <link rel="stylesheet" href="./index.css"></link>
+        <link rel="shortcut icon" type="image/png" href="fragment/SkullTier.png">
+        <link rel="stylesheet" href="index.css"></link>
         <!-- START PWA -->
         <link rel="manifest" href="./manifest.json">
         <script>
@@ -15,19 +15,19 @@
         </script>
         <!-- END PWA -->
         <!-- START GIF SUPPORT -->
-        <script src="./library/libgif-js/libgif.js"></script>
-        <script src="./library/gif-js/gif.js"></script>
-        <script src="./library/jszip/jszip.min.js"></script>
-        <script src="./library/FileSaver-js/FileSaver.min.js"></script>
+        <script src="library/libgif-js/libgif.js"></script>
+        <script src="library/gif-js/gif.js"></script>
+        <script src="library/jszip/jszip.min.js"></script>
+        <script src="library/FileSaver-js/FileSaver.min.js"></script>
         <!-- END GIF SUPPORT -->
-        <script src="./library/iro.min.js"></script>
-        <script src="./library/jsscrub.js"></script>
-        <script src="./index.js"></script>
+        <script src="library/iro.min.js"></script>
+        <script src="library/jsscrub.js"></script>
+        <script src="index.js"></script>
     </head>
     <body>
         <div id="menu">
             <a target="_blank" href="https://ko-fi.com/krazete" id="kofi">
-                <img src="./menu/kofi.png">
+                <img src="menu/kofi.png">
             </a>
             <h1>
                 <a target="_blank" href="https://github.com/Krazete/sgmcard">Skullgirls Mobile Card Creator</a>
@@ -69,43 +69,43 @@
                     <div>
                         <h2>Tier</h2>
                         <input type="radio" name="tier" id="option-no-tier" checked>
-                        <label for="option-no-tier"><img src="./menu/constraints_no.png"></label>
+                        <label for="option-no-tier"><img src="menu/constraints_no.png"></label>
                         <input type="radio" name="tier" id="option-bronze">
-                        <label for="option-bronze"><img src="./menu/constraints_bronze.png"></label>
+                        <label for="option-bronze"><img src="menu/constraints_bronze.png"></label>
                         <input type="radio" name="tier" id="option-silver">
-                        <label for="option-silver"><img src="./menu/constraints_silver.png"></label>
+                        <label for="option-silver"><img src="menu/constraints_silver.png"></label>
                         <input type="radio" name="tier" id="option-gold">
-                        <label for="option-gold"><img src="./menu/constraints_gold.png"></label>
+                        <label for="option-gold"><img src="menu/constraints_gold.png"></label>
                         <input type="radio" name="tier" id="option-diamond">
-                        <label for="option-diamond"><img src="./menu/constraints_diamond.png"></label>
+                        <label for="option-diamond"><img src="menu/constraints_diamond.png"></label>
                     </div>
                     <div>
                         <h2>Element</h2>
                         <input type="radio" name="element" id="option-no-element" checked>
-                        <label for="option-no-element"><img src="./menu/ElementalUnknownBackless.png"></label>
+                        <label for="option-no-element"><img src="menu/ElementalUnknownBackless.png"></label>
                         <input type="radio" name="element" id="option-fire">
-                        <label for="option-fire"><img src="./menu/ElementalFireBackless.png"></label>
+                        <label for="option-fire"><img src="menu/ElementalFireBackless.png"></label>
                         <input type="radio" name="element" id="option-water">
-                        <label for="option-water"><img src="./menu/ElementalWaterBackless.png"></label>
+                        <label for="option-water"><img src="menu/ElementalWaterBackless.png"></label>
                         <input type="radio" name="element" id="option-wind">
-                        <label for="option-wind"><img src="./menu/ElementalWindBackless.png"></label>
+                        <label for="option-wind"><img src="menu/ElementalWindBackless.png"></label>
                         <input type="radio" name="element" id="option-light">
-                        <label for="option-light"><img src="./menu/ElementalLightBackless.png"></label>
+                        <label for="option-light"><img src="menu/ElementalLightBackless.png"></label>
                         <input type="radio" name="element" id="option-dark">
-                        <label for="option-dark"><img src="./menu/ElementalDarkBackless.png"></label>
+                        <label for="option-dark"><img src="menu/ElementalDarkBackless.png"></label>
                         <input type="radio" name="element" id="option-neutral">
-                        <label for="option-neutral"><img src="./menu/ElementalNeutralBackless.png"></label>
+                        <label for="option-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
                     </div>
                     <div>
                         <h2>Energy</h2>
                         <input type="radio" name="energy" id="option-no-energy" checked>
                         <label for="option-no-energy"></label>
                         <input type="radio" name="energy" id="option-yellow">
-                        <label for="option-yellow"><img src="./fragment/EnergyIcon.png"></label>
+                        <label for="option-yellow"><img src="fragment/EnergyIcon.png"></label>
                         <input type="radio" name="energy" id="option-blue">
-                        <label for="option-blue"><img src="./fragment/EnergyIcon-Blue.png"></label>
+                        <label for="option-blue"><img src="fragment/EnergyIcon-Blue.png"></label>
                         <input type="radio" name="energy" id="option-blank">
-                        <label for="option-blank"><img src="./fragment/EnergyBlank.png"></label>
+                        <label for="option-blank"><img src="fragment/EnergyBlank.png"></label>
                     </div>
                     <div>
                         <h2>Art</h2>
@@ -116,7 +116,7 @@
                                 <h3>Position</h3>
                                 <div>
                                     <input type="radio" name="position" id="option-move" checked>
-                                    <label for="option-move"><img src="./menu/Drag1F.png"></label>
+                                    <label for="option-move"><img src="menu/Drag1F.png"></label>
                                     <label for="option-x">X:</label>
                                     <input type="number" placeholder="198" value="198" class="jsscrub" id="option-x">
                                     <label for="option-y">Y:</label>
@@ -124,13 +124,13 @@
                                 </div>
                                 <div>
                                     <input type="radio" name="position" id="option-scale">
-                                    <label for="option-scale"><img src="./menu/Drag1F.png"> <img src="./menu/Drag1F.png"></label>
+                                    <label for="option-scale"><img src="menu/Drag1F.png"> <img src="menu/Drag1F.png"></label>
                                     <label for="option-w">Width:</label>
                                     <input type="number" min="1" placeholder="295" value="295" class="jsscrub" id="option-w">
                                 </div>
                                 <div>
                                     <input type="radio" name="position" id="option-rotate">
-                                    <label for="option-rotate"><img src="./menu/Drag1F.png"></label>
+                                    <label for="option-rotate"><img src="menu/Drag1F.png"></label>
                                     <label for="option-a">Angle:</label>
                                     <input type="number" min="0" max="360" placeholder="0" value="0" class="jsscrub" data-jsscrub="continuous" id="option-a">
                                 </div>
@@ -138,9 +138,9 @@
                             <div>
                                 <h3>Overlap</h3>
                                 <input type="radio" name="overlap" id="option-under">
-                                <label for="option-under"><img src="./menu/LossMark.png"></label>
+                                <label for="option-under"><img src="menu/LossMark.png"></label>
                                 <input type="radio" name="overlap" id="option-over">
-                                <label for="option-over"><img src="./menu/Checkmark.png"></label>
+                                <label for="option-over"><img src="menu/Checkmark.png"></label>
                             </div>
                         </div>
                     </div>
@@ -151,48 +151,48 @@
                 <h3>Front</h3>
                 <div>
                     <input type="radio" name="fg-map" id="option-fg-default" checked>
-                    <label for="option-fg-default"><img src="./menu/LossMark.png"></label>
+                    <label for="option-fg-default"><img src="menu/LossMark.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-custom">
-                    <label for="option-fg-custom"><img src="./menu/ElementalUnknownBackless.png"></label>
+                    <label for="option-fg-custom"><img src="menu/ElementalUnknownBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-bronze">
-                    <label for="option-fg-bronze"><img src="./menu/constraints_bronze.png"></label>
+                    <label for="option-fg-bronze"><img src="menu/constraints_bronze.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-silver">
-                    <label for="option-fg-silver"><img src="./menu/constraints_silver.png"></label>
+                    <label for="option-fg-silver"><img src="menu/constraints_silver.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-gold">
-                    <label for="option-fg-gold"><img src="./menu/constraints_gold.png"></label>
+                    <label for="option-fg-gold"><img src="menu/constraints_gold.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-fire">
-                    <label for="option-fg-fire"><img src="./menu/ElementalFireBackless.png"></label>
+                    <label for="option-fg-fire"><img src="menu/ElementalFireBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-water">
-                    <label for="option-fg-water"><img src="./menu/ElementalWaterBackless.png"></label>
+                    <label for="option-fg-water"><img src="menu/ElementalWaterBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-wind">
-                    <label for="option-fg-wind"><img src="./menu/ElementalWindBackless.png"></label>
+                    <label for="option-fg-wind"><img src="menu/ElementalWindBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-light">
-                    <label for="option-fg-light"><img src="./menu/ElementalLightBackless.png"></label>
+                    <label for="option-fg-light"><img src="menu/ElementalLightBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-dark">
-                    <label for="option-fg-dark"><img src="./menu/ElementalDarkBackless.png"></label>
+                    <label for="option-fg-dark"><img src="menu/ElementalDarkBackless.png"></label>
                     <input type="radio" name="fg-map" id="option-fg-neutral">
-                    <label for="option-fg-neutral"><img src="./menu/ElementalNeutralBackless.png"></label>
+                    <label for="option-fg-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
                     <div id="fg-gradient"></div>
                     <input type="text" placeholder="brown 33%, chocolate 67%" id="option-fg">
                 </div>
                 <h3>Back</h3>
                 <div>
                     <input type="radio" name="bg-map" id="option-bg-default" checked>
-                    <label for="option-bg-default"><img src="./menu/LossMark.png"></label>
+                    <label for="option-bg-default"><img src="menu/LossMark.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-custom">
-                    <label for="option-bg-custom"><img src="./menu/ElementalUnknownBackless.png"></label>
+                    <label for="option-bg-custom"><img src="menu/ElementalUnknownBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-fire">
-                    <label for="option-bg-fire"><img src="./menu/ElementalFireBackless.png"></label>
+                    <label for="option-bg-fire"><img src="menu/ElementalFireBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-water">
-                    <label for="option-bg-water"><img src="./menu/ElementalWaterBackless.png"></label>
+                    <label for="option-bg-water"><img src="menu/ElementalWaterBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-wind">
-                    <label for="option-bg-wind"><img src="./menu/ElementalWindBackless.png"></label>
+                    <label for="option-bg-wind"><img src="menu/ElementalWindBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-light">
-                    <label for="option-bg-light"><img src="./menu/ElementalLightBackless.png"></label>
+                    <label for="option-bg-light"><img src="menu/ElementalLightBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-dark">
-                    <label for="option-bg-dark"><img src="./menu/ElementalDarkBackless.png"></label>
+                    <label for="option-bg-dark"><img src="menu/ElementalDarkBackless.png"></label>
                     <input type="radio" name="bg-map" id="option-bg-neutral">
-                    <label for="option-bg-neutral"><img src="./menu/ElementalNeutralBackless.png"></label>
+                    <label for="option-bg-neutral"><img src="menu/ElementalNeutralBackless.png"></label>
                     <div id="bg-gradient"></div>
                     <input type="text" placeholder="tan 0%, wheat 50%, beige 100%" id="option-bg">
                 </div>
@@ -210,12 +210,12 @@
             <div class="flexbox">
                 <input type="text" id="hex">
                 <input type="number" min="0" max="100" class="jsscrub" data-jsscrub="integer" id="percent">
-                <img id="delete" src="./menu/ButtonTrash.png">
+                <img id="delete" src="menu/ButtonTrash.png">
             </div>
         </div>
         <div id="outlink">
             <a href="https://sgmpalette.netlify.app/" target="_blank">
-                Palette Editor<img src="./menu/ArrowGold.png">
+                Palette Editor<img src="menu/ArrowGold.png">
             </a>
         </div>
     </body>
