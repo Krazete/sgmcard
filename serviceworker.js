@@ -2,6 +2,7 @@ const VERSION = "3.0.0"; /* update whenever anything changes */
 
 self.addEventListener("install", event => {
     // console.log("PWA Install: " + VERSION);
+    self.skipWaiting();
     event.waitUntil((async () => {
         const assets = [
             "./",
@@ -78,6 +79,7 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
     // console.log("PWA Activate: " + VERSION);
+    self.clients.claim();
     event.waitUntil((async () => {
         const keys = await caches.keys();
         keys.forEach(async (key) => {
