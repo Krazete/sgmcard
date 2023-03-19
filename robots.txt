@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /bg_reference/
-Disallow: /font/
-Disallow: /fragment/
-Disallow: /gradient/
-Disallow: /library/
-Disallow: /menu/
