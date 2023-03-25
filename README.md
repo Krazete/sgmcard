@@ -6,7 +6,7 @@ A tool for creating custom Skullgirls Mobile fighter cards.
 It performs best in Google Chrome and works in Safari both on desktop and on mobile devices.
 It should also work for Firefox, but I have not tested the website in any other browser.
 
-<img src="sample.png">
+<img src="preview.png">
 
 The official design of cards has changed slightly in version 3.1.0 of Skullgirls Mobile.
 I presume this is part of the optimizations as noted in the [patch notes](https://forum.skullgirlsmobile.com/threads/official-3-1-update-notes-coming-soon.5246/).
