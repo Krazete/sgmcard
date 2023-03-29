@@ -1237,7 +1237,7 @@ function renderCard(opaque) {
     }
 
     context.save();
-    context.font = "16px Washington";
+    context.font = "18px Washington";
     if (opaque) {
         context.fillStyle = "rgba(255, 255, 255, 0.05)";
     }
@@ -1247,7 +1247,7 @@ function renderCard(opaque) {
     context.textAlign = "left";
     context.textBaseline = "bottom";
     context.rotate(Math.PI * -90 / 180);
-    context.fillText("SGMCARD.NETLIFY.APP", -504, 395);
+    context.fillText(" KRAZETE / SGMCARD", -504, 395);
     context.restore();
 
     return canvas;
