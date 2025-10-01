@@ -781,7 +781,7 @@ function selectArt() {
                     else {
                         var imageData = getImageDataFromImage(image);
                         artURL = getImageURLFromImageData(imageData);
-                        if (imageData.width == 360 && imageData.height == 340) {
+                        if (imageData.width == 360 && imageData.height == 340 || imageData.width == 626 && imageData.height == 592) {
                             art.x.value = 198;
                             art.y.value = 174;
                             art.w.value = 362;

@@ -30,7 +30,7 @@ You can choose the tier, element, and energy type of the card and you can upload
 With your uploaded image, you have the option to edit it using the text inputs or by selecting the move, scale, or rotate tool and then interacting with the card preview area.
 You can also specify whether the image should overlap the top border of the card.
 
-If the dimensions of your image is 360x340px, it is assumed to be from the [SGM Palette Editor](https://github.com/Krazete/sgmpalette).
+If the dimensions of your image is 360x340px or 626x592px, it is assumed to be from the [SGM Palette Editor](https://github.com/Krazete/sgmpalette).
 The optimal position parameters will be automatically set.
 
 If your image's file name follows the Palette Editor naming scheme, the card character name will also be automatically set.
