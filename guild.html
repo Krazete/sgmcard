@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="A recreation of the Skullgirls Mobile guild logo creation menu.">
+        <title>Skullgirls Mobile Guild Logo Maker</title>
+        <link rel="shortcut icon" type="image/png" href="fragment/SkullTier.png">
+        <link rel="stylesheet" href="index.css"></link>
+        <link rel="stylesheet" href="guild.css"></link>
+        <script src="library/iro.min.js"></script>
+        <script src="guild.js"></script>
+    </head>
+    <body>
+        <div id="menu">
+            <a target="_blank" href="https://ko-fi.com/krazete" id="kofi"><img src="menu/kofi.png"></a>
+            <h1>
+                <a target="_blank" href="https://github.com/Krazete/sgmcard">Skullgirls Mobile Guild Logo Maker</a>
+            </h1>
+            <div class="previewbox">
+                <canvas id="preview"></canvas>
+                <input type="button" value="Download" id="option-render">
+            </div>
+            <div class="flexbox">
+                <div class="flexbox vertical">
+                    <h2 class="unflex" id="logo-bg-header">Outer</h2>
+                    <div id="logo-bg-buttons">
+                        <input type="radio" name="logo-bg" id="logo-bg-none">
+                        <label for="logo-bg-none"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-1" checked>
+                        <label for="logo-bg-1"><img src="guild/Background_1.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-2">
+                        <label for="logo-bg-2"><img src="guild/Background_2.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-3">
+                        <label for="logo-bg-3"><img src="guild/Background_3.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-4">
+                        <label for="logo-bg-4"><img src="guild/Background_4.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-5">
+                        <label for="logo-bg-5"><img src="guild/Background_5.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-6">
+                        <label for="logo-bg-6"><img src="guild/Background_6.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-7">
+                        <label for="logo-bg-7"><img src="guild/Background_7.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-8">
+                        <label for="logo-bg-8"><img src="guild/Background_8.png"></label>
+                        <input type="radio" name="logo-bg" id="logo-bg-9">
+                        <label for="logo-bg-9"><img src="guild/Background_9.png"></label>
+                    </div>
+                    <input type="text" value="#ffffff" class="unflex" id="logo-bg-hex">
+                </div>
+                <div class="flexbox vertical">
+                    <h2 class="unflex" id="logo-mg-header">Middle</h2>
+                    <div id="logo-mg-buttons">
+                        <input type="radio" name="logo-mg" id="logo-mg-none">
+                        <label for="logo-mg-none"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-1">
+                        <label for="logo-mg-1"><img src="guild/Middle_1.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-2">
+                        <label for="logo-mg-2"><img src="guild/Middle_2.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-3" checked>
+                        <label for="logo-mg-3"><img src="guild/Middle_3.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-4">
+                        <label for="logo-mg-4"><img src="guild/Middle_4.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-5">
+                        <label for="logo-mg-5"><img src="guild/Middle_5.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-6">
+                        <label for="logo-mg-6"><img src="guild/Middle_6.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-7">
+                        <label for="logo-mg-7"><img src="guild/Middle_7.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-8">
+                        <label for="logo-mg-8"><img src="guild/Middle_8.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-9">
+                        <label for="logo-mg-9"><img src="guild/Middle_9.png"></label>
+                        <input type="radio" name="logo-mg" id="logo-mg-10">
+                        <label for="logo-mg-10"><img src="guild/Middle_10.png"></label>
+                    </div>
+                    <input type="text" value="#ffffff" class="unflex" id="logo-mfg-hex">
+                    <input type="text" value="#ffffff" class="unflex" id="logo-mbg-hex">
+                </div>
+                <div class="flexbox vertical">
+                    <h2 class="unflex" id="logo-fg-header">Symbol</h2>
+                    <div id="logo-fg-buttons">
+                        <input type="radio" name="logo-fg" id="logo-fg-none">
+                        <label for="logo-fg-none"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-aeon" checked>
+                        <label for="logo-fg-aeon"><img src="guild/Foreground_Aeon.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-bunnydahlia">
+                        <label for="logo-fg-bunnydahlia"><img src="guild/Foreground_BunnyDahlia.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-crown">
+                        <label for="logo-fg-crown"><img src="guild/Foreground_Crown.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-dumpling">
+                        <label for="logo-fg-dumpling"><img src="guild/Foreground_Dumpling.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-sagan">
+                        <label for="logo-fg-sagan"><img src="guild/Foreground_Sagan.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-samson">
+                        <label for="logo-fg-samson"><img src="guild/Foreground_Samson.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-shamrock">
+                        <label for="logo-fg-shamrock"><img src="guild/Foreground_Shamrock.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-smiley">
+                        <label for="logo-fg-smiley"><img src="guild/Foreground_Smiley.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-1">
+                        <label for="logo-fg-1"><img src="guild/Foreground_1.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-2">
+                        <label for="logo-fg-2"><img src="guild/Foreground_2.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-3">
+                        <label for="logo-fg-3"><img src="guild/Foreground_3.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-4">
+                        <label for="logo-fg-4"><img src="guild/Foreground_4.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-5">
+                        <label for="logo-fg-5"><img src="guild/Foreground_5.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-6">
+                        <label for="logo-fg-6"><img src="guild/Foreground_6.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-7">
+                        <label for="logo-fg-7"><img src="guild/Foreground_7.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-8">
+                        <label for="logo-fg-8"><img src="guild/Foreground_8.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-9">
+                        <label for="logo-fg-9"><img src="guild/Foreground_9.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-10">
+                        <label for="logo-fg-10"><img src="guild/Foreground_10.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-11">
+                        <label for="logo-fg-11"><img src="guild/Foreground_11.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-12">
+                        <label for="logo-fg-12"><img src="guild/Foreground_12.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-13">
+                        <label for="logo-fg-13"><img src="guild/Foreground_13.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-14">
+                        <label for="logo-fg-14"><img src="guild/Foreground_14.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-15">
+                        <label for="logo-fg-15"><img src="guild/Foreground_15.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-16">
+                        <label for="logo-fg-16"><img src="guild/Foreground_16.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-17">
+                        <label for="logo-fg-17"><img src="guild/Foreground_17.png"></label>
+                        <input type="radio" name="logo-fg" id="logo-fg-18">
+                        <label for="logo-fg-18"><img src="guild/Foreground_18.png"></label>
+                    </div>
+                    <input type="text" value="#ffffff" class="unflex" id="logo-fg-hex">
+                </div>
+            </div>
+        </div>
+        <div id="swatch">
+            <div id="iro"></div>
+        </div>
+        <div id="outlink">
+            <a href="index.html">Card Creator<img src="menu/ArrowGold.png"></a>
+        </div>
+    </body>
+</html>
+
+<script src="https://krazete.github.io/af41.js"></script>

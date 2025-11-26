@@ -1,0 +1,53 @@
+/* PREVIEW */
+
+.previewbox {
+    position: relative;
+}
+
+#preview {
+    width: 400px;
+    height: 400px;
+    display: block;
+    margin: 4px auto;
+}
+
+.previewbox input[type='button'] {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: unset;
+    transform: translate(204px);
+    margin: 0;
+}
+
+/* MENU */
+
+.flexbox.vertical {
+    flex-direction: column;
+}
+
+#logo-bg-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, auto) 1fr;
+}
+
+#logo-mg-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto) 1fr;
+}
+
+#logo-fg-buttons {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(5, auto) 1fr;
+}
+
+input[type='radio'] + label img {
+    width: 90%;
+}
+
+.flexbox.vertical input[type='text'] {
+    width: unset;
+}
