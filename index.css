@@ -151,6 +151,7 @@ input[type='button'].loading {
 
 #outlink a {
     line-height: 32px;
+    padding-right: 0;
     cursor: pointer;
 }
 
@@ -182,7 +183,7 @@ input[type='button'].loading {
 .flexbox > * {
     flex: auto;
 }
-.flexbox > :last-child {
+.unflex {
     flex: none;
 }
 
