@@ -49,5 +49,6 @@ input[type='radio'] + label img {
 }
 
 .flexbox.vertical input[type='text'] {
-    width: unset;
+    width: 94px;
+    min-width: calc(100% - 30px);
 }
