@@ -89,3 +89,9 @@ The order for applying clip paths and transformation matrices also compounded my
 
 I decided to add support for animated GIFs due to some memes that Budget posted in the Skullgirls Discord server. It took an entire day and mostly involved a struggle with asynchronicity and promises.
 -->
+
+# Skullgirls Mobile Guild Logo Maker
+
+A much simpler tool recreating the Skullgirls Mobile guild logo creation menu.
+
+This spinoff page was made after guilds were released in version 8.0.0.
