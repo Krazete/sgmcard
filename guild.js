@@ -11,9 +11,11 @@ var logoParts = {
 var preview = document.getElementById("preview");
 var download = document.getElementById("download");
 
-var bg = document.getElementsByName("logo-bg");
-var mg = document.getElementsByName("logo-mg");
-var fg = document.getElementsByName("logo-fg");
+var buttons = {
+    "bg": document.getElementsByName("logo-bg"),
+    "mg": document.getElementsByName("logo-mg"),
+    "fg": document.getElementsByName("logo-fg")
+};
 
 var hexes = {
     "bg": [document.getElementById("logo-bg-hex")],
@@ -32,12 +34,12 @@ var picker = new iro.ColorPicker("#iro", {
     "layoutDirection": "horizontal",
     "layout": [
         {
-            "component": iro.ui.Box,
+            "component": iro.ui.Wheel,
         },
         {
             "component": iro.ui.Slider,
             "options": {
-                "sliderType": "hue"
+                "padding": 0,
             }
         }
     ]
@@ -84,15 +86,6 @@ function loadImage(src) {
     return new Promise(request);
 }
 
-function getImageURLFromImageData(imageData) {
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    context.putImageData(imageData, 0, 0);
-    return canvas.toDataURL();
-}
-
 function bound(n, min, max) {
     return Math.max(min, Math.min(n, max));
 }
@@ -129,8 +122,8 @@ var grounds = {
 };
 
 function updateEverything() {
-    preview.width += 0;
     var context = preview.getContext("2d");
+    context.clearRect(0, 0, preview.width, preview.height);
     for (var g in logoParts) {
         for (var i = 0; i < logoParts[g].length; i++) {
             if (logoParts[g][i]) {
@@ -150,10 +143,10 @@ function select(e) {
     var suffix = idSplit.slice(2).join("-");
 
     if (suffix == "none") {
-        logoParts[grounds[gType].index] = null;
-        logoParts[grounds[gType].index + 1] = null;
+        logoParts[gType][0] = null;
+        logoParts[gType][1] = null;
         if (gType == "mg") {
-            logoParts[grounds[gType].index + 2] = null;
+            logoParts[gType][2] = null;
         }
         if (e.isTrusted) {
             updateEverything();
@@ -180,6 +173,10 @@ function select(e) {
     });
 }
 
+/* Color Stuff */
+
+var activeHex;
+
 function getHex(color) {
     var validhexPattern = /^#[\da-f]{3}([\da-f]{3})?$/i;
     if (validhexPattern.test(color)) {
@@ -199,38 +196,43 @@ function getHex(color) {
 }
 
 function closeSwatch(e) {
-    if (e === true || !swatch.window.contains(getPointer(e).target)) {
-        swatch.window.style = "";
+    if (e === true || !swatch.contains(getPointer(e).target)) {
+        swatch.style = "";
         window.removeEventListener("mousedown", closeSwatch);
         window.removeEventListener("touchstart", closeSwatch);
     }
 }
 
-function updateSwatchPosition() {
-    swatch.window.style.left = bound(
-        scrollX + this.left - swatchBox.width / 2 + this.width * activeBand.stop / 100,
+function openSwatch() {
+    activeHex = this;
+    var swatchBox = swatch.getBoundingClientRect();
+    var thisBox = this.getBoundingClientRect();
+    swatch.style.left = bound(
+        scrollX + thisBox.left,
         0, innerWidth - swatchBox.width
     ) + "px";
+    swatch.style.top = scrollY + thisBox.top - swatchBox.height - 12 + "px";
+    window.addEventListener("mousedown", closeSwatch);
+    window.addEventListener("touchstart", closeSwatch);
 }
 
 function updateSwatch() {
-    if (activeBand.hex) {
-        swatch.window.classList.remove("invalid");
+    if (activeHex) {
+        swatch.classList.remove("invalid");
     }
     else {
-        swatch.window.classList.add("invalid");
+        swatch.classList.add("invalid");
     }
 }
 
 function updatePicker() {
-    picker.setColors([activeBand.hex]);
+    picker.setColors([activeHex]);
     updateSwatch();
 }
 
 function onPickerChange() {
-    var color = picker.color.alpha < 1 ? picker.color.hex8String : picker.color.hexString;
-    activeBand.setColor(color);
-    swatch.hex.value = color;
+    var color = picker.color.hexString;
+    activeHex.value = color;
     updateSwatch();
     updateEverything();
 }
@@ -285,28 +287,21 @@ function downloadLogo() {
 
 download.addEventListener("click", downloadLogo);
 
-for (var option of bg) {
-    option.addEventListener("click", select);
-}
-for (var option of mg) {
-    option.addEventListener("click", select);
-}
-for (var option of fg) {
-    option.addEventListener("click", select);
+for (var g in buttons) {
+    for (var button of buttons[g]) {
+        button.addEventListener("input", select);
+    }
 }
 
 presets.addEventListener("click", function (e) {
     console.log(e.target);
 });
 
-hexes.fg[0].addEventListener("focus", function () {
-    for (var i = 0; i < 7; i++) {
-        var preset = document.createElement("div");
-        preset.innerHTML = i;
-        presets.appendChild(preset);
-        updateSwatchPosition(this);
+for (var g in hexes) {
+    for (var hex of hexes[g]) {
+        hex.addEventListener("focus", openSwatch);
     }
-});
+}
 
 picker.on("color:change", onPickerChange);
 // swatch.hex.addEventListener("change", onHexChange);
@@ -316,13 +311,13 @@ picker.on("color:change", onPickerChange);
 /* (Re)Initialize Options */
 
 window.addEventListener("load", function () {
+    buttons.bg[1].click();
+    buttons.mg[3].click();
+    buttons.fg[1].click();
     hexes.bg[0].value = "#ab34cd";
     hexes.mg[0].value = "#deb421";
     hexes.mg[1].value = "#13dbfe";
     hexes.fg[0].value = "#32f583";
-    bg[1].click();
-    mg[3].click();
-    fg[1].click();
     updateEverything();
 });
 
