@@ -5,6 +5,7 @@
 }
 
 #preview {
+    background: #182a43;
     width: 400px;
     height: 400px;
     display: block;
@@ -13,11 +14,17 @@
 
 .previewbox input[type='button'] {
     position: absolute;
-    left: 50%;
     bottom: 0;
     width: unset;
-    transform: translate(204px);
     margin: 0;
+}
+.previewbox #random {
+    right: 50%;
+    transform: translate(-204px);
+}
+.previewbox #download {
+    left: 50%;
+    transform: translate(204px);
 }
 
 /* MENU */
@@ -51,4 +58,17 @@ input[type='radio'] + label img {
 .flexbox.vertical input[type='text'] {
     width: 94px;
     min-width: calc(100% - 30px);
+}
+
+/* SWATCH */
+
+#presets {
+    height: 24px;
+    margin: 4px;
+    gap: 2px;
+}
+
+#presets div {
+    border-radius: 4px;
+    cursor: pointer;
 }

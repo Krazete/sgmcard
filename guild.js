@@ -1,5 +1,8 @@
 window.addEventListener("DOMContentLoaded", function () {
 
+/* Data */
+
+var pauseUpdates = false;
 var logoParts = {
     "bg": [],
     "mg": [],
@@ -9,6 +12,7 @@ var logoParts = {
 /* Elements */
 
 var preview = document.getElementById("preview");
+var random = document.getElementById("random");
 var download = document.getElementById("download");
 
 var buttons = {
@@ -34,13 +38,13 @@ var picker = new iro.ColorPicker("#iro", {
     "layoutDirection": "horizontal",
     "layout": [
         {
-            "component": iro.ui.Wheel,
-        },
-        {
             "component": iro.ui.Slider,
             "options": {
                 "padding": 0,
             }
+        },
+        {
+            "component": iro.ui.Wheel,
         }
     ]
 });
@@ -122,6 +126,9 @@ var grounds = {
 };
 
 function updateEverything() {
+    if (pauseUpdates) {
+        return;
+    }
     var context = preview.getContext("2d");
     context.clearRect(0, 0, preview.width, preview.height);
     for (var g in logoParts) {
@@ -148,9 +155,7 @@ function select(e) {
         if (gType == "mg") {
             logoParts[gType][2] = null;
         }
-        if (e.isTrusted) {
-            updateEverything();
-        }
+        updateEverything();
         return;
     }
 
@@ -167,9 +172,7 @@ function select(e) {
             logoParts[gType][i] = colorizeImage(response[i], hexes[gType][i].value);
         }
         logoParts[gType][i] = response[i];
-        if (e.isTrusted) {
-            updateEverything();
-        }
+        updateEverything();
     });
 }
 
@@ -203,8 +206,58 @@ function closeSwatch(e) {
     }
 }
 
+var presetColors = {
+    "bg": [
+        "#778a90",
+        "#a18042",
+        "#774d3a",
+        "#9b5151",
+        "#73557e",
+        "#507666",
+        "#5c73a2"
+    ],
+    "mfg": [
+        "#bad3db",
+        "#e4c561",
+        "#96664f",
+        "#d27070",
+        "#a15fba",
+        "#68a38c",
+        "#7b9ee4"
+    ],
+    "mbg": [
+        "#212c3d",
+        "#44361b",
+        "#2f1c17",
+        "#3b0b0b",
+        "#2e1c34",
+        "#172f25",
+        "#1c2535"
+    ],
+    "fg": [
+        "#e3f8ff",
+        "#ffe789",
+        "#dc8e6b",
+        "#ff5b5b",
+        "#e18eff",
+        "#89e7c3",
+        "#7dc7ff"
+    ],
+};
+
 function openSwatch() {
     activeHex = this;
+
+    var gType = this.id.split("-")[1];
+
+    presets.innerHTML = "";
+    for (var color of presetColors[gType]) {
+        var preset = document.createElement("div");
+        preset.style.background = color;
+        preset.dataset.color = color;
+        presets.appendChild(preset);
+    }
+
     var swatchBox = swatch.getBoundingClientRect();
     var thisBox = this.getBoundingClientRect();
     swatch.style.left = bound(
@@ -226,7 +279,7 @@ function updateSwatch() {
 }
 
 function updatePicker() {
-    picker.setColors([activeHex]);
+    picker.setColors([activeHex.value]);
     updateSwatch();
 }
 
@@ -283,8 +336,20 @@ function downloadLogo() {
     a.click();
 }
 
+function randomize() {
+    var bgi = Math.floor(Math.random() * (buttons.bg.length - 1) + 1);
+    var mgi = Math.floor(Math.random() * (buttons.mg.length - 1) + 1);
+    var fgi = Math.floor(Math.random() * (buttons.fg.length - 1) + 1);
+    pauseUpdates = true;
+    buttons.bg[bgi].click();
+    buttons.mg[mgi].click();
+    pauseUpdates = false;
+    buttons.fg[fgi].click();
+}
+
 /* Event Listeners */
 
+random.addEventListener("click", randomize);
 download.addEventListener("click", downloadLogo);
 
 for (var g in buttons) {
@@ -294,7 +359,11 @@ for (var g in buttons) {
 }
 
 presets.addEventListener("click", function (e) {
-    console.log(e.target);
+    if (e.target.dataset.color) {
+        activeHex.value = e.target.dataset.color;
+        updatePicker();
+        updateEverything();
+    }
 });
 
 for (var g in hexes) {
@@ -314,10 +383,10 @@ window.addEventListener("load", function () {
     buttons.bg[1].click();
     buttons.mg[3].click();
     buttons.fg[1].click();
-    hexes.bg[0].value = "#ab34cd";
-    hexes.mg[0].value = "#deb421";
-    hexes.mg[1].value = "#13dbfe";
-    hexes.fg[0].value = "#32f583";
+    hexes.bg[0].value = presetColors.bg[4];
+    hexes.mg[0].value = presetColors.mbg[4];
+    hexes.mg[1].value = presetColors.mfg[4];
+    hexes.fg[0].value = presetColors.fg[4];
     updateEverything();
 });
 
