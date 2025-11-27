@@ -38,13 +38,11 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(5, auto) 1fr;
 }
-
 #logo-mg-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, auto) 1fr;
 }
-
 #logo-fg-buttons {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -52,7 +50,13 @@
 }
 
 input[type='radio'] + label img {
-    width: 90%;
+    max-width: 40px;
+    max-height: 40px;
+    margin: -4px;
+    filter: contrast(0) sepia(1) contrast(2);
+}
+input[type='radio']:checked + label img {
+    filter: contrast(0) sepia(1) contrast(2) invert(1);
 }
 
 .flexbox.vertical input[type='text'] {
