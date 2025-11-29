@@ -1,21 +1,12 @@
 window.addEventListener("DOMContentLoaded", function () {
 
-/* Data */
-
-var pauseUpdates = false;
-var logoParts = {
-    "bg": [],
-    "mg": [],
-    "fg": []
-};
-
 /* Elements */
 
 var preview = document.getElementById("preview");
 var random = document.getElementById("random");
 var download = document.getElementById("download");
 
-var buttons = {
+var parts = {
     "bg": document.getElementsByName("logo-bg"),
     "mg": document.getElementsByName("logo-mg"),
     "fg": document.getElementsByName("logo-fg")
@@ -23,13 +14,12 @@ var buttons = {
 
 var hexes = {
     "bg": [document.getElementById("logo-bg-hex")],
-    "mg": [document.getElementById("logo-mbg-hex"), document.getElementById("logo-mfg-hex")],
+    "mg": [document.getElementById("logo-mfg-hex"), document.getElementById("logo-mbg-hex")],
     "fg": [document.getElementById("logo-fg-hex")]
 };
 
 var swatch = document.getElementById("swatch");
 var presets = document.getElementById("presets");
-
 var picker = new iro.ColorPicker("#iro", {
     "width": 160,
     "borderWidth": 1,
@@ -49,25 +39,34 @@ var picker = new iro.ColorPicker("#iro", {
     ]
 });
 
-/* General Functions */
+/* Preview */
 
-function getPointer(e, preventDefault) { /* preventDefault on touchmove, not on touchstart */
-    if (e.touches) {
-        if (preventDefault) {
-            e.preventDefault();
+var assemblage = { /* layers stored in reverse order */
+    "bg": [],
+    "mg": [],
+    "fg": []
+};
+var paused = false;
+
+function updatePreview() {
+    if (!paused) {
+        var context = preview.getContext("2d");
+        context.clearRect(0, 0, preview.width, preview.height);
+        for (var xg in assemblage) {
+            for (var i = assemblage[xg].length - 1; i >= 0; i--) {
+                if (assemblage[xg][i]) {
+                    context.drawImage(
+                        assemblage[xg][i],
+                        (preview.width - assemblage[xg][i].width) / 2,
+                        (preview.height - assemblage[xg][i].height) / 2
+                    );
+                }
+            }
         }
-        return {
-            "x": e.touches[0].clientX,
-            "y": e.touches[0].clientY,
-            "target": e.touches[0].target
-        };
     }
-    return {
-        "x": e.clientX,
-        "y": e.clientY,
-        "target": e.target
-    };
 }
+
+/* Parts */
 
 var imageMemo = {};
 function loadImage(src) {
@@ -90,121 +89,57 @@ function loadImage(src) {
     return new Promise(request);
 }
 
-function bound(n, min, max) {
-    return Math.max(min, Math.min(n, max));
-}
-
-/* Image Processing */
-
-function colorizeImage(img, hex) {
+function colorizeImage(image, color) {
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+    canvas.width = image.width;
+    canvas.height = image.height;
+    context.drawImage(image, 0, 0);
     context.globalCompositeOperation = "source-in";
-    context.fillStyle = hex;
+    context.fillStyle = color;
     context.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
 }
 
-/* Menu Options */
-
-var grounds = {
-    "bg": {
-        "prefix": "Background",
-        "index": 0
-    },
-    "mg": {
-        "prefix": "Middle",
-        "index": 2
-    },
-    "fg": {
-        "prefix": "Foreground",
-        "index": 5
-    }
-};
-
-function updateEverything() {
-    if (pauseUpdates) {
-        return;
-    }
-    var context = preview.getContext("2d");
-    context.clearRect(0, 0, preview.width, preview.height);
-    for (var g in logoParts) {
-        for (var i = 0; i < logoParts[g].length; i++) {
-            if (logoParts[g][i]) {
-                context.drawImage(
-                    logoParts[g][i],
-                    (preview.width - logoParts[g][i].width) / 2,
-                    (preview.height - logoParts[g][i].height) / 2
-                );
-            }
-        }
-    }
-}
-
-function select(e) {
+function selectPart(e) {
     var idSplit = this.id.split("-");
-    var gType = idSplit[1];
+    var xg = idSplit[1];
     var suffix = idSplit.slice(2).join("-");
 
     if (suffix == "none") {
-        logoParts[gType][0] = null;
-        logoParts[gType][1] = null;
-        if (gType == "mg") {
-            logoParts[gType][2] = null;
+        var n = xg == "mg" ? 3 : 2;
+        for (var i = 0; i < n; i++) {
+            assemblage[xg][i] = null;
         }
-        updateEverything();
-        return;
+        updatePreview();
     }
+    else {
+        var prefix = {
+            "bg": "Background",
+            "mg": "Middle",
+            "fg": "Foreground"
+        };
+        var basename = "guild/" + prefix[xg] + "_" + suffix;
 
-    var base = "guild/" + grounds[gType].prefix + "_" + suffix;
-    var loadImages = [];
-    if (gType == "mg") {
-        loadImages.push(loadImage(base + "_BG.png"));
-    }
-    loadImages.push(loadImage(base + "_Colorize.png"));
-    loadImages.push(loadImage(base + ".png"));
-
-    Promise.all(loadImages).then(function (response) {
-        for (var i = 0; i < response.length - 1; i++) {
-            logoParts[gType][i] = colorizeImage(response[i], hexes[gType][i].value);
+        var loadImages = [
+            loadImage(basename + ".png"),
+            loadImage(basename + "_Colorize.png")
+        ];
+        if (xg == "mg") {
+            loadImages.push(loadImage(basename + "_BG.png"));
         }
-        logoParts[gType][i] = response[i];
-        updateEverything();
-    });
-}
 
-/* Color Stuff */
-
-var activeHex;
-
-function getHex(color) {
-    var validhexPattern = /^#[\da-f]{3}([\da-f]{3})?$/i;
-    if (validhexPattern.test(color)) {
-        return color;
-    }
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    try {
-        var linearGradient = context.createLinearGradient(0, 0, 0, 0);
-        linearGradient.addColorStop(0, color);
-    }
-    catch {
-        return false;
-    }
-    context.fillStyle = color;
-    return context.fillStyle;
-}
-
-function closeSwatch(e) {
-    if (e === true || !swatch.contains(getPointer(e).target)) {
-        swatch.style = "";
-        window.removeEventListener("mousedown", closeSwatch);
-        window.removeEventListener("touchstart", closeSwatch);
+        Promise.all(loadImages).then(function (response) {
+            assemblage[xg][0] = response[0];
+            for (var i = 1; i < response.length; i++) {
+                assemblage[xg][i] = colorizeImage(response[i], hexes[xg][i - 1].value);
+            }
+            updatePreview();
+        });
     }
 }
+
+/* Hexes */
 
 var presetColors = {
     "bg": [
@@ -245,13 +180,75 @@ var presetColors = {
     ],
 };
 
+var activeHex;
+
+function getPointer(e, preventDefault) { /* preventDefault on touchmove, not on touchstart */
+    if (e.touches) {
+        if (preventDefault) {
+            e.preventDefault();
+        }
+        return {
+            "x": e.touches[0].clientX,
+            "y": e.touches[0].clientY,
+            "target": e.touches[0].target
+        };
+    }
+    return {
+        "x": e.clientX,
+        "y": e.clientY,
+        "target": e.target
+    };
+}
+
+function bound(n, min, max) {
+    return Math.max(min, Math.min(n, max));
+}
+
+function lol(n) {
+    return bound(parseInt(n), 0, 255).toString(16).padStart(2, 0);
+}
+
+function getHex(color) {
+    var validhexPattern = /^\s*#*([\da-f]{3}[\da-f]?|[\da-f]{6}|[\da-f]{8})\s*$/i;
+    if (validhexPattern.test(color)) {
+        var digits = color.replace(/[^\da-f]/ig, "");
+        if (digits.length < 6) {
+            digits = digits.replace(/(.)/g, "$1$1");
+        }
+        if (digits.length > 6) {
+            digits = digits.slice(0, 6);
+        }
+        return "#" + digits;
+    }
+    var validrgbPattern = /^\D*(\d+)\s*,\s*(\d+)\s*,\s*(\d+).*$/;
+    if (validrgbPattern.test(color)) {
+        var m = color.match(validrgbPattern);
+        return "#" + lol(m[1]) + lol(m[2]) + lol(m[3]);
+    }
+    if (/^\s*transparent\s*$/i.test(color)) {
+        return "#000000";
+    }
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    context.fillStyle = color;
+    return context.fillStyle;
+}
+
+function closeSwatch(e) {
+    if (e === true || !swatch.contains(getPointer(e).target) && !activeHex.contains(getPointer(e).target)) {
+        swatch.style = "";
+        window.removeEventListener("mousedown", closeSwatch);
+        window.removeEventListener("touchstart", closeSwatch);
+    }
+}
+
 function openSwatch() {
     activeHex = this;
 
-    var gType = this.id.split("-")[1];
+    var xg = this.id.split("-")[1];
 
     presets.innerHTML = "";
-    for (var color of presetColors[gType]) {
+    for (var color of presetColors[xg]) {
         var preset = document.createElement("div");
         preset.style.background = color;
         preset.dataset.color = color;
@@ -269,65 +266,32 @@ function openSwatch() {
     window.addEventListener("touchstart", closeSwatch);
 }
 
-function updateSwatch() {
-    if (activeHex) {
-        swatch.classList.remove("invalid");
-    }
-    else {
-        swatch.classList.add("invalid");
+function selectPreset(e) {
+    if (e.target.dataset.color) {
+        activeHex.value = e.target.dataset.color;
+        updatePicker();
+        updatePreview();
     }
 }
 
 function updatePicker() {
     picker.setColors([activeHex.value]);
-    updateSwatch();
 }
 
 function onPickerChange() {
     var color = picker.color.hexString;
     activeHex.value = color;
-    updateSwatch();
-    updateEverything();
+    updatePreview();
 }
 
 function onHexChange() {
-    swatch.hex.value = swatch.hex.value.replace(/\s+/g, ""); /* like boundInput */
-    var color = swatch.hex.value;
+    activeHex.value = getHex(activeHex.value); /* like boundInput */
+    var color = activeHex.value;
     updatePicker();
-    updateEverything();
-}
-
-function onCustomInputChange() {
-    activeGround = this.id.split("-")[1];
-    generateBandsFromText(this.value);
-    override[activeGround].update();
+    updatePreview();
 }
 
 /* Render */
-
-function renderCard(opaque) {
-    var images = preview.getElementsByTagName("img");
-    for (var image of images) {
-        context.save();
-        context.drawImage(
-            image,
-            imageBox.left - previewBox.left,
-            imageBox.top - previewBox.top,
-            imageBox.width,
-            imageBox.height
-        );
-        context.restore();
-    }
-
-    return canvas;
-}
-
-function createCardImage(dataURL) {
-    var image = new Image();
-    image.src = dataURL;
-    render.imageContainer.innerHTML = "";
-    render.imageContainer.appendChild(image);
-}
 
 function downloadLogo() {
     var a = document.createElement("a");
@@ -337,14 +301,14 @@ function downloadLogo() {
 }
 
 function randomize() {
-    var bgi = Math.floor(Math.random() * (buttons.bg.length - 1) + 1);
-    var mgi = Math.floor(Math.random() * (buttons.mg.length - 1) + 1);
-    var fgi = Math.floor(Math.random() * (buttons.fg.length - 1) + 1);
-    pauseUpdates = true;
-    buttons.bg[bgi].click();
-    buttons.mg[mgi].click();
-    pauseUpdates = false;
-    buttons.fg[fgi].click();
+    var bgi = Math.floor(Math.random() * (parts.bg.length - 1) + 1);
+    var mgi = Math.floor(Math.random() * (parts.mg.length - 1) + 1);
+    var fgi = Math.floor(Math.random() * (parts.fg.length - 1) + 1);
+    paused = true;
+    parts.bg[bgi].click();
+    parts.mg[mgi].click();
+    paused = false;
+    parts.fg[fgi].click();
 }
 
 /* Event Listeners */
@@ -352,42 +316,34 @@ function randomize() {
 random.addEventListener("click", randomize);
 download.addEventListener("click", downloadLogo);
 
-for (var g in buttons) {
-    for (var button of buttons[g]) {
-        button.addEventListener("input", select);
+for (var xg in parts) {
+    for (var part of parts[xg]) {
+        part.addEventListener("input", selectPart);
     }
 }
 
-presets.addEventListener("click", function (e) {
-    if (e.target.dataset.color) {
-        activeHex.value = e.target.dataset.color;
-        updatePicker();
-        updateEverything();
-    }
-});
-
-for (var g in hexes) {
-    for (var hex of hexes[g]) {
+for (var xg in hexes) {
+    for (var hex of hexes[xg]) {
         hex.addEventListener("focus", openSwatch);
+        hex.addEventListener("change", onHexChange);
     }
 }
+
+presets.addEventListener("click", selectPreset);
 
 picker.on("color:change", onPickerChange);
-// swatch.hex.addEventListener("change", onHexChange);
-// swatch.percent.addEventListener("input", onPercentInput);
-// swatch.delete.addEventListener("click", onDeleteClick);
 
 /* (Re)Initialize Options */
 
 window.addEventListener("load", function () {
-    buttons.bg[1].click();
-    buttons.mg[3].click();
-    buttons.fg[1].click();
+    parts.bg[1].click();
+    parts.mg[3].click();
+    parts.fg[1].click();
     hexes.bg[0].value = presetColors.bg[4];
     hexes.mg[0].value = presetColors.mbg[4];
     hexes.mg[1].value = presetColors.mfg[4];
     hexes.fg[0].value = presetColors.fg[4];
-    updateEverything();
+    updatePreview();
 });
 
 /* Ko-fi Easter Egg */

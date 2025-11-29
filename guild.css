@@ -53,10 +53,10 @@ input[type='radio'] + label img {
     max-width: 40px;
     max-height: 40px;
     margin: -4px;
-    filter: contrast(0) sepia(1) contrast(2);
+    filter: contrast(0) sepia(1) contrast(3);
 }
 input[type='radio']:checked + label img {
-    filter: contrast(0) sepia(1) contrast(2) invert(1);
+    filter: contrast(0) sepia(1) contrast(3) invert(1);
 }
 
 .flexbox.vertical input[type='text'] {
