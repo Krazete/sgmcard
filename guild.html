@@ -17,7 +17,13 @@
                 <a target="_blank" href="https://github.com/Krazete/sgmcard">Skullgirls Mobile Guild Logo Maker</a>
             </h1>
             <div class="previewbox">
-                <input type="button" value="Randomize" id="random">
+                <div class="randombox">
+                    <input type="checkbox" id="random-xg" checked>
+                    <label for="random-xg"></label>
+                    <input type="checkbox" id="random-hex" checked>
+                    <label for="random-hex"></label>
+                    <input type="button" value="Randomize" id="random">
+                </div>
                 <canvas width="400" height="400" id="preview"></canvas>
                 <input type="button" value="Download" id="download">
             </div>

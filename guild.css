@@ -12,18 +12,53 @@
     margin: 4px auto;
 }
 
-.previewbox input[type='button'] {
-    position: absolute;
-    bottom: 0;
+.previewbox input[type='button'],
+.randombox input[type='checkbox'] + label {
+    position: relative;
     width: unset;
-    margin: 0;
+    display: block;
+    margin-bottom: 0;
+    cursor: pointer;
 }
-.previewbox #random {
+
+.previewbox .randombox {
+    text-align: right;
+    position: absolute;
     right: 50%;
+    bottom: 0;
     transform: translate(-204px);
 }
+.randombox input[type='checkbox'] {
+    display: none;
+}
+.randombox input[type='checkbox'] + label:before {
+    content: '';
+    background-image: url('menu/LossMark.png');
+    background-size: contain;
+    vertical-align: sub;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+.randombox input[type='checkbox']:checked + label:before {
+    background-image: url('menu/Checkmark.png');
+}
+#random-xg + label:after {
+    content: 'Layers';
+}
+#random-hex + label:after {
+    content: 'Colors';
+}
+#random.disabled {
+    text-decoration: line-through;
+    color: #182a43;
+    border-color: #182a43;
+}
+
 .previewbox #download {
+    position: absolute;
     left: 50%;
+    bottom: 0;
     transform: translate(204px);
 }
 

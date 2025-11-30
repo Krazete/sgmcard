@@ -3,7 +3,11 @@ window.addEventListener("DOMContentLoaded", function () {
 /* Elements */
 
 var preview = document.getElementById("preview");
-var random = document.getElementById("random");
+var random = {
+    "button": document.getElementById("random"),
+    "parts": document.getElementById("random-xg"),
+    "hexes": document.getElementById("random-hex")
+};
 var download = document.getElementById("download");
 
 var parts = {
@@ -310,28 +314,42 @@ function randInt(n, m) {
     return Math.floor(Math.random() * (m - n) + n);
 }
 
+function ablecheck() {
+    if (random.parts.checked || random.hexes.checked) {
+        random.button.classList.remove("disabled");
+    }
+    else {
+        random.button.classList.add("disabled");
+    }
+}
+
 function randomize() {
-    var bgi = Math.floor(Math.random() * (parts.bg.length - 1) + 1);
-    var mgi = Math.floor(Math.random() * (parts.mg.length - 1) + 1);
-    var fgi = Math.floor(Math.random() * (parts.fg.length - 1) + 1);
-    var bgci = Math.floor(Math.random() * (parts.bg.length - 1) + 1);
-    var mgci = Math.floor(Math.random() * (parts.mg.length - 1) + 1);
-    var fgci = Math.floor(Math.random() * (parts.fg.length - 1) + 1);
-    for (var xg in hexes) {
-        for (var hex of hexes[xg]) {
-            var r = randInt(0, hex.colors.length);
-            hex.input.value = hex.colors[r];
+    if (random.hexes.checked) {
+        for (var xg in hexes) {
+            for (var hex of hexes[xg]) {
+                var r = randInt(0, hex.colors.length);
+                hex.input.value = hex.colors[r];
+            }
+        }
+        if (!random.parts.checked) {
+            for (var xg in parts) {
+                recolorPart(xg);
+            }
         }
     }
-    for (var xg in parts) {
-        var r = randInt(1, parts[xg].length);
-        parts[xg][r].click();
+    if (random.parts.checked) {
+        for (var xg in parts) {
+            var r = randInt(1, parts[xg].length);
+            parts[xg][r].click();
+        }
     }
 }
 
 /* Event Listeners */
 
-random.addEventListener("click", randomize);
+random.button.addEventListener("click", randomize);
+random.parts.addEventListener("change", ablecheck);
+random.hexes.addEventListener("change", ablecheck);
 download.addEventListener("click", downloadLogo);
 
 for (var xg in parts) {
@@ -353,6 +371,8 @@ picker.on("color:change", onPickerChange);
 /* (Re)Initialize Options */
 
 window.addEventListener("load", function () {
+    random.parts.checked = true;
+    random.hexes.checked = true;
     for (var xg in hexes) {
         for (var hex of hexes[xg]) {
             hex.input.value = hex.colors[4];
