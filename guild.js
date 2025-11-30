@@ -13,9 +13,28 @@ var parts = {
 };
 
 var hexes = {
-    "bg": [document.getElementById("logo-bg-hex")],
-    "mg": [document.getElementById("logo-mfg-hex"), document.getElementById("logo-mbg-hex")],
-    "fg": [document.getElementById("logo-fg-hex")]
+    "bg": [
+        {
+            "input": document.getElementById("logo-bg-0-hex"),
+            "colors": ["#778a90", "#a18042", "#774d3a", "#9b5151", "#73557e", "#507666", "#5c73a2"]
+        }
+    ],
+    "mg": [
+        {
+            "input": document.getElementById("logo-mg-0-hex"),
+            "colors": ["#bad3db", "#e4c561", "#96664f", "#d27070", "#a15fba", "#68a38c", "#7b9ee4"]
+        },
+        {
+            "input": document.getElementById("logo-mg-1-hex"),
+            "colors": ["#212c3d", "#44361b", "#2f1c17", "#3b0b0b", "#2e1c34", "#172f25", "#1c2535"]
+        }
+    ],
+    "fg": [
+        {
+            "input": document.getElementById("logo-fg-0-hex"),
+            "colors": ["#e3f8ff", "#ffe789", "#dc8e6b", "#ff5b5b", "#e18eff", "#89e7c3", "#7dc7ff"]
+        }
+    ]
 };
 
 var swatch = document.getElementById("swatch");
@@ -46,21 +65,24 @@ var assemblage = { /* layers stored in reverse order */
     "mg": [],
     "fg": []
 };
-var paused = false;
 
 function updatePreview() {
-    if (!paused) {
-        var context = preview.getContext("2d");
-        context.clearRect(0, 0, preview.width, preview.height);
-        for (var xg in assemblage) {
-            for (var i = assemblage[xg].length - 1; i >= 0; i--) {
-                if (assemblage[xg][i]) {
-                    context.drawImage(
-                        assemblage[xg][i],
-                        (preview.width - assemblage[xg][i].width) / 2,
-                        (preview.height - assemblage[xg][i].height) / 2
-                    );
-                }
+    if (imagesLoading) {
+        requestAnimationFrame(updatePreview);
+        return;
+    }
+
+    var context = preview.getContext("2d");
+    context.clearRect(0, 0, preview.width, preview.height);
+    var xgs = ["bg", "mg", "fg"]; /* ensure order */
+    for (var xg of xgs) {
+        for (var i = assemblage[xg].length - 1; i >= 0; i--) {
+            if (assemblage[xg][i]) {
+                context.drawImage(
+                    assemblage[xg][i],
+                    (preview.width - assemblage[xg][i].width) / 2,
+                    (preview.height - assemblage[xg][i].height) / 2
+                );
             }
         }
     }
@@ -69,22 +91,26 @@ function updatePreview() {
 /* Parts */
 
 var imageMemo = {};
+var imagesLoading = 0;
 function loadImage(src) {
     function request(resolve, reject) {
         if (src in imageMemo) {
             resolve(imageMemo[src]);
+            return;
         }
-        else {
-            var image = new Image();
-            image.addEventListener("load", function () {
-                imageMemo[src] = this;
-                resolve(this);
-            });
-            image.addEventListener("error", function () {
-                reject(this);
-            });
-            image.src = src;
-        }
+
+        imagesLoading++;
+        var image = new Image();
+        image.addEventListener("load", function () {
+            imageMemo[src] = this;
+            imagesLoading--;
+            resolve(this);
+        });
+        image.addEventListener("error", function () {
+            imagesLoading--;
+            reject(this);
+        });
+        image.src = src;
     }
     return new Promise(request);
 }
@@ -101,26 +127,11 @@ function colorizeImage(image, color) {
     return canvas;
 }
 
-function selectPart(e) {
-    var idSplit = this.id.split("-");
-    var xg = idSplit[1];
-    var suffix = idSplit.slice(2).join("-");
+var basenames = {};
 
-    if (suffix == "none") {
-        var n = xg == "mg" ? 3 : 2;
-        for (var i = 0; i < n; i++) {
-            assemblage[xg][i] = null;
-        }
-        updatePreview();
-    }
-    else {
-        var prefix = {
-            "bg": "Background",
-            "mg": "Middle",
-            "fg": "Foreground"
-        };
-        var basename = "guild/" + prefix[xg] + "_" + suffix;
-
+function recolorPart(xg) {
+    if (xg && basenames[xg]) {
+        var basename = basenames[xg];
         var loadImages = [
             loadImage(basename + ".png"),
             loadImage(basename + "_Colorize.png")
@@ -132,55 +143,41 @@ function selectPart(e) {
         Promise.all(loadImages).then(function (response) {
             assemblage[xg][0] = response[0];
             for (var i = 1; i < response.length; i++) {
-                assemblage[xg][i] = colorizeImage(response[i], hexes[xg][i - 1].value);
+                assemblage[xg][i] = colorizeImage(response[i], hexes[xg][i - 1].input.value);
             }
             updatePreview();
         });
     }
 }
 
+function selectPart() {
+    var idSplit = this.id.split("-");
+    var xg = idSplit[1];
+    var suffix = idSplit.slice(2).join("-");
+
+    if (suffix == "none") {
+        var n = xg == "mg" ? 3 : 2;
+        for (var i = 0; i < n; i++) {
+            assemblage[xg][i] = null;
+        }
+        basenames[xg] = null;
+        updatePreview();
+        return;
+    }
+
+    var prefix = {
+        "bg": "Background",
+        "mg": "Middle",
+        "fg": "Foreground"
+    };
+    basenames[xg] = "guild/" + prefix[xg] + "_" + suffix;
+    recolorPart(xg);
+}
+
 /* Hexes */
 
-var presetColors = {
-    "bg": [
-        "#778a90",
-        "#a18042",
-        "#774d3a",
-        "#9b5151",
-        "#73557e",
-        "#507666",
-        "#5c73a2"
-    ],
-    "mfg": [
-        "#bad3db",
-        "#e4c561",
-        "#96664f",
-        "#d27070",
-        "#a15fba",
-        "#68a38c",
-        "#7b9ee4"
-    ],
-    "mbg": [
-        "#212c3d",
-        "#44361b",
-        "#2f1c17",
-        "#3b0b0b",
-        "#2e1c34",
-        "#172f25",
-        "#1c2535"
-    ],
-    "fg": [
-        "#e3f8ff",
-        "#ffe789",
-        "#dc8e6b",
-        "#ff5b5b",
-        "#e18eff",
-        "#89e7c3",
-        "#7dc7ff"
-    ],
-};
-
 var activeHex;
+var activeXG;
 
 function getPointer(e, preventDefault) { /* preventDefault on touchmove, not on touchstart */
     if (e.touches) {
@@ -204,7 +201,7 @@ function bound(n, min, max) {
     return Math.max(min, Math.min(n, max));
 }
 
-function lol(n) {
+function Ox(n) { /* convert number to hexadecimal part */
     return bound(parseInt(n), 0, 255).toString(16).padStart(2, 0);
 }
 
@@ -220,14 +217,17 @@ function getHex(color) {
         }
         return "#" + digits;
     }
+
     var validrgbPattern = /^\D*(\d+)\s*,\s*(\d+)\s*,\s*(\d+).*$/;
     if (validrgbPattern.test(color)) {
         var m = color.match(validrgbPattern);
-        return "#" + lol(m[1]) + lol(m[2]) + lol(m[3]);
+        return "#" + Ox(m[1]) + Ox(m[2]) + Ox(m[3]);
     }
+
     if (/^\s*transparent\s*$/i.test(color)) {
         return "#000000";
     }
+
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     context.fillStyle = color;
@@ -235,60 +235,66 @@ function getHex(color) {
 }
 
 function closeSwatch(e) {
-    if (e === true || !swatch.contains(getPointer(e).target) && !activeHex.contains(getPointer(e).target)) {
+    var e = getPointer(e);
+    if (!swatch.contains(e.target) && !activeHex.contains(e.target)) {
         swatch.style = "";
         window.removeEventListener("mousedown", closeSwatch);
         window.removeEventListener("touchstart", closeSwatch);
     }
 }
 
+function updateSwatch() {
+    for (var preset of presets.children) {
+        preset.classList.remove("glow");
+        if (preset.dataset.color.toLowerCase() == activeHex.value.toLowerCase()) {
+            preset.classList.add("glow");
+        }
+    }
+    picker.setColors([activeHex.value]);
+}
+
 function openSwatch() {
     activeHex = this;
-
-    var xg = this.id.split("-")[1];
+    var idSplit = this.id.split("-");
+    var xg = idSplit[1];
+    activeXG = xg;
+    var n = parseInt(idSplit[2]);
 
     presets.innerHTML = "";
-    for (var color of presetColors[xg]) {
+    for (var color of hexes[xg][n].colors) {
         var preset = document.createElement("div");
         preset.style.background = color;
         preset.dataset.color = color;
         presets.appendChild(preset);
     }
+    updateSwatch();
 
     var swatchBox = swatch.getBoundingClientRect();
     var thisBox = this.getBoundingClientRect();
-    swatch.style.left = bound(
-        scrollX + thisBox.left,
-        0, innerWidth - swatchBox.width
-    ) + "px";
-    swatch.style.top = scrollY + thisBox.top - swatchBox.height - 12 + "px";
+    swatch.style.left = scrollX + bound(thisBox.left, 0, innerWidth - swatchBox.width) + "px";
+    swatch.style.top = scrollY + thisBox.top - swatchBox.height - 10 + "px";
     window.addEventListener("mousedown", closeSwatch);
     window.addEventListener("touchstart", closeSwatch);
+}
+
+function onHexChange() {
+    activeHex.value = getHex(activeHex.value); /* sanitize */
+    updateSwatch();
+    recolorPart(activeXG);
 }
 
 function selectPreset(e) {
     if (e.target.dataset.color) {
         activeHex.value = e.target.dataset.color;
-        updatePicker();
-        updatePreview();
+        updateSwatch();
+        recolorPart(activeXG);
     }
 }
 
-function updatePicker() {
-    picker.setColors([activeHex.value]);
-}
-
 function onPickerChange() {
-    var color = picker.color.hexString;
-    activeHex.value = color;
-    updatePreview();
-}
-
-function onHexChange() {
-    activeHex.value = getHex(activeHex.value); /* like boundInput */
-    var color = activeHex.value;
-    updatePicker();
-    updatePreview();
+    activeHex.value = picker.color.hexString;
+    updateSwatch();
+    recolorPart(activeXG);
 }
 
 /* Render */
@@ -300,15 +306,27 @@ function downloadLogo() {
     a.click();
 }
 
+function randInt(n, m) {
+    return Math.floor(Math.random() * (m - n) + n);
+}
+
 function randomize() {
     var bgi = Math.floor(Math.random() * (parts.bg.length - 1) + 1);
     var mgi = Math.floor(Math.random() * (parts.mg.length - 1) + 1);
     var fgi = Math.floor(Math.random() * (parts.fg.length - 1) + 1);
-    paused = true;
-    parts.bg[bgi].click();
-    parts.mg[mgi].click();
-    paused = false;
-    parts.fg[fgi].click();
+    var bgci = Math.floor(Math.random() * (parts.bg.length - 1) + 1);
+    var mgci = Math.floor(Math.random() * (parts.mg.length - 1) + 1);
+    var fgci = Math.floor(Math.random() * (parts.fg.length - 1) + 1);
+    for (var xg in hexes) {
+        for (var hex of hexes[xg]) {
+            var r = randInt(0, hex.colors.length);
+            hex.input.value = hex.colors[r];
+        }
+    }
+    for (var xg in parts) {
+        var r = randInt(1, parts[xg].length);
+        parts[xg][r].click();
+    }
 }
 
 /* Event Listeners */
@@ -324,45 +342,26 @@ for (var xg in parts) {
 
 for (var xg in hexes) {
     for (var hex of hexes[xg]) {
-        hex.addEventListener("focus", openSwatch);
-        hex.addEventListener("change", onHexChange);
+        hex.input.addEventListener("focus", openSwatch);
+        hex.input.addEventListener("change", onHexChange);
     }
 }
 
 presets.addEventListener("click", selectPreset);
-
 picker.on("color:change", onPickerChange);
 
 /* (Re)Initialize Options */
 
 window.addEventListener("load", function () {
+    for (var xg in hexes) {
+        for (var hex of hexes[xg]) {
+            hex.input.value = hex.colors[4];
+        }
+    }
     parts.bg[1].click();
     parts.mg[3].click();
     parts.fg[1].click();
-    hexes.bg[0].value = presetColors.bg[4];
-    hexes.mg[0].value = presetColors.mbg[4];
-    hexes.mg[1].value = presetColors.mfg[4];
-    hexes.fg[0].value = presetColors.fg[4];
-    updatePreview();
+    // updatePreview();
 });
-
-/* Ko-fi Easter Egg */
-
-var kofi = document.getElementById("kofi");
-var rainbowId;
-
-function rainbow() {
-    var h = (Date.now() / 60) % 360;
-    document.body.style = "--bg: hsl(" + h + ", 50%, 70%); --fg: hsl(" + h + ", 50%, 30%);";
-    rainbowId = requestAnimationFrame(rainbow);
-}
-
-function stopRainbow() {
-    document.body.style = "";
-    cancelAnimationFrame(rainbowId);
-}
-
-kofi.addEventListener("mouseover", rainbow);
-kofi.addEventListener("mouseout", stopRainbow);
 
 });
