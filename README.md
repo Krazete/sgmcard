@@ -92,7 +92,7 @@ I decided to add support for animated GIFs due to some memes that Budget posted 
 
 # Skullgirls Mobile Guild Logo Maker
 
-A much simpler tool recreating the Skullgirls Mobile guild logo creation menu.
+A much simpler tool copying the Skullgirls Mobile guild logo creation menu.
 
 <img src="preview-guild.png">
 
