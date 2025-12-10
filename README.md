@@ -94,4 +94,6 @@ I decided to add support for animated GIFs due to some memes that Budget posted 
 
 A much simpler tool recreating the Skullgirls Mobile guild logo creation menu.
 
+<img src="preview-guild.png">
+
 This spinoff page was made after guilds were released in version 8.0.0.
