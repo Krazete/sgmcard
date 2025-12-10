@@ -4,9 +4,9 @@ window.addEventListener("DOMContentLoaded", function () {
 
 var preview = document.getElementById("preview");
 var random = {
-    "button": document.getElementById("random"),
     "parts": document.getElementById("random-xg"),
-    "hexes": document.getElementById("random-hex")
+    "hexes": document.getElementById("random-hex"),
+    "button": document.getElementById("random")
 };
 var download = document.getElementById("download");
 
@@ -131,11 +131,36 @@ function colorizeImage(image, color) {
     return canvas;
 }
 
-var basenames = {};
+function selectPart(xg) {
+    if (xg == "fg" || xg == "mg" || xg == "bg") {
+        for (var part of parts[xg]) {
+            if (part.checked) {
+                var idSplit = part.id.split("-");
+                break;
+            }
+        }
+    }
+    else {
+        var idSplit = this.id.split("-");
+        xg = idSplit[1];
+    }
+    var suffix = idSplit.slice(2).join("-");
 
-function recolorPart(xg) {
-    if (xg && basenames[xg]) {
-        var basename = basenames[xg];
+    if (suffix == "none") {
+        var n = xg == "mg" ? 3 : 2;
+        for (var i = 0; i < n; i++) {
+            assemblage[xg][i] = null;
+        }
+        updatePreview();
+    }
+    else {
+        var prefix = {
+            "bg": "Background",
+            "mg": "Middle",
+            "fg": "Foreground"
+        };
+        var basename = "guild/" + prefix[xg] + "_" + suffix;
+
         var loadImages = [
             loadImage(basename + ".png"),
             loadImage(basename + "_Colorize.png")
@@ -154,34 +179,9 @@ function recolorPart(xg) {
     }
 }
 
-function selectPart() {
-    var idSplit = this.id.split("-");
-    var xg = idSplit[1];
-    var suffix = idSplit.slice(2).join("-");
-
-    if (suffix == "none") {
-        var n = xg == "mg" ? 3 : 2;
-        for (var i = 0; i < n; i++) {
-            assemblage[xg][i] = null;
-        }
-        basenames[xg] = null;
-        updatePreview();
-        return;
-    }
-
-    var prefix = {
-        "bg": "Background",
-        "mg": "Middle",
-        "fg": "Foreground"
-    };
-    basenames[xg] = "guild/" + prefix[xg] + "_" + suffix;
-    recolorPart(xg);
-}
-
 /* Hexes */
 
 var activeHex;
-var activeXG;
 
 function getPointer(e, preventDefault) { /* preventDefault on touchmove, not on touchstart */
     if (e.touches) {
@@ -209,7 +209,7 @@ function Ox(n) { /* convert number to hexadecimal part */
     return bound(parseInt(n), 0, 255).toString(16).padStart(2, 0);
 }
 
-function getHex(color) {
+function sanitizeHex(color) {
     var validhexPattern = /^\s*#*([\da-f]{3}[\da-f]?|[\da-f]{6}|[\da-f]{8})\s*$/i;
     if (validhexPattern.test(color)) {
         var digits = color.replace(/[^\da-f]/ig, "");
@@ -247,13 +247,25 @@ function closeSwatch(e) {
     }
 }
 
-function updateSwatch() {
+function updateHex(color) {
+    var idSplit = activeHex.id.split("-");
+    var xg = idSplit[1];
+    activeHex.value = color;
+    selectPart(xg);
+}
+
+function updatePresets() {
     for (var preset of presets.children) {
-        preset.classList.remove("glow");
         if (preset.dataset.color.toLowerCase() == activeHex.value.toLowerCase()) {
-            preset.classList.add("glow");
+            preset.classList.add("set");
+        }
+        else if (preset.classList.contains("set")) {
+            preset.classList.remove("set");
         }
     }
+}
+
+function updatePicker() {
     picker.setColors([activeHex.value]);
 }
 
@@ -261,7 +273,6 @@ function openSwatch() {
     activeHex = this;
     var idSplit = this.id.split("-");
     var xg = idSplit[1];
-    activeXG = xg;
     var n = parseInt(idSplit[2]);
 
     presets.innerHTML = "";
@@ -271,7 +282,8 @@ function openSwatch() {
         preset.dataset.color = color;
         presets.appendChild(preset);
     }
-    updateSwatch();
+    updatePresets();
+    updatePicker();
 
     var swatchBox = swatch.getBoundingClientRect();
     var thisBox = this.getBoundingClientRect();
@@ -282,39 +294,31 @@ function openSwatch() {
 }
 
 function onHexChange() {
-    activeHex.value = getHex(activeHex.value); /* sanitize */
-    updateSwatch();
-    recolorPart(activeXG);
+    updateHex(sanitizeHex(activeHex.value));
+    updatePresets();
+    updatePicker();
 }
 
 function selectPreset(e) {
     if (e.target.dataset.color) {
-        activeHex.value = e.target.dataset.color;
-        updateSwatch();
-        recolorPart(activeXG);
+        updateHex(e.target.dataset.color);
+        updatePresets();
+        updatePicker();
     }
 }
 
 function onPickerChange() {
-    activeHex.value = picker.color.hexString;
-    updateSwatch();
-    recolorPart(activeXG);
+    updateHex(picker.color.hexString);
+    updatePresets();
 }
 
-/* Render */
-
-function downloadLogo() {
-    var a = document.createElement("a");
-    a.download = "sgm-guild-logo.png";
-    a.href = preview.toDataURL();
-    a.click();
-}
+/* Preview Adjacent */
 
 function randInt(n, m) {
     return Math.floor(Math.random() * (m - n) + n);
 }
 
-function ablecheck() {
+function updateRandom() {
     if (random.parts.checked || random.hexes.checked) {
         random.button.classList.remove("disabled");
     }
@@ -323,7 +327,13 @@ function ablecheck() {
     }
 }
 
-function randomize() {
+function randomizeLogo() {
+    if (random.parts.checked) {
+        for (var xg in parts) {
+            var r = randInt(1, parts[xg].length);
+            parts[xg][r].checked = true;
+        }
+    }
     if (random.hexes.checked) {
         for (var xg in hexes) {
             for (var hex of hexes[xg]) {
@@ -331,25 +341,24 @@ function randomize() {
                 hex.input.value = hex.colors[r];
             }
         }
-        if (!random.parts.checked) {
-            for (var xg in parts) {
-                recolorPart(xg);
-            }
-        }
     }
-    if (random.parts.checked) {
-        for (var xg in parts) {
-            var r = randInt(1, parts[xg].length);
-            parts[xg][r].click();
-        }
+    for (var xg in parts) {
+        selectPart(xg);
     }
+}
+
+function downloadLogo() {
+    var a = document.createElement("a");
+    a.download = "sgm-guild-logo.png";
+    a.href = preview.toDataURL();
+    a.click();
 }
 
 /* Event Listeners */
 
-random.button.addEventListener("click", randomize);
-random.parts.addEventListener("change", ablecheck);
-random.hexes.addEventListener("change", ablecheck);
+random.parts.addEventListener("change", updateRandom);
+random.hexes.addEventListener("change", updateRandom);
+random.button.addEventListener("click", randomizeLogo);
 download.addEventListener("click", downloadLogo);
 
 for (var xg in parts) {
@@ -373,15 +382,18 @@ picker.on("color:change", onPickerChange);
 window.addEventListener("load", function () {
     random.parts.checked = true;
     random.hexes.checked = true;
+    // updateRandom();
+    parts.bg[1].checked = true;
+    parts.mg[3].checked = true;
+    parts.fg[1].checked = true;
     for (var xg in hexes) {
         for (var hex of hexes[xg]) {
             hex.input.value = hex.colors[4];
         }
     }
-    parts.bg[1].click();
-    parts.mg[3].click();
-    parts.fg[1].click();
-    // updatePreview();
+    for (var xg in parts) {
+        selectPart(xg);
+    }
 });
 
 });
